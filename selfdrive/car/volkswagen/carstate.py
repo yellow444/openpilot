@@ -77,6 +77,16 @@ class CarState(CarStateBase):
     # We use the speed preference for OP.
     self.displayMetricUnits = not pt_cp.vl["Einheiten_01"]["KBI_MFA_v_Einheit_02"]
 
+    # Stock FCW is considered active if a warning is displayed to the driver
+    # or the release bit for brake-jerk warning is set. Stock AEB considered
+    # active if the partial braking or target braking release bits are set.
+    # Ref: VW SSP 890253 "Volkswagen Driver Assistance Systems V2", "Front
+    # Assist with Braking: Golf Family" (applies to all MQB)
+    ret.stockFcw = any([bool(acc_cp.vl["ACC_10"]["AWV2_Priowarnung"]),
+                        bool(acc_cp.vl["ACC_10"]["AWV2_Freigabe"])])
+    ret.stockAeb = any([bool(acc_cp.vl["ACC_10"]["ANB_Teilbremsung_Freigabe"]),
+                        bool(acc_cp.vl["ACC_10"]["ANB_Zielbremsung_Freigabe"])])
+
     # Update ACC radar status.
     accStatus = pt_cp.vl["TSK_06"]['TSK_Status']
     if accStatus == 2:
