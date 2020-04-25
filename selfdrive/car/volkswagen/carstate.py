@@ -263,7 +263,8 @@ class CarState(CarStateBase):
                   ("SWA_Infostufe_SWA_re", "SWA_01", 0),  # Blindspot object info, right
                   ("SWA_Warnung_SWA_re", "SWA_01", 0),    # Blindspot object warning, right
                   ("SetSpeed", "ACC_02", 0)]              # ACC set speed
-      checks += [("SWA_01", 20),  # From J1086 Lane Change Assist module
+      checks += [("ACC_10", 50),  # From J428 ACC radar control module
+                 ("SWA_01", 20),  # From J1086 Lane Change Assist module
                  ("ACC_02", 17)]  # From J428 ACC radar control module
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.cam)
