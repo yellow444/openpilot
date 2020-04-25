@@ -221,12 +221,17 @@ class CarState(CarStateBase):
     if CP.networkLocation == NWL.fwdCamera:
       # Extended CAN devices other than the camera are on CANBUS.pt
       # FIXME: gate SWA_01 checks on module being detected, and reduce duplicate network location code
-      signals += [("SWA_Infostufe_SWA_li", "SWA_01", 0),  # Blindspot object info, left
+      signals += [("AWV2_Priowarnung", "ACC_10", 0),      # FCW related
+                  ("AWV2_Freigabe", "ACC_10", 0),         # FCW related
+                  ("ANB_Teilbremsung_Freigabe", "ACC_10", 0), # AEB related
+                  ("ANB_Zielbremsung_Freigabe", "ACC_10", 0), # AEB related
+                  ("SWA_Infostufe_SWA_li", "SWA_01", 0),  # Blindspot object info, left
                   ("SWA_Warnung_SWA_li", "SWA_01", 0),    # Blindspot object warning, left
                   ("SWA_Infostufe_SWA_re", "SWA_01", 0),  # Blindspot object info, right
                   ("SWA_Warnung_SWA_re", "SWA_01", 0),    # Blindspot object warning, right
                   ("SetSpeed", "ACC_02", 0)]              # ACC set speed
-      checks += [("SWA_01", 20),  # From J1086 Lane Change Assist module
+      checks += [("ACC_10", 50),  # From J428 ACC radar control module
+                 ("SWA_01", 20),  # From J1086 Lane Change Assist module
                  ("ACC_02", 17)]  # From J428 ACC radar control module
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.pt)
