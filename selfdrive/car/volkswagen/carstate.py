@@ -238,7 +238,7 @@ class CarState(CarStateBase):
     # FIXME: add LDW_02 signal for DLC/TLC for passthru to rest of car, especially J1086 Lane Change Assist
     signals = [
       # sig_name, sig_address, default
-      ("Kombi_Lamp_Green", "LDW_02", 0),  # Lane Assist status LED
+      ("LDW_Status_LED_gruen", "LDW_02", 0),  # Lane Assist status LED
     ]
 
     checks = [
