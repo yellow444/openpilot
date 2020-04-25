@@ -87,6 +87,12 @@ class CarState(CarStateBase):
     ret.stockAeb = any([bool(acc_cp.vl["ACC_10"]["ANB_Teilbremsung_Freigabe"]),
                         bool(acc_cp.vl["ACC_10"]["ANB_Zielbremsung_Freigabe"])])
 
+    # Consume blind-spot radar info/warning LED states, if available
+    ret.leftBlindspot = any([bool(acc_cp.vl["SWA_01"]["SWA_Infostufe_SWA_li"]),
+                             bool(acc_cp.vl["SWA_01"]["SWA_Warnung_SWA_li"])])
+    ret.rightBlindspot = any([bool(acc_cp.vl["SWA_01"]["SWA_Infostufe_SWA_re"]),
+                             bool(acc_cp.vl["SWA_01"]["SWA_Warnung_SWA_re"])])
+
     # Update ACC radar status.
     accStatus = pt_cp.vl["TSK_06"]['TSK_Status']
     if accStatus == 2:
