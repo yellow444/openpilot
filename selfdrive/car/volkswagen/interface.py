@@ -66,8 +66,8 @@ class CarInterface(CarInterfaceBase):
       # No trans message at all, must be a true stick-shift manual
       ret.transmissionType = TRANS.manual
 
-    cloudlog.warning("Detected network location: %r", ret.networkLocation)
-    cloudlog.warning("Detected transmission type: %r", ret.transmissionType)
+    cloudlog.warning("Detected network location: %s", ret.networkLocation)
+    cloudlog.warning("Detected transmission type: %s", ret.transmissionType)
 
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase
