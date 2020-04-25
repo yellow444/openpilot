@@ -219,12 +219,12 @@ class CarState(CarStateBase):
       checks += [("Motor_14", 10)]  # From J623 Engine control module
 
     if CP.networkLocation == NWL.fwdCamera:
-      # Extended CAN devices other than the camera are on CANBUS.pt
+      # Extended CAN devices other than the camera are here on CANBUS.pt
       # FIXME: gate SWA_01 checks on module being detected, and reduce duplicate network location code
       signals += [("AWV2_Priowarnung", "ACC_10", 0),      # FCW related
                   ("AWV2_Freigabe", "ACC_10", 0),         # FCW related
-                  ("ANB_Teilbremsung_Freigabe", "ACC_10", 0), # AEB related
-                  ("ANB_Zielbremsung_Freigabe", "ACC_10", 0), # AEB related
+                  ("ANB_Teilbremsung_Freigabe", "ACC_10", 0),  # AEB related
+                  ("ANB_Zielbremsung_Freigabe", "ACC_10", 0),  # AEB related
                   ("SWA_Infostufe_SWA_li", "SWA_01", 0),  # Blindspot object info, left
                   ("SWA_Warnung_SWA_li", "SWA_01", 0),    # Blindspot object warning, left
                   ("SWA_Infostufe_SWA_re", "SWA_01", 0),  # Blindspot object info, right
@@ -252,9 +252,13 @@ class CarState(CarStateBase):
     ]
 
     if CP.networkLocation == NWL.gateway:
-      # Extended CAN devices other than the camera are on CANBUS.pt
+      # All Extended CAN devices are here on CANBUS.cam
       # FIXME: gate SWA_01 checks on module being detected, and reduce duplicate network location code
-      signals += [("SWA_Infostufe_SWA_li", "SWA_01", 0),  # Blindspot object info, left
+      signals += [("AWV2_Priowarnung", "ACC_10", 0),      # FCW related
+                  ("AWV2_Freigabe", "ACC_10", 0),         # FCW related
+                  ("ANB_Teilbremsung_Freigabe", "ACC_10", 0),  # AEB related
+                  ("ANB_Zielbremsung_Freigabe", "ACC_10", 0),  # AEB related
+                  ("SWA_Infostufe_SWA_li", "SWA_01", 0),  # Blindspot object info, left
                   ("SWA_Warnung_SWA_li", "SWA_01", 0),    # Blindspot object warning, left
                   ("SWA_Infostufe_SWA_re", "SWA_01", 0),  # Blindspot object info, right
                   ("SWA_Warnung_SWA_re", "SWA_01", 0),    # Blindspot object warning, right
