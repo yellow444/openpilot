@@ -213,15 +213,23 @@ class CarState(CarStateBase):
       checks += [("Motor_14", 10)]  # From J623 Engine control module
 
     if CP.networkLocation == NWL.fwdCamera:
-      # The ACC radar is here on CANBUS.pt
-      signals += [("SetSpeed", "ACC_02", 0)]  # ACC set speed
-      checks += [("ACC_02", 17)]  # From J428 ACC radar control module
+      # Extended CAN devices other than the camera are on CANBUS.pt
+      # FIXME: gate SWA_01 checks on module being detected, and reduce duplicate network location code
+      signals += [("SWA_Infostufe_SWA_li", "SWA_01", 0),  # Blindspot object info, left
+                  ("SWA_Warnung_SWA_li", "SWA_01", 0),    # Blindspot object warning, left
+                  ("SWA_Infostufe_SWA_re", "SWA_01", 0),  # Blindspot object info, right
+                  ("SWA_Warnung_SWA_re", "SWA_01", 0),    # Blindspot object warning, right
+                  ("SetSpeed", "ACC_02", 0)]              # ACC set speed
+      checks += [("SWA_01", 20),  # From J1086 Lane Change Assist module
+                 ("ACC_02", 17)]  # From J428 ACC radar control module
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.pt)
 
   @staticmethod
   def get_cam_can_parser(CP):
 
+    # FIXME: gate LDW_02 checks on module being detected
+    # FIXME: add LDW_02 signal for DLC/TLC for passthru to rest of car, especially J1086 Lane Change Assist
     signals = [
       # sig_name, sig_address, default
       ("Kombi_Lamp_Green", "LDW_02", 0),  # Lane Assist status LED
@@ -233,8 +241,14 @@ class CarState(CarStateBase):
     ]
 
     if CP.networkLocation == NWL.gateway:
-      # The ACC radar is here on CANBUS.cam
-      signals += [("SetSpeed", "ACC_02", 0)]  # ACC set speed
-      checks += [("ACC_02", 17)]  # From J428 ACC radar control module
+      # Extended CAN devices other than the camera are on CANBUS.pt
+      # FIXME: gate SWA_01 checks on module being detected, and reduce duplicate network location code
+      signals += [("SWA_Infostufe_SWA_li", "SWA_01", 0),  # Blindspot object info, left
+                  ("SWA_Warnung_SWA_li", "SWA_01", 0),    # Blindspot object warning, left
+                  ("SWA_Infostufe_SWA_re", "SWA_01", 0),  # Blindspot object info, right
+                  ("SWA_Warnung_SWA_re", "SWA_01", 0),    # Blindspot object warning, right
+                  ("SetSpeed", "ACC_02", 0)]              # ACC set speed
+      checks += [("SWA_01", 20),  # From J1086 Lane Change Assist module
+                 ("ACC_02", 17)]  # From J428 ACC radar control module
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.cam)
