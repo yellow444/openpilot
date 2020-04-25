@@ -1213,8 +1213,6 @@ BO_ 286 VehicleSpeed: 8 XXX
  SG_ Speed : 52|12@1+ (0.125,0) [0|1] "" XXX
 
 BO_ 919 LDW_02: 8 XXX
- SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] ""  XXX
- SG_ COUNTER : 8|4@1+ (1,0) [0|15] ""  XXX
  SG_ LDW_Gong : 12|2@1+ (1.0,0.0) [0.0|3] ""  XXX
  SG_ LDW_SW_Warnung_links : 14|1@1+ (1.0,0.0) [0.0|1] ""  XXX
  SG_ LDW_SW_Warnung_rechts : 15|1@1+ (1.0,0.0) [0.0|1] ""  XXX
