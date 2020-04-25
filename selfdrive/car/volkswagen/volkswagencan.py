@@ -15,22 +15,25 @@ def create_mqb_steering_control(packer, bus, apply_steer, idx, lkas_enabled):
   }
   return packer.make_can_msg("HCA_01", bus, values, idx)
 
-def create_mqb_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert, leftLaneVisible, rightLaneVisible):
-
+def create_mqb_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert, left_lane_visible, right_lane_visible):
   if hca_enabled:
-    leftlanehud = 3 if leftLaneVisible else 1
-    rightlanehud = 3 if rightLaneVisible else 1
+    left_lane_hud = 3 if left_lane_visible else 1
+    right_lane_hud = 3 if right_lane_visible else 1
   else:
-    leftlanehud = 2 if leftLaneVisible else 1
-    rightlanehud = 2 if rightLaneVisible else 1
+    left_lane_hud = 2 if left_lane_visible else 1
+    right_lane_hud = 2 if right_lane_visible else 1
 
   values = {
-    "LDW_Unknown": 2, # FIXME: possible speed or attention relationship
-    "Kombi_Lamp_Orange": 1 if hca_enabled and steering_pressed else 0,
-    "Kombi_Lamp_Green": 1 if hca_enabled and not steering_pressed else 0,
-    "Left_Lane_Status": leftlanehud,
-    "Right_Lane_Status": rightlanehud,
-    "Alert_Message": hud_alert,
+    "LDW_Status_LED_gelb": 1 if hca_enabled and steering_pressed else 0,
+    "LDW_Status_LED_gruen": 1 if hca_enabled and not steering_pressed else 0,
+    "LDW_SW_info_links": left_lane_hud,
+    "LDW_SW_info_rechts": right_lane_hud,
+    "LDW_Texte": hud_alert,
+    "LDW_SW_Warnung_links": 1,  # FIXME: passthru from camera if present
+    "LDW_SW_Warnung_rechts": 1,  # FIXME: passthru from camera if present
+    "LDW_Seite_DLCTLC": 0,  # FIXME: passthru from camera if present
+    "LDW_DLC": 0,  # FIXME: passthru from camera if present
+    "LDW_TLC": 0,  # FIXME: passthru from camera if present
   }
   return packer.make_can_msg("LDW_02", bus, values)
 
