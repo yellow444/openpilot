@@ -49,8 +49,9 @@ class CarInterface(CarInterfaceBase):
     ret.enableCamera = True  # Stock camera detection doesn't apply to VW
     ret.transmissionType = car.CarParams.TransmissionType.automatic
 
-    # Determine installed network location by finding the ACC_06 radar message
-    if 0x122 in fingerprint[0]:
+    # Determine installed network location by checking for radar-camera
+    # sensor fusion messages on bus 1.
+    if 0x238 in fingerprint[1]:
       ret.networkLocation = NWL.fwdCamera
     else:
       ret.networkLocation = NWL.gateway
