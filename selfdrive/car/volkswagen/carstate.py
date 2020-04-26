@@ -93,6 +93,14 @@ class CarState(CarStateBase):
     ret.rightBlindspot = any([bool(acc_cp.vl["SWA_01"]["SWA_Infostufe_SWA_re"]),
                              bool(acc_cp.vl["SWA_01"]["SWA_Warnung_SWA_re"])])
 
+    # Consume SWA (Lane Change Assist) relevant info from factory LDW message
+    # to pass along to the blind spot radar controller
+    self.ldw_lane_warning_left = bool(cam_cp.vl["LDW_02"]["LDW_SW_Warnung_links"])
+    self.ldw_lane_warning_right = bool(cam_cp.vl["LDW_02"]["LDW_SW_Warnung_rechts"])
+    self.ldw_side_dlc_tlc = bool(cam_cp.vl["LDW_02"]["LDW_Seite_DLCTLC"])
+    self.ldw_dlc = cam_cp.vl["LDW_02"]["LDW_DLC"]
+    self.ldw_tlc = cam_cp.vl["LDW_02"]["LDW_TLC"]
+
     # Update ACC radar status.
     accStatus = pt_cp.vl["TSK_06"]['TSK_Status']
     if accStatus == 2:
@@ -240,10 +248,13 @@ class CarState(CarStateBase):
   def get_cam_can_parser(CP):
 
     # FIXME: gate LDW_02 checks on module being detected
-    # FIXME: add LDW_02 signal for DLC/TLC for passthru to rest of car, especially J1086 Lane Change Assist
     signals = [
       # sig_name, sig_address, default
-      ("LDW_Status_LED_gruen", "LDW_02", 0),  # Lane Assist status LED
+      ("LDW_SW_Warnung_links", "LDW_02", 0),    # Blind spot in warning mode on left side due to lane departure
+      ("LDW_SW_Warnung_rechts", "LDW_02", 0),   # Blind spot in warning mode on right side due to lane departure
+      ("LDW_Seite_DLCTLC", "LDW_02", 0),        # Direction of most likely lane departure (left or right)
+      ("LDW_DLC", "LDW_02", 0),                 # Lane departure, distance to line crossing
+      ("LDW_TLC", "LDW_02", 0),                 # Lane departure, time to line crossing
     ]
 
     checks = [

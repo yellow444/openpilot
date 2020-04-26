@@ -15,7 +15,8 @@ def create_mqb_steering_control(packer, bus, apply_steer, idx, lkas_enabled):
   }
   return packer.make_can_msg("HCA_01", bus, values, idx)
 
-def create_mqb_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert, left_lane_visible, right_lane_visible):
+def create_mqb_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert, left_lane_visible, right_lane_visible,
+                           ldw_lane_warning_left, ldw_lane_warning_right, ldw_side_dlc_tlc, ldw_dlc, ldw_tlc):
   if hca_enabled:
     left_lane_hud = 3 if left_lane_visible else 1
     right_lane_hud = 3 if right_lane_visible else 1
@@ -29,11 +30,11 @@ def create_mqb_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert
     "LDW_SW_info_links": left_lane_hud,
     "LDW_SW_info_rechts": right_lane_hud,
     "LDW_Texte": hud_alert,
-    "LDW_SW_Warnung_links": 1,  # FIXME: passthru from camera if present
-    "LDW_SW_Warnung_rechts": 1,  # FIXME: passthru from camera if present
-    "LDW_Seite_DLCTLC": 0,  # FIXME: passthru from camera if present
-    "LDW_DLC": 0,  # FIXME: passthru from camera if present
-    "LDW_TLC": 0,  # FIXME: passthru from camera if present
+    "LDW_SW_Warnung_links": ldw_lane_warning_left,
+    "LDW_SW_Warnung_rechts": ldw_lane_warning_right,
+    "LDW_Seite_DLCTLC": ldw_side_dlc_tlc,
+    "LDW_DLC": ldw_dlc,
+    "LDW_TLC": ldw_tlc
   }
   return packer.make_can_msg("LDW_02", bus, values)
 
