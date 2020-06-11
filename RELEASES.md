@@ -1,7 +1,10 @@
 Version 0.7.6 + VW 1.4 (2020-06-11)
 ========================
-* (VW Community) CAN messaging added for 2020 Audi Q3
-* (VW Community) CAN messaging added for 2019 Skoda Scala
+* (VW Community) Fingerprint messages added for 2020 Audi Q3 and 2019 Skoda Scala
+* (VW Community) Fix bug with network location detect for BP/C2 J533 integrations
+* (VW Community) Lane Assist CAN data passthru to BSM radar, for better behavior
+* (VW Community) Support CAN signals for Blind Spot Monitoring radars (future use)
+* (VW Community) Support CAN signals for FCW/AEB (back-end data processing use)
 * White panda is deprecated, upgrade to comma two or black panda
 * 2017 Nissan X-Trail, 2018-19 Leaf and 2019 Rogue support thanks to avolmensky!
 * 2017 Mazda CX-5 support in dashcam mode thanks to Jafaral!
