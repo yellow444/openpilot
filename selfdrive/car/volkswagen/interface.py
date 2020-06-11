@@ -1,11 +1,9 @@
 from cereal import car
-from selfdrive.car.volkswagen.values import CAR, BUTTON_STATES
+from selfdrive.swaglog import cloudlog
+from selfdrive.car.volkswagen.values import CAR, BUTTON_STATES, NWL, TRANS, GEAR
 from common.params import put_nonblocking
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
-
-GEAR = car.CarState.GearShifter
-EventName = car.CarEvent.EventName
 
 class CarInterface(CarInterfaceBase):
   def __init__(self, CP, CarController, CarState):
@@ -13,6 +11,9 @@ class CarInterface(CarInterfaceBase):
 
     self.displayMetricUnitsPrev = None
     self.buttonStatesPrev = BUTTON_STATES.copy()
+
+    # Set up an alias to PT/CAM parser for ACC depending on its detected network location
+    self.cp_acc = self.cp if CP.networkLocation == NWL.fwdCamera else self.cp_cam
 
   @staticmethod
   def compute_gb(accel, speed):
@@ -22,10 +23,7 @@ class CarInterface(CarInterfaceBase):
   def get_params(candidate, fingerprint=gen_empty_fingerprint(), has_relay=False, car_fw=[]):
     ret = CarInterfaceBase.get_std_params(candidate, fingerprint, has_relay)
 
-    # VW port is a community feature, since we don't own one to test
-    ret.communityFeature = True
-
-    if candidate == CAR.GOLF:
+    if candidate == CAR.GENERICMQB:
       # Set common MQB parameters that will apply globally
       ret.carName = "volkswagen"
       ret.radarOffCan = True
@@ -51,6 +49,26 @@ class CarInterface(CarInterfaceBase):
     ret.enableCamera = True  # Stock camera detection doesn't apply to VW
     ret.transmissionType = car.CarParams.TransmissionType.automatic
 
+    # Determine installed network location by finding the ACC_06 radar message
+    if 0x122 in fingerprint[0]:
+      ret.networkLocation = NWL.fwdCamera
+    else:
+      ret.networkLocation = NWL.gateway
+
+    # Determine transmission type by CAN message(s) present on the bus
+    if 0xAD in fingerprint[0]:
+      # Getribe_11 message detected: traditional automatic or DSG gearbox
+      ret.transmissionType = TRANS.automatic
+    elif 0x187 in fingerprint[0]:
+      # EV_Gearshift message detected: e-Golf or similar direct-drive electric
+      ret.transmissionType = TRANS.direct
+    else:
+      # No trans message at all, must be a true stick-shift manual
+      ret.transmissionType = TRANS.manual
+
+    cloudlog.warning("Detected network location: %r", ret.networkLocation)
+    cloudlog.warning("Detected transmission type: %r", ret.transmissionType)
+
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase
     ret.rotationalInertia = scale_rot_inertia(ret.mass, ret.wheelbase)
@@ -73,7 +91,7 @@ class CarInterface(CarInterfaceBase):
     self.cp.update_strings(can_strings)
     self.cp_cam.update_strings(can_strings)
 
-    ret = self.CS.update(self.cp)
+    ret = self.CS.update(self.cp, self.cp_cam, self.cp_acc, self.CP.transmissionType)
     ret.canValid = self.cp.can_valid and self.cp_cam.can_valid
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
 
