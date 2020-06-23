@@ -141,7 +141,7 @@ def fingerprint(logcan, sendcan, has_relay):
           car_fingerprint = candidate_cars[b][0]
 
     # bail if no cars left or we've been waiting for more than 2s
-    failed = all(len(cc) == 0 for cc in candidate_cars.values()) or frame > 200
+    failed = all(len(cc) == 0 for cc in candidate_cars.values()) or frame > 500
     succeeded = car_fingerprint is not None
     done = failed or succeeded
 
