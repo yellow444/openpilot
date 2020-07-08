@@ -151,7 +151,7 @@ class CarController():
       idx = (frame / P.MOB_STEP) % 16
       self.mobPreEnable = mobPreEnable
       self.mobEnabled = mobEnabled
-      can_sends.append(self.create_braking_control(self.packer_gw, CANBUS.br, apply_brake, idx, mobEnabled, mobPreEnable))
+      can_sends.append(self.create_braking_control(self.packer_pt, CANBUS.br, apply_brake, idx, mobEnabled, mobPreEnable))
 
     #--------------------------------------------------------------------------
     #                                                                         #

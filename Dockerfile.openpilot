@@ -1,12 +1,16 @@
 FROM ubuntu:16.04
 ENV PYTHONUNBUFFERED 1
+ENV PYTHONPATH /tmp/openpilot:${PYTHONPATH}
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     autoconf \
     build-essential \
     bzip2 \
+    capnproto \
+    libcapnp-dev \
     clang \
     cmake \
+    cppcheck \
     curl \
     ffmpeg \
     git \
@@ -17,26 +21,25 @@ RUN apt-get update && apt-get install -y \
     libffi-dev \
     libglew-dev \
     libgles2-mesa-dev \
+    libglfw3-dev \
     libglib2.0-0 \
     liblzma-dev \
-    libmysqlclient-dev \
     libomp-dev \
     libopencv-dev \
     libssl-dev \
-    libtool \
+    libsqlite3-dev \
     libusb-1.0-0-dev \
-    libzmq5-dev \
+    libczmq-dev \
+    libzmq3-dev \
     locales \
     ocl-icd-libopencl1 \
     ocl-icd-opencl-dev \
     opencl-headers \
     python-dev \
     python-pip \
-    screen \
     sudo \
-    vim \
-    wget
-
+    wget \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
 ENV LANG en_US.UTF-8
@@ -44,39 +47,51 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 RUN curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-
 ENV PATH="/root/.pyenv/bin:/root/.pyenv/shims:${PATH}"
-RUN pyenv install 3.7.3
-RUN pyenv global 3.7.3
-RUN pyenv rehash
 
-RUN pip install pipenv==2018.11.26
+COPY Pipfile Pipfile.lock /tmp/
+RUN pyenv install 3.8.2 && \
+    pyenv global 3.8.2 && \
+    pyenv rehash && \
+    pip install --no-cache-dir pipenv==2018.11.26 && \
+    cd /tmp && \
+    pipenv install --system --deploy --clear && \
+    pip uninstall -y pipenv && \
+    pip install --no-cache-dir \
+      matplotlib==3.1.1 \
+      dictdiffer==0.8.0 \
+      fastcluster==1.1.25 \
+      aenum==2.2.1 \
+      lru-dict==1.1.6 \
+      scipy==1.4.1 \
+      tenacity==5.1.1 \
+      azure-common==1.1.23 \
+      azure-nspkg==3.0.2 \
+      azure-storage-blob==2.1.0 \
+      azure-storage-common==2.1.0 \
+      azure-storage-nspkg==3.1.0 \
+      pycurl==7.43.0.3 \
+      coverage==5.1 \
+      pre-commit==2.4.0 \
+      parameterized==0.7.4
 
-COPY Pipfile /tmp/
-COPY Pipfile.lock /tmp/
+RUN mkdir -p /tmp/openpilot
 
-RUN python --version
-RUN cd /tmp && pipenv install --system --deploy
+COPY SConstruct \
+     .pylintrc \
+     .pre-commit-config.yaml \
+     .coveragerc-app \
+     /tmp/openpilot/
 
-# Install subset of dev dependencies needed for CI
-RUN pip install matplotlib==3.1.1 dictdiffer==0.8.0 fastcluster==1.1.25 aenum==2.2.1 scipy==1.3.1 lru-dict==1.1.6 tenacity==5.1.1 azure-common==1.1.23 azure-nspkg==3.0.2 azure-storage-blob==2.1.0 azure-storage-common==2.1.0 azure-storage-nspkg==3.1.0 pycurl==7.43.0.3
-
-COPY phonelibs/install_capnp.sh /tmp/install_capnp.sh
-RUN /tmp/install_capnp.sh
-
-RUN git clone --branch v0.7 https://github.com/commaai/openpilot-tools.git /tmp/openpilot/tools
-
-ENV PYTHONPATH /tmp/openpilot:${PYTHONPATH}
-COPY ./.pylintrc /tmp/openpilot/.pylintrc
-COPY ./common /tmp/openpilot/common
-COPY ./cereal /tmp/openpilot/cereal
-COPY ./opendbc /tmp/openpilot/opendbc
-COPY ./selfdrive /tmp/openpilot/selfdrive
-COPY ./phonelibs /tmp/openpilot/phonelibs
 COPY ./pyextra /tmp/openpilot/pyextra
+COPY ./phonelibs /tmp/openpilot/phonelibs
+COPY ./laika /tmp/openpilot/laika
+COPY ./laika_repo /tmp/openpilot/laika_repo
+COPY ./rednose /tmp/openpilot/rednose
+COPY ./tools /tmp/openpilot/tools
+COPY ./release /tmp/openpilot/release
+COPY ./common /tmp/openpilot/common
+COPY ./opendbc /tmp/openpilot/opendbc
+COPY ./cereal /tmp/openpilot/cereal
 COPY ./panda /tmp/openpilot/panda
-
-COPY SConstruct /tmp/openpilot/SConstruct
-
-RUN mkdir -p /tmp/openpilot/selfdrive/test/out
-RUN cd /tmp/openpilot && scons -j$(nproc)
+COPY ./selfdrive /tmp/openpilot/selfdrive
