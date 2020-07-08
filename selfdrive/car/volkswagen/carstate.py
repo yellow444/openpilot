@@ -364,6 +364,7 @@ class CarState(CarStateBase):
       ("ESP_Passiv_getastet", "Bremse_1", 0),       # Stability control disabled
       ("MFA_v_Einheit_02", "Einheiten_1", 0),       # MPH vs KMH speed display
       ("Bremsinfo", "Kombi_1", 0),                  # Manual handbrake applied
+      ("Soll_Geschwindigkeit_bei_GRA_Be", "Motor_2", 0),  # ACC speed setpoint from ECU??? check this
       ("GRA_Status", "Motor_2", 0),                 # ACC engagement status
       ("Hauptschalter", "GRA_neu", 0),              # ACC button, on/off
       ("Abbrechen", "GRA_neu", 0),                  # ACC button, cancel
