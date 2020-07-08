@@ -5,6 +5,7 @@ class CarControllerParams:
   # FIXME: testing HCA at 100Hz on PQ to verify timebomb behavior
   # HCA_STEP = 2                   # HCA_01 message frequency 50Hz
   HCA_STEP = 1                   # HCA_01 message frequency 100Hz
+  MOB_STEP = 2                   # PQ_MOB message frequency 50Hz
   # FIXME: LDW is sent at 20Hz on PQ, need to make this conditional
   # LDW_STEP = 10                  # LDW_02 message frequency 10Hz
   LDW_STEP = 5                   # LDW_02 message frequency 20Hz
@@ -28,6 +29,7 @@ class CarControllerParams:
 
 class CANBUS:
   pt = 0
+  br = 1
   cam = 2
 
 NWL = car.CarParams.NetworkLocation

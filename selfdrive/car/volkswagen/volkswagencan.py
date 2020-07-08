@@ -74,6 +74,20 @@ def create_pq_steering_control(packer, bus, apply_steer, idx, lkas_enabled):
   values["HCA_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4]
   return packer.make_can_msg("HCA_1", bus, values)
 
+def create_pq_braking_control(packer, bus, apply_brake, idx, brake_enabled, brake_pre_enable):
+  values = {
+    "PQ_MOB_COUNTER": idx,
+    "MOB_Bremsmom": abs(apply_brake),
+    "MOB_Bremsstgr": abs(apply_brake),
+    "MOB_Standby": 1 if (brake_enabled) else 0,
+    "MOB_Freigabe": 1 if (brake_enabled and brake_pre_enable) else 0,
+    "MOB_Anhaltewunsch": 0,
+  }
+
+  dat = packer.make_can_msg("PQ_MOB", bus, values)[2]
+  values["PQ_MOB_CHECKSUM"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5]
+  return packer.make_can_msg("PQ_MOB", bus, values)
+
 def create_pq_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert, leftLaneVisible, rightLaneVisible):
   if hca_enabled:
     leftlanehud = 3 if leftLaneVisible else 1

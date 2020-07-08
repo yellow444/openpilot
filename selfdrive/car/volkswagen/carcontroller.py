@@ -10,6 +10,8 @@ VisualAlert = car.CarControl.HUDControl.VisualAlert
 class CarController():
   def __init__(self, dbc_name, CP, VM):
     self.apply_steer_last = 0
+    self.mobPreEnable = False
+    self.mobEnabled = False
 
     self.packer_pt = CANPacker(DBC[CP.carFingerprint]['pt'])
     self.acc_bus = CANBUS.pt if CP.networkLocation == NWL.fwdCamera else CANBUS.cam
@@ -22,6 +24,7 @@ class CarController():
       self.create_steering_control = volkswagencan.create_pq_steering_control
       self.create_acc_buttons_control = volkswagencan.create_pq_acc_buttons_control
       self.create_hud_control = volkswagencan.create_pq_hud_control
+      self.create_braking_control = volkswagencan.create_pq_braking_control
 
     self.hcaSameTorqueCount = 0
     self.hcaEnabledFrameCount = 0
@@ -110,6 +113,45 @@ class CarController():
       idx = (frame / P.HCA_STEP) % 16
       can_sends.append(self.create_steering_control(self.packer_pt, CANBUS.pt, apply_steer,
                                                                  idx, hcaEnabled))
+
+    # --------------------------------------------------------------------------
+    #                                                                         #
+    # Prepare PQ_MOB for sending the braking message                          #
+    #                                                                         #
+    #                                                                         #
+    # --------------------------------------------------------------------------
+    if frame % P.MOB_STEP == 0:
+      mobEnabled = self.mobEnabled
+      mobPreEnable = self.mobPreEnable
+      # TODO make sure we use the full 8190 when calculating braking.
+      apply_brake = actuators.brake * 1200
+
+      CS.brake_warning = False
+      if enabled:
+        if (apply_brake < 40):
+          apply_brake = 0
+        if apply_brake > 0:
+          if not mobEnabled:
+            mobEnabled = True
+            apply_brake = 0
+          elif not mobPreEnable:
+            mobPreEnable = True
+            apply_brake = 0
+          elif apply_brake > 1199:
+            apply_brake = 1200
+            CS.brake_warning = True
+        else:
+          mobPreEnable = False
+          mobEnabled = False
+      else:
+        apply_brake = 0
+        mobPreEnable = False
+        mobEnabled = False
+
+      idx = (frame / P.MOB_STEP) % 16
+      self.mobPreEnable = mobPreEnable
+      self.mobEnabled = mobEnabled
+      can_sends.append(self.create_braking_control(self.packer_gw, CANBUS.br, apply_brake, idx, mobEnabled, mobPreEnable))
 
     #--------------------------------------------------------------------------
     #                                                                         #

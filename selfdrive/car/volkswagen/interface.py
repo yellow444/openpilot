@@ -58,6 +58,7 @@ class CarInterface(CarInterfaceBase):
       # Configurations shared between all PQ35/PQ46/NMS vehicles
       ret.carName = "volkswagen"
       ret.safetyModel = car.CarParams.SafetyModel.volkswagenPq
+      ret.openpilotLongitudinalControl = True
 
       # Determine installed network location and trans type from fingerprint
       ret.networkLocation = NWL.fwdCamera if 0x368 in fingerprint[0] else NWL.gateway
@@ -80,11 +81,27 @@ class CarInterface(CarInterfaceBase):
       tire_stiffness_factor = 1.0
 
     elif candidate == CAR.GENERICPQ:
-      ret.mass = 1375 + STD_CARGO_KG  # Average, varies on trim/package
+      ret.mass = 1300 + STD_CARGO_KG  # Average, varies on trim/package
       ret.wheelbase = 2.58
       ret.centerToFront = ret.wheelbase * 0.45  # Estimated
-      ret.steerRatio = 15.6
+      ret.steerRatio = 16.4
       tire_stiffness_factor = 1.0
+
+      # OP LONG parameters
+      ret.gasMaxBP = [0.]  # m/s
+      ret.gasMaxV = [1]  # max gas allowed
+      ret.brakeMaxBP = [5., 20.]  # m/s
+      ret.brakeMaxV = [1., 0.8]  # max brake allowed
+      ret.longitudinalTuning.deadzoneBP = [0.]
+      ret.longitudinalTuning.deadzoneV = [0.]
+      ret.longitudinalTuning.kpBP = [0., 5., 35.]
+      ret.longitudinalTuning.kpV = [1.7, 1.2, 0.8]
+      ret.longitudinalTuning.kiBP = [0., 35.]
+      ret.longitudinalTuning.kiV = [0.32, 0.22]
+
+      ret.stoppingControl = True
+      ret.directAccelControl = False
+      ret.startAccel = 0.0
 
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase
