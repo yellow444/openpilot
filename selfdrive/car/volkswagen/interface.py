@@ -58,8 +58,6 @@ class CarInterface(CarInterfaceBase):
       # Configurations shared between all PQ35/PQ46/NMS vehicles
       ret.carName = "volkswagen"
       ret.safetyModel = car.CarParams.SafetyModel.volkswagenPq
-      ret.openpilotLongitudinalControl = True
-
       # Determine installed network location and trans type from fingerprint
       ret.networkLocation = NWL.fwdCamera if 0x368 in fingerprint[0] else NWL.gateway
       if 0x440 in fingerprint[0]:  # Getriebe_1
@@ -92,6 +90,7 @@ class CarInterface(CarInterfaceBase):
       ret.gasMaxV = [1]  # max gas allowed
       ret.brakeMaxBP = [5., 20.]  # m/s
       ret.brakeMaxV = [1., 0.8]  # max brake allowed
+      ret.openpilotLongitudinalControl = True
       ret.longitudinalTuning.deadzoneBP = [0.]
       ret.longitudinalTuning.deadzoneV = [0.]
       ret.longitudinalTuning.kpBP = [0., 5., 35.]
