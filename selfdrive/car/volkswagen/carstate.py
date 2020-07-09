@@ -376,6 +376,7 @@ class CarState(CarStateBase):
       ("Lang_Tip_down", "GRA_neu", 0),              # ACC button, decrease or decel, long press
       ("Kurz_Tip_up", "GRA_neu", 0),                # ACC button, increase or accel, short press
       ("Kurz_Tip_down", "GRA_neu", 0),              # ACC button, decrease or decel, short press
+      ("Sender_Codierung__4_1_", "GRA_neu", 0),     # ACC button, Sender Coding
       ("Wiederaufnahme", "GRA_neu", 0),             # ACC button, resume
       ("Zeitlueckenverstellung", "GRA_neu", 0),     # ACC button, time gap adj
     ]
