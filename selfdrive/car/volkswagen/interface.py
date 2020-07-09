@@ -25,7 +25,7 @@ class CarInterface(CarInterfaceBase):
     ret = CarInterfaceBase.get_std_params(candidate, fingerprint, has_relay)
 
     # Set global default parameters
-    ret.radarOffCan = True
+    ret.radarOffCan = False
     ret.enableCamera = True  # Stock camera detection doesn't apply to VW
     ret.steerRateCost = 1.0
     ret.steerActuatorDelay = 0.05  # Hopefully all racks are similar here
