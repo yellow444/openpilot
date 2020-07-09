@@ -379,15 +379,6 @@ static int volkswagen_pq_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
     }
   }
 
-  // FORCE CANCEL: ensuring that only the cancel button press is sent when controls are off.
-  // This avoids unintended engagements while still allowing resume spam
-  if ((addr == MSG_GRA_NEU) && !controls_allowed) {
-    // disallow resume and set: bits 16 and 17
-    if ((GET_BYTE(to_send, 2) & 0x3) != 0) {
-      tx = 0;
-    }
-  }
-
   // 1 allows the message through
   return tx;
 }

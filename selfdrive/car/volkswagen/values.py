@@ -38,7 +38,9 @@ GEAR = car.CarState.GearShifter
 
 BUTTON_STATES = {
   "accelCruise": False,
+  "accelCruiseLong": False,
   "decelCruise": False,
+  "decelCruiseLong": False,
   "cancel": False,
   "setCruise": False,
   "resumeCruise": False,

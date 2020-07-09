@@ -12,6 +12,8 @@ class CarController():
     self.apply_steer_last = 0
     self.mobPreEnable = False
     self.mobEnabled = False
+    self.ACCSlowDown = False
+    self.ACCSpeedUp = False
 
     self.packer_pt = CANPacker(DBC[CP.carFingerprint]['pt'])
     self.acc_bus = CANBUS.pt if CP.networkLocation == NWL.fwdCamera else CANBUS.cam
@@ -130,16 +132,20 @@ class CarController():
       if enabled:
         if (apply_brake < 40):
           apply_brake = 0
+          self.ACCSlowDown = True
         if apply_brake > 0:
           if not mobEnabled:
             mobEnabled = True
             apply_brake = 0
+            self.ACCSlowDown = True
           elif not mobPreEnable:
             mobPreEnable = True
             apply_brake = 0
+            self.ACCSlowDown = True
           elif apply_brake > 1199:
             apply_brake = 1200
             CS.brake_warning = True
+            self.ACCSlowDown = True
         else:
           mobPreEnable = False
           mobEnabled = False
@@ -199,6 +205,11 @@ class CarController():
         self.graButtonStatesToSend = BUTTON_STATES.copy()
         self.graButtonStatesToSend["resumeCruise"] = True
 
+      if enabled and self.ACCSlowDown:
+        self.graButtonStatesToSend = BUTTON_STATES.copy()
+        self.graButtonStatesToSend["decelCruiseLong"] = True
+        self.ACCSlowDown = False
+
     # OP/Panda can see this message but can't filter it when integrated at the
     # R242 LKAS camera. It could do so if integrated at the J533 gateway, but
     # we need a generalized solution that works for either. The message is
@@ -230,7 +241,7 @@ class CarController():
         if self.graMsgSentCount == 0:
           self.graMsgStartFramePrev = frame
         idx = (CS.graMsgBusCounter + 1) % 16
-        can_sends.append(self.create_acc_buttons_control(self.packer_pt, self.acc_bus, self.graButtonStatesToSend, CS, idx))
+        can_sends.append(self.create_acc_buttons_control(self.packer_pt, CANBUS.pt, self.graButtonStatesToSend, CS, idx))
         self.graMsgSentCount += 1
         if self.graMsgSentCount >= P.GRA_VBP_COUNT:
           self.graButtonStatesToSend = None

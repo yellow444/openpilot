@@ -223,8 +223,10 @@ class CarState(CarStateBase):
       ret.cruiseState.speed = 0
 
     # Update control button states for turn signals and ACC controls.
-    self.buttonStates["accelCruise"] = bool(pt_cp.vl["GRA_neu"]['Kurz_Tip_up']) or bool(pt_cp.vl["GRA_neu"]['Lang_Tip_up'])
-    self.buttonStates["decelCruise"] = bool(pt_cp.vl["GRA_neu"]['Kurz_Tip_down']) or bool(pt_cp.vl["GRA_neu"]['Lang_Tip_down'])
+    self.buttonStates["accelCruise"] = bool(pt_cp.vl["GRA_neu"]['Kurz_Tip_up'])
+    self.buttonStates["accelCruiseLong"] = bool(pt_cp.vl["GRA_neu"]['Lang_Tip_up'])
+    self.buttonStates["decelCruise"] = bool(pt_cp.vl["GRA_neu"]['Kurz_Tip_down'])
+    self.buttonStates["decelCruiseLong"] = bool(pt_cp.vl["GRA_neu"]['Lang_Tip_down'])
     self.buttonStates["cancel"] = bool(pt_cp.vl["GRA_neu"]['Abbrechen'])
     self.buttonStates["setCruise"] = bool(pt_cp.vl["GRA_neu"]['Setzen'])
     self.buttonStates["resumeCruise"] = bool(pt_cp.vl["GRA_neu"]['Wiederaufnahme'])
@@ -237,13 +239,14 @@ class CarState(CarStateBase):
     # third stalk type controls.
     # TODO: Check to see what info we need to passthru and spoof on PQ
     self.graHauptschalter = pt_cp.vl["GRA_neu"]['Hauptschalter']
+    self.graSenderCoding = pt_cp.vl["GRA_neu"]['Sender_Codierung__4_1_']
     self.graTypHauptschalter = False
     self.graButtonTypeInfo = False
     self.graTipStufe2 = False
     # Pick up the GRA_ACC_01 CAN message counter so we can sync to it for
     # later cruise-control button spamming.
     # FIXME: will need msg counter and checksum algo to spoof GRA_neu
-    self.graMsgBusCounter = 0
+    self.graMsgBusCounter = pt_cp.vl["GRA_neu"]['Zaehler__GRA_neu_']
 
     # Check to make sure the electric power steering rack is configured to
     # accept and respond to HCA_01 messages and has not encountered a fault.
