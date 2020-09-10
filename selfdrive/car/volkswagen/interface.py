@@ -16,6 +16,8 @@ class CarInterface(CarInterfaceBase):
     # Set up an alias to PT/CAM parser for ACC depending on its detected network location
     self.cp_acc = self.cp if CP.networkLocation == NWL.fwdCamera else self.cp_cam
 
+    self.pqCounter = 0
+    
   @staticmethod
   def compute_gb(accel, speed):
     return float(accel) / 4.0
@@ -142,6 +144,17 @@ class CarInterface(CarInterfaceBase):
     # Attempt OP engagement only on rising edge of stock ACC engagement.
     elif not self.cruise_enabled_prev:
       events.append(create_event('pcmEnable', [ET.ENABLE]))
+    
+    #Warning alert for the 6min timebomb found on PQ's
+    if (self.frame % 100) == 0:
+      if ret.cruiseState.enabled:
+        self.pqCounter += 1
+      if self.pqCounter >= 300: #time in seconds until counter threshold for pqTimebombWarn alert
+        events.append(create_event('pqTimebombWarn', [ET.WARNING]))
+        print("pqTimebombWarnSTATUS:")
+      if not ret.cruiseState.enabled:
+        self.pqCounter = 0
+      print("pqTimebombWarnCounter:", self.pqCounter)
 
     ret.events = events
     ret.buttonEvents = buttonEvents
