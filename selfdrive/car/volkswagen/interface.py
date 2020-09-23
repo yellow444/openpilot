@@ -17,6 +17,8 @@ class CarInterface(CarInterfaceBase):
     self.cp_acc = self.cp if CP.networkLocation == NWL.fwdCamera else self.cp_cam
 
     self.pqCounter = 0
+    self.wheelGrabbed = False
+    self.pqBypassCounter = 0
     
   @staticmethod
   def compute_gb(accel, speed):
@@ -146,15 +148,26 @@ class CarInterface(CarInterfaceBase):
       events.append(create_event('pcmEnable', [ET.ENABLE]))
     
     #Warning alert for the 6min timebomb found on PQ's
-    if (self.frame % 100) == 0:
+    ret.stopSteering = False
+    if True: #(self.frame % 100) == 0:
       if ret.cruiseState.enabled:
         self.pqCounter += 1
-      if self.pqCounter >= 300: #time in seconds until counter threshold for pqTimebombWarn alert
-        events.append(create_event('pqTimebombWarn', [ET.WARNING]))
-        print("pqTimebombWarnSTATUS:")
+      if self.pqCounter >= 330*100: #time in seconds until counter threshold for pqTimebombWarn alert
+        if not self.wheelGrabbed:
+          events.append(create_event('pqTimebombWarn', [ET.WARNING]))
+        if self.wheelGrabbed or ret.steeringPressed:
+          self.wheelGrabbed = True
+          ret.stopSteering = True
+          self.pqBypassCounter += 1
+          if self.pqBypassCounter >= 3*100: #time alloted for bypass
+            self.wheelGrabbed = False
+            self.pqCounter = 0
+            self.pqBypassCounter = 0
+            events.append(create_event('pqTimebombBypassed', [ET.WARNING]))
+          else:
+            events.append(create_event('pqTimebombBypassing', [ET.WARNING]))
       if not ret.cruiseState.enabled:
         self.pqCounter = 0
-      print("pqTimebombWarnCounter:", self.pqCounter)
 
     ret.events = events
     ret.buttonEvents = buttonEvents
