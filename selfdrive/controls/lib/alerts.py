@@ -100,6 +100,27 @@ ALERTS = [
       "Steering Temporarily Unavailable",
       AlertStatus.userPrompt, AlertSize.mid,
       Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, .4, 2., 3.),
+  
+  Alert(
+      "pqTimebombWarn",
+      "WARNING",
+      "Grab wheel to start bypass",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, .4, 2., 3.),
+  
+  Alert(
+      "pqTimebombBypassing",
+      "BYPASSING",
+      "HOLD WHEEL",
+      AlertStatus.userPrompt, AlertSize.mid,
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, .4, 2., 3.),
+  
+  Alert(
+      "pqTimebombBypassed",
+      "Bypassed!",
+      "Release wheel when ready",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, 3., 2., 3.),
 
   Alert(
       "steerTempUnavailableMute",
