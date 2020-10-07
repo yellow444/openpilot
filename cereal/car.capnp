@@ -91,6 +91,9 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     carUnrecognized @66;
     radarCommIssue @67;
     driverMonitorLowAcc @68;
+    pqTimebombWarn @69;
+    pqTimebombBypassing @70;
+    pqTimebombBypassed @71;
   }
 }
 
@@ -124,6 +127,7 @@ struct CarState {
   steeringTorque @8 :Float32;  # TODO: standardize units
   steeringTorqueEps @27 :Float32;  # TODO: standardize units
   steeringPressed @9 :Bool;    # if the user is using the steering wheel
+  stopSteering @35 :Bool; #Boolian for stopSteering
   steeringRateLimited @29 :Bool;    # if the torque is limited by the rate limiter
   stockAeb @30 :Bool;
   stockFcw @31 :Bool;
