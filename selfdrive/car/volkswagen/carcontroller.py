@@ -135,20 +135,16 @@ class CarController():
       if enabled:
         if (apply_brake < 40):
           apply_brake = 0
-          self.ACCSlowDown = True
         if apply_brake > 0:
           if not mobEnabled:
             mobEnabled = True
             apply_brake = 0
-            self.ACCSlowDown = True
           elif not mobPreEnable:
             mobPreEnable = True
             apply_brake = 0
-            self.ACCSlowDown = True
           elif apply_brake > 2099:
             apply_brake = 2100
             CS.brake_warning = True
-            self.ACCSlowDown = True
         else:
           mobPreEnable = False
           mobEnabled = False
@@ -207,11 +203,6 @@ class CarController():
         # A subset of MQBs like to "creep" too aggressively with this implementation.
         self.graButtonStatesToSend = BUTTON_STATES.copy()
         self.graButtonStatesToSend["resumeCruise"] = True
-
-      if enabled and self.ACCSlowDown:
-        self.graButtonStatesToSend = BUTTON_STATES.copy()
-        self.graButtonStatesToSend["decelCruiseLong"] = True
-        self.ACCSlowDown = False
 
     # OP/Panda can see this message but can't filter it when integrated at the
     # R242 LKAS camera. It could do so if integrated at the J533 gateway, but
