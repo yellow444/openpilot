@@ -254,7 +254,6 @@ class CarState(CarStateBase):
 
     # Read ABS pump for checking in ACC braking is working.
     self.ActiveACCBraking = pt_cp.vl["Bremse_8"]["BR8_Sta_ACC_Anf"]
-    self.BrakingRequestFromOP = pt_cp.vl["MOB_1"]["MOB_Standby"]
 
     return ret
 

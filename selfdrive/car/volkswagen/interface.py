@@ -186,7 +186,7 @@ class CarInterface(CarInterfaceBase):
       if not ret.cruiseState.enabled:
         self.pqCounter = 0
 
-    if self.CS.BrakingRequestFromOP == 1:
+    if self.CC.mobPreEnable:
       if self.CS.ActiveACCBraking == 0:
         self.pqBrakingCounter += 1
         if (self.pqBrakingCounter > 30):
