@@ -1,4 +1,5 @@
 from cereal import car
+from common.numpy_fast import clip
 from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.volkswagen import volkswagencan
 from selfdrive.car.volkswagen.values import DBC, CANBUS, NWL, MQB_LDW_MESSAGES, BUTTON_STATES, CarControllerParams
@@ -27,6 +28,7 @@ class CarController():
       self.create_acc_buttons_control = volkswagencan.create_pq_acc_buttons_control
       self.create_hud_control = volkswagencan.create_pq_hud_control
       self.create_braking_control = volkswagencan.create_pq_braking_control
+      self.create_gas_control = volkswagencan.create_pq_pedal_control
 
     self.hcaSameTorqueCount = 0
     self.hcaEnabledFrameCount = 0
@@ -157,6 +159,20 @@ class CarController():
       self.mobPreEnable = mobPreEnable
       self.mobEnabled = mobEnabled
       can_sends.append(self.create_braking_control(self.packer_pt, CANBUS.br, apply_brake, idx, mobEnabled, mobPreEnable))
+
+    # --------------------------------------------------------------------------
+    #                                                                         #
+    # Prepare GAS_COMMAND for sending towards Pedal                           #
+    #                                                                         #
+    #                                                                         #
+    # --------------------------------------------------------------------------
+    if (frame % P.GAS_STEP == 0):
+      if enabled:
+        apply_gas = clip(actuators.gas, 0., 1.)
+      else:
+        apply_gas = 0
+
+      can_sends.append(self.create_gas_control(self.packer_pt, CANBUS.pt, apply_gas, frame // 2))
 
     #--------------------------------------------------------------------------
     #                                                                         #

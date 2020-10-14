@@ -1,3 +1,4 @@
+from selfdrive.car import crc8_pedal
 # ----------------------------------------------------------------------- #
 #                                                                         #
 # CAN message packing for MQB vehicles                                    #
@@ -87,6 +88,26 @@ def create_pq_braking_control(packer, bus, apply_brake, idx, brake_enabled, brak
   dat = packer.make_can_msg("MOB_1", bus, values)[2]
   values["PQ_MOB_CHECKSUM"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5]
   return packer.make_can_msg("MOB_1", bus, values)
+
+def create_pq_pedal_control(packer, bus, apply_gas, idx):
+  # Common gas pedal msg generator
+  enable = apply_gas > 0.001
+
+  values = {
+    "ENABLE": enable,
+    "COUNTER_PEDAL": idx & 0xF,
+  }
+
+  if enable:
+    values["GAS_COMMAND"] = apply_gas * 255.
+    values["GAS_COMMAND2"] = apply_gas * 255.
+
+  dat = packer.make_can_msg("GAS_COMMAND", 0, values)[2]
+
+  checksum = crc8_pedal(dat[:-1])
+  values["CHECKSUM_PEDAL"] = checksum
+
+  return packer.make_can_msg("GAS_COMMAND", bus, values)
 
 def create_pq_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert, leftLaneVisible, rightLaneVisible):
   if hca_enabled:
