@@ -252,6 +252,10 @@ class CarState(CarStateBase):
     # accept and respond to HCA_01 messages and has not encountered a fault.
     self.steeringFault = pt_cp.vl["Lenkhilfe_2"]['LH2_Sta_HCA'] not in [3, 5]
 
+    # Read ABS pump for checking in ACC braking is working.
+    self.ActiveACCBraking = pt_cp.vl["Bremse_8"]["BR8_Sta_ACC_Anf"]
+    self.BrakingRequestFromOP = pt_cp.vl["MOB_1"]["MOB_Standby"]
+
     return ret
 
   @staticmethod
@@ -380,6 +384,8 @@ class CarState(CarStateBase):
       ("Zaehler__GRA_neu_", "GRA_neu", 0),          # ACC button, Counter
       ("Wiederaufnahme", "GRA_neu", 0),             # ACC button, resume
       ("Zeitlueckenverstellung", "GRA_neu", 0),     # ACC button, time gap adj
+      ("BR8_Sta_ACC_Anf", "Bremse_8", 0),           # ABS Pump actively braking for ACC
+      ("MOB_Standby", "MOB_1", 0),
     ]
 
     checks = [
@@ -390,6 +396,8 @@ class CarState(CarStateBase):
       ("Motor_3", 100),           # From J623 Engine control module
       ("Airbag_1", 50),           # From J234 Airbag control module
       ("Bremse_5", 50),           # From J104 ABS/ESP controller
+      ("Bremse_8", 50),           # From J??? ABS/ACC controller
+      ("MOB_1", 50),              # From EON ACC braking message
       ("GRA_neu", 50),            # From J??? steering wheel control buttons
       ("Kombi_1", 50),            # From J285 Instrument cluster
       ("Motor_2", 50),            # From J623 Engine control module

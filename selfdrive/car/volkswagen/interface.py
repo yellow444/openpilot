@@ -19,6 +19,7 @@ class CarInterface(CarInterfaceBase):
     self.pqCounter = 0
     self.wheelGrabbed = False
     self.pqBypassCounter = 0
+    self.pqBrakingCounter = 0
     
   @staticmethod
   def compute_gb(accel, speed):
@@ -184,6 +185,16 @@ class CarInterface(CarInterfaceBase):
             events.append(create_event('pqTimebombBypassing', [ET.WARNING]))
       if not ret.cruiseState.enabled:
         self.pqCounter = 0
+
+    if self.CS.BrakingRequestFromOP == 1:
+      if self.CS.ActiveACCBraking == 0:
+        self.pqBrakingCounter += 1
+        if (self.pqBrakingCounter > 30):
+          events.append(create_event('pqBrakingError', [ET.NO_ENTRY, ET.WARNING]))
+      else:
+        self.pqBrakingCounter = 0
+    else:
+      self.pqBrakingCounter = 0
 
     ret.events = events
     ret.buttonEvents = buttonEvents
