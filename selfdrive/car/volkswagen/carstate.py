@@ -384,7 +384,6 @@ class CarState(CarStateBase):
       ("Wiederaufnahme", "GRA_neu", 0),             # ACC button, resume
       ("Zeitlueckenverstellung", "GRA_neu", 0),     # ACC button, time gap adj
       ("BR8_Sta_ACC_Anf", "Bremse_8", 0),           # ABS Pump actively braking for ACC
-      ("MOB_Standby", "MOB_1", 0),
     ]
 
     checks = [
@@ -396,7 +395,6 @@ class CarState(CarStateBase):
       ("Airbag_1", 50),           # From J234 Airbag control module
       ("Bremse_5", 50),           # From J104 ABS/ESP controller
       ("Bremse_8", 50),           # From J??? ABS/ACC controller
-      ("MOB_1", 50),              # From EON ACC braking message
       ("GRA_neu", 50),            # From J??? steering wheel control buttons
       ("Kombi_1", 50),            # From J285 Instrument cluster
       ("Motor_2", 50),            # From J623 Engine control module

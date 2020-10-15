@@ -172,7 +172,7 @@ class CarController():
       else:
         apply_gas = 0
 
-      can_sends.append(self.create_gas_control(self.packer_pt, CANBUS.pt, apply_gas, frame // 2))
+    can_sends.append(self.create_gas_control(self.packer_pt, CANBUS.pt, apply_gas, frame // 2))
 
     #--------------------------------------------------------------------------
     #                                                                         #
