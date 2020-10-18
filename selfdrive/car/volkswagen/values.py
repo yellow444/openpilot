@@ -22,7 +22,7 @@ class CarControllerParams:
   # FIXME: testing steering rate hax for PQ
   # STEER_DELTA_UP = 4             # Max HCA reached in 1.50s (STEER_MAX / (50Hz * 1.50))
   # STEER_DELTA_DOWN = 10          # Min HCA reached in 0.60s (STEER_MAX / (50Hz * 0.60))
-  STEER_DELTA_UP = 2             # Max HCA reached in 1.50s (STEER_MAX / (100Hz * 1.50))
+  STEER_DELTA_UP = 3             # Max HCA reached in 1.50s (STEER_MAX / (100Hz * 1.50))
   STEER_DELTA_DOWN = 5           # Min HCA reached in 0.60s (STEER_MAX / (100Hz * 0.60))
   STEER_DRIVER_ALLOWANCE = 80
   STEER_DRIVER_MULTIPLIER = 3    # weight driver torque heavily
