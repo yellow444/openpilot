@@ -39,8 +39,8 @@ class CarInterface(CarInterfaceBase):
     # Override these per-car as necessary
     ret.lateralTuning.pid.kpBP = [0.]
     ret.lateralTuning.pid.kiBP = [0.]
-    ret.lateralTuning.pid.kpV = [0.45]
-    ret.lateralTuning.pid.kiV = [0.12]
+    ret.lateralTuning.pid.kpV = [0.37]
+    ret.lateralTuning.pid.kiV = [0.09]
     ret.lateralTuning.pid.kf = 0.00006
 
     # PER-PLATFORM PARAMETERS - DO NOT EDIT HERE TO TUNE INDIVIDUAL VEHICLES
