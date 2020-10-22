@@ -42,7 +42,7 @@ const int VOLKSWAGEN_MQB_RX_CHECKS_LEN = sizeof(volkswagen_mqb_rx_checks) / size
 #define MSG_LDW_1       0x5BE   // TX by OP, Lane line recognition and text alerts
 
 // Transmit of GRA_Neu is allowed on bus 0 and 2 to keep compatibility with gateway and camera integration
-const AddrBus VOLKSWAGEN_PQ_TX_MSGS[] = {{MSG_HCA_1, 0}, {MSG_GRA_NEU, 0}, {MSG_GRA_NEU, 2}, {MSG_LDW_1, 0}, {MSG_MOB_1, 1}, {MSG_GAS_COMMAND, 0}};
+const AddrBus VOLKSWAGEN_PQ_TX_MSGS[] = {{MSG_HCA_1, 0}, {MSG_GRA_NEU, 0}, {MSG_GRA_NEU, 1}, {MSG_GRA_NEU, 2}, {MSG_LDW_1, 0}, {MSG_MOB_1, 1}, {MSG_GAS_COMMAND, 0}};
 const int VOLKSWAGEN_PQ_TX_MSGS_LEN = sizeof(VOLKSWAGEN_PQ_TX_MSGS) / sizeof(VOLKSWAGEN_PQ_TX_MSGS[0]);
 
 AddrCheckStruct volkswagen_pq_rx_checks[] = {
