@@ -19,6 +19,9 @@ class CarState(CarStateBase):
       self.update = self.update_pq
       if CP.transmissionType == TRANS.automatic:
         self.shifter_values = can_define.dv["Getriebe_1"]['Waehlhebelposition__Getriebe_1_']
+      if CP.enableGasInterceptor:
+        self.openpilot_enabled = False
+
     else:
       # Configure for MQB network messaging (default)
       self.get_can_parser = self.get_mqb_can_parser
@@ -170,8 +173,13 @@ class CarState(CarStateBase):
     ret.yawRate = pt_cp.vl["Bremse_5"]['Giergeschwindigkeit'] * (1, -1)[int(pt_cp.vl["Bremse_5"]['Vorzeichen_der_Giergeschwindigk'])] * CV.DEG_TO_RAD
 
     # Update gas, brakes, and gearshift.
-    ret.gas = pt_cp.vl["Motor_3"]['Fahrpedal_Rohsignal'] / 100.0
-    ret.gasPressed = ret.gas > 0
+    if not self.CP.enableGasInterceptor:
+      ret.gas = pt_cp.vl["Motor_3"]['Fahrpedal_Rohsignal'] / 100.0
+      ret.gasPressed = ret.gas > 0
+    else:
+      ret.gas = (cam_cp.vl["GAS_SENSOR"]['INTERCEPTOR_GAS'] + cam_cp.vl["GAS_SENSOR"]['INTERCEPTOR_GAS2']) / 2.
+      ret.gasPressed = ret.gas > 15
+
     ret.brake = pt_cp.vl["Bremse_5"]['Bremsdruck'] / 250.0  # FIXME: this is pressure in Bar, not sure what OP expects
     ret.brakePressed = bool(pt_cp.vl["Motor_2"]['Bremstestschalter'])
     ret.brakeLights = bool(pt_cp.vl["Motor_2"]['Bremslichtschalter'])
@@ -215,6 +223,18 @@ class CarState(CarStateBase):
     # FIXME: This is unfinished and not fully correct, need to improve further
     ret.cruiseState.available = bool(pt_cp.vl["GRA_neu"]['Hauptschalter'])
     ret.cruiseState.enabled = True if pt_cp.vl["Motor_2"]['GRA_Status'] in [1, 2] else False
+
+    # Set override flag for openpilot enabled state.
+    if self.CP.enableGasInterceptor and pt_cp.vl["Motor_2"]['GRA_Status'] in [1, 2]:
+      self.openpilot_enabled = True
+
+    # Check if Gas or Brake pressed and cancel override
+    if self.CP.enableGasInterceptor and (ret.gasPressed or ret.brakePressed):
+      self.openpilot_enabled = False
+
+    # Override openpilot enabled if gas interceptor installed
+    if self.CP.enableGasInterceptor and self.openpilot_enabled:
+      ret.cruiseState.enabled = True
 
     # Update ACC setpoint. When the setpoint reads as 255, the driver has not
     # yet established an ACC setpoint, so treat it as zero.
@@ -441,5 +461,9 @@ class CarState(CarStateBase):
       # The ACC radar is here on CANBUS.cam
       signals += [("ACA_V_Wunsch", "ACC_GRA_Anziege", 0)]  # ACC set speed
       checks += [("ACC_GRA_Anziege", 25)]  # From J428 ACC radar control module
+
+    if CP.enableGasInterceptor:
+      signals += [("INTERCEPTOR_GAS", "GAS_SENSOR", 0), ("INTERCEPTOR_GAS2", "GAS_SENSOR", 0)]
+      checks += [("GAS_SENSOR", 50)]
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.cam)

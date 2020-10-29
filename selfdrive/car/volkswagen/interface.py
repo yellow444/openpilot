@@ -36,6 +36,9 @@ class CarInterface(CarInterfaceBase):
     ret.steerActuatorDelay = 0.05  # Hopefully all racks are similar here
     ret.steerLimitTimer = 0.4
 
+    # Check for Comma Pedal
+    ret.enableGasInterceptor = 0x201 in fingerprint[0]
+
     # Override these per-car as necessary
     ret.lateralTuning.pid.kpBP = [0.]
     ret.lateralTuning.pid.kiBP = [0.]
