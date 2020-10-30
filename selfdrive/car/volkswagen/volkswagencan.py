@@ -102,7 +102,7 @@ def create_pq_pedal_control(packer, bus, apply_gas, idx):
     values["GAS_COMMAND"] = apply_gas * 255.
     values["GAS_COMMAND2"] = apply_gas * 255.
 
-  dat = packer.make_can_msg("GAS_COMMAND", 0, values)[2]
+  dat = packer.make_can_msg("GAS_COMMAND", bus, values)[2]
 
   checksum = crc8_pedal(dat[:-1])
   values["CHECKSUM_PEDAL"] = checksum
