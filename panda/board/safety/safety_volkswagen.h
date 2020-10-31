@@ -248,6 +248,7 @@ static int volkswagen_pq_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
     // Exit controls on rising edge of interceptor gas press
     if ((bus == 2) && (addr == MSG_GAS_SENSOR)) {
       gas_interceptor_detected = 1;
+      controls_allowed = 1;
       int gas_interceptor = GET_INTERCEPTOR(to_push);
       if ((gas_interceptor > VOLKSWAGEN_GAS_INTERCEPTOR_THRSLD) &&
           (gas_interceptor_prev <= VOLKSWAGEN_GAS_INTERCEPTOR_THRSLD)) {
@@ -267,7 +268,6 @@ static int volkswagen_pq_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
     // Signal: Motor_3.Fahrpedal_Rohsignal
     if ((bus == 0) && (addr == MSG_MOTOR_3)) {
       int gas_pressed = (GET_BYTE(to_push, 2));
-      controls_allowed = 1;
       if ((gas_pressed > 0) && (gas_pressed_prev == 0) && !gas_interceptor_detected) {
         controls_allowed = 0;
       }
