@@ -198,7 +198,6 @@ class CarInterface(CarInterfaceBase):
     if self.CC.mobPreEnable:
       if self.CS.ActiveACCBraking == 0:
         self.pqBrakingCounter += 1
-        self.pqBrakingCounter = 0     #Disable warning for now.
         if (self.pqBrakingCounter > 30):
           events.append(create_event('pqBrakingError', [ET.NO_ENTRY, ET.WARNING]))
       else:
