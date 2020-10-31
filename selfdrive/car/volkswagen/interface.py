@@ -37,7 +37,7 @@ class CarInterface(CarInterfaceBase):
     ret.steerLimitTimer = 0.4
 
     # Check for Comma Pedal
-    ret.enableGasInterceptor = 0x201 in fingerprint[0]
+    ret.enableGasInterceptor = True
 
     # Override these per-car as necessary
     ret.lateralTuning.pid.kpBP = [0.]
