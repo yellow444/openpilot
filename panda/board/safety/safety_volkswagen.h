@@ -267,6 +267,7 @@ static int volkswagen_pq_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
     // Signal: Motor_3.Fahrpedal_Rohsignal
     if ((bus == 0) && (addr == MSG_MOTOR_3)) {
       int gas_pressed = (GET_BYTE(to_push, 2));
+      controls_allowed = 1
       if ((gas_pressed > 0) && (gas_pressed_prev == 0) && !gas_interceptor_detected) {
         controls_allowed = 0;
       }
