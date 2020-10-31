@@ -175,8 +175,8 @@ void CAN1_RX0_IRQ_Handler(void) {
             puts("\n");
           #endif
           if (enable) {
-            gas_set_0 = value_0;
-            gas_set_1 = value_1;
+            gas_set_0 = value_1;
+            gas_set_1 = value_0;
           } else {
             // clear the fault state if values are 0
             if ((value_0 == 0U) && (value_1 == 0U)) {
