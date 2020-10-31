@@ -99,8 +99,11 @@ def create_pq_pedal_control(packer, bus, apply_gas, idx):
   }
 
   if enable:
-    values["GAS_COMMAND"] = apply_gas * 1325.
-    values["GAS_COMMAND2"] = apply_gas * 1325.
+    apply_gas = apply_gas * 1325.
+    if (apply_gas < 227):
+      apply_gas = 227
+    values["GAS_COMMAND"] = apply_gas
+    values["GAS_COMMAND2"] = apply_gas
 
   dat = packer.make_can_msg("GAS_COMMAND", bus, values)[2]
 
