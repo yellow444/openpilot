@@ -249,16 +249,13 @@ static int volkswagen_pq_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
     if ((bus == 2) && (addr == MSG_GAS_SENSOR)) {
       gas_interceptor_detected = 1;
       int gas_interceptor = GET_INTERCEPTOR(to_push);
-      if ((gas_interceptor > VOLKSWAGEN_GAS_INTERCEPTOR_THRSLD) &&
-          (gas_interceptor_prev <= VOLKSWAGEN_GAS_INTERCEPTOR_THRSLD)) {
-        controls_allowed = 0;
-      }
+
       gas_interceptor_prev = gas_interceptor;
     }
 
     // Update ACC status from ECU for controls-allowed state
     // Signal: Motor_2.GRA_Status
-    if ((bus == 0) && (addr == MSG_MOTOR_2) && !gas_interceptor_detected) {
+    if ((bus == 0) && (addr == MSG_MOTOR_2) && (gas_interceptor_detected == 0)) {
       int acc_status = (GET_BYTE(to_push, 2) & 0xC0) >> 6;
       controls_allowed = ((acc_status == 1) || (acc_status == 2)) ? 1 : 0;
     }
@@ -267,7 +264,7 @@ static int volkswagen_pq_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
     // Signal: Motor_3.Fahrpedal_Rohsignal
     if ((bus == 0) && (addr == MSG_MOTOR_3)) {
       int gas_pressed = (GET_BYTE(to_push, 2));
-      if ((gas_pressed > 0) && (gas_pressed_prev == 0) && !gas_interceptor_detected) {
+      if ((gas_pressed > 0) && (gas_pressed_prev == 0) && (gas_interceptor_detected == 0)) {
         controls_allowed = 0;
       }
       gas_pressed_prev = gas_pressed;
