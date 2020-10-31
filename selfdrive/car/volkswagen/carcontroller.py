@@ -218,6 +218,9 @@ class CarController():
         # A subset of MQBs like to "creep" too aggressively with this implementation.
         self.graButtonStatesToSend = BUTTON_STATES.copy()
         self.graButtonStatesToSend["resumeCruise"] = True
+      elif enabled and CS.out.cruiseState.enabled and CS.CP.enableGasInterceptor:
+        self.graButtonStatesToSend = BUTTON_STATES.copy()
+        self.graButtonStatesToSend["cancel"] = True
 
     # OP/Panda can see this message but can't filter it when integrated at the
     # R242 LKAS camera. It could do so if integrated at the J533 gateway, but
