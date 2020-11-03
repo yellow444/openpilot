@@ -250,7 +250,7 @@ static int volkswagen_pq_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
       // DBC speed scale 0.01: 0.3m/s = 108, sum both wheels to compare
       volkswagen_moving = (wheel_speed_fl + wheel_speed_fr) > 216;
       // Current KP/h for tesla radar
-      actual_speed_kph = (int)((wheel_speed_fl + wheel_speed_fr) / 200));
+      actual_speed_kph = (int)(wheel_speed_fl + wheel_speed_fr) / 200;
     }
 
     // Update driver input torque samples
@@ -417,7 +417,7 @@ static int volkswagen_pq_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
   // Tesla Radar TX hook
    //check if this is a teslaradar vin message
  //capture message for radarVIN and settings
- if (addr == MSG_VIN_TESLA) {
+ if (addr == MSG_TESLA_VIN) {
    int id = (to_send->RDLR & 0xFF);
    int radarVin_b1 = ((to_send->RDLR >> 8) & 0xFF);
    int radarVin_b2 = ((to_send->RDLR >> 16) & 0xFF);
