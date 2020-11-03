@@ -1,3 +1,6 @@
+// Include Tesla radar safety code
+#include "safety_teslaradar.h"
+
 // Safety-relevant steering constants for Volkswagen
 const int VOLKSWAGEN_MAX_STEER = 300;               // 3.0 Nm (EPS side max of 3.0Nm with fault if violated)
 const int VOLKSWAGEN_MAX_RT_DELTA = 188;             // 4 max rate up * 50Hz send rate * 250000 RT interval / 1000000 = 50 ; 50 * 1.5 for safety pad = 75
@@ -43,8 +46,21 @@ const int VOLKSWAGEN_MQB_RX_CHECKS_LEN = sizeof(volkswagen_mqb_rx_checks) / size
 #define MSG_BREMSE_3    0x4A0   // RX from ABS, for wheel speeds
 #define MSG_LDW_1       0x5BE   // TX by OP, Lane line recognition and text alerts
 
+// CAN Messages for Tesla Radar
+#define MSG_TESLA_VIN   0x560   // TX by OP, Tesla VIN Message
+#define MSG_TESLA_x2B9  0x2B9
+#define MSG_TESLA_x159  0x159
+#define MSG_TESLA_x219  0x219
+#define MSG_TESLA_x149  0x149
+#define MSG_TESLA_x129  0x129
+#define MSG_TESLA_x1A9  0x1A9
+#define MSG_TESLA_x199  0x199
+#define MSG_TESLA_x169  0x169
+#define MSG_TESLA_x119  0x119
+#define MSG_TESLA_x109  0x109
+
 // Transmit of GRA_Neu is allowed on bus 0 and 2 to keep compatibility with gateway and camera integration
-const AddrBus VOLKSWAGEN_PQ_TX_MSGS[] = {{MSG_HCA_1, 0}, {MSG_GRA_NEU, 0}, {MSG_GRA_NEU, 1}, {MSG_GRA_NEU, 2}, {MSG_LDW_1, 0}, {MSG_MOB_1, 1}, {MSG_GAS_COMMAND, 2}};
+const AddrBus VOLKSWAGEN_PQ_TX_MSGS[] = {{MSG_HCA_1, 0}, {MSG_GRA_NEU, 0}, {MSG_GRA_NEU, 1}, {MSG_GRA_NEU, 2}, {MSG_LDW_1, 0}, {MSG_MOB_1, 1}, {MSG_GAS_COMMAND, 2}, {MSG_TESLA_x2B9, 2}, {MSG_TESLA_x159, 2}, {MSG_TESLA_x219, 2}, {MSG_TESLA_x149 , 2}, {MSG_TESLA_x129 ,2}, {MSG_TESLA_x1A9 ,2}, {MSG_TESLA_x199 ,2}, {MSG_TESLA_x169 ,2}, {MSG_TESLA_x119 ,2}, {MSG_TESLA_x109 ,2}};
 const int VOLKSWAGEN_PQ_TX_MSGS_LEN = sizeof(VOLKSWAGEN_PQ_TX_MSGS) / sizeof(VOLKSWAGEN_PQ_TX_MSGS[0]);
 
 AddrCheckStruct volkswagen_pq_rx_checks[] = {
@@ -218,6 +234,8 @@ static int volkswagen_pq_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
   bool valid = addr_safety_check(to_push, volkswagen_pq_rx_checks, VOLKSWAGEN_PQ_RX_CHECKS_LEN,
                                 volkswagen_get_checksum, volkswagen_pq_compute_checksum, volkswagen_pq_get_counter);
 
+  teslaradar_rx_hook(to_push);
+
   if (valid) {
     int bus = GET_BUS(to_push);
     int addr = GET_ADDR(to_push);
@@ -231,6 +249,8 @@ static int volkswagen_pq_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
       // Check for average front speed in excess of 0.3m/s, 1.08km/h
       // DBC speed scale 0.01: 0.3m/s = 108, sum both wheels to compare
       volkswagen_moving = (wheel_speed_fl + wheel_speed_fr) > 216;
+      // Current KP/h for tesla radar
+      actual_speed_kph = (int)((wheel_speed_fl + wheel_speed_fr) / 200));
     }
 
     // Update driver input torque samples
@@ -393,6 +413,54 @@ static int volkswagen_pq_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
       tx = 0;
     }
   }
+
+  // Tesla Radar TX hook
+   //check if this is a teslaradar vin message
+ //capture message for radarVIN and settings
+ if (addr == MSG_VIN_TESLA) {
+   int id = (to_send->RDLR & 0xFF);
+   int radarVin_b1 = ((to_send->RDLR >> 8) & 0xFF);
+   int radarVin_b2 = ((to_send->RDLR >> 16) & 0xFF);
+   int radarVin_b3 = ((to_send->RDLR >> 24) & 0xFF);
+   int radarVin_b4 = (to_send->RDHR & 0xFF);
+   int radarVin_b5 = ((to_send->RDHR >> 8) & 0xFF);
+   int radarVin_b6 = ((to_send->RDHR >> 16) & 0xFF);
+   int radarVin_b7 = ((to_send->RDHR >> 24) & 0xFF);
+   if (id == 0) {
+     tesla_radar_should_send = (radarVin_b2 & 0x01);
+     radarPosition =  ((radarVin_b2 >> 1) & 0x03);
+     radarEpasType = ((radarVin_b2 >> 3) & 0x07);
+     tesla_radar_trigger_message_id = (radarVin_b3 << 8) + radarVin_b4;
+     tesla_radar_can = radarVin_b1;
+     radar_VIN[0] = radarVin_b5;
+     radar_VIN[1] = radarVin_b6;
+     radar_VIN[2] = radarVin_b7;
+     tesla_radar_vin_complete = tesla_radar_vin_complete | 1;
+   }
+   if (id == 1) {
+     radar_VIN[3] = radarVin_b1;
+     radar_VIN[4] = radarVin_b2;
+     radar_VIN[5] = radarVin_b3;
+     radar_VIN[6] = radarVin_b4;
+     radar_VIN[7] = radarVin_b5;
+     radar_VIN[8] = radarVin_b6;
+     radar_VIN[9] = radarVin_b7;
+     tesla_radar_vin_complete = tesla_radar_vin_complete | 2;
+   }
+   if (id == 2) {
+     radar_VIN[10] = radarVin_b1;
+     radar_VIN[11] = radarVin_b2;
+     radar_VIN[12] = radarVin_b3;
+     radar_VIN[13] = radarVin_b4;
+     radar_VIN[14] = radarVin_b5;
+     radar_VIN[15] = radarVin_b6;
+     radar_VIN[16] = radarVin_b7;
+     tesla_radar_vin_complete = tesla_radar_vin_complete | 4;
+   }
+   else {
+     return 0;
+   }
+ }
 
   // GAS PEDAL: safety check
   if (addr == MSG_GAS_COMMAND) {
