@@ -1414,6 +1414,91 @@ BO_ 2000 Diagnose_1: 8 XXX
  SG_ DI1_KM_Stand_alt : 62|1@1+ (1,0) [0|1] "" XXX
  SG_ DI1_Zeit_alt : 63|1@1+ (1,0) [0|1] "" XXX
 
+BO_ 769 TeslaRadarSguInfo: 8 Radar
+ SG_ RADC_VerticalMisalignment : 0|8@1+ (1,0) [0|255] ""  FrontCamera
+ SG_ RADC_SCUTemperature : 8|8@1+ (1,-128) [-128|127] ""  FrontCamera
+ SG_ RADC_VMA_Plaus : 16|8@1+ (1,0) [0|255] ""  FrontCamera
+ SG_ RADC_SGU_ITC : 24|8@1+ (1,0) [0|255] ""  FrontCamera
+ SG_ RADC_HorizontMisalignment : 32|12@1+ (1,0) [0|4096] ""  FrontCamera
+ SG_ RADC_SensorDirty : 44|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_HWFail : 45|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_SGUFail : 46|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_SGUInfoConsistBit : 47|1@1+ (1,0) [0|1] ""  FrontCamera
+BO_ 770 TeslaRadarTguInfo: 8 Radar
+ SG_ RADC_ACCTargObj1_sguIndex : 0|6@1+ (1,0) [0|63] ""  FrontCamera
+ SG_ RADC_ACCTargObj2_sguIndex : 6|6@1+ (1,0) [0|63] ""  FrontCamera
+ SG_ RADC_ACCTargObj3_sguIndex : 12|6@1+ (1,0) [0|63] ""  FrontCamera
+ SG_ RADC_ACCTargObj4_sguIndex : 18|6@1+ (1,0) [0|63] ""  FrontCamera
+ SG_ RADC_ACCTargObj5_sguIndex : 24|6@1+ (1,0) [0|63] ""  FrontCamera
+ SG_ unused30 : 30|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_TGUInfoConsistBit : 31|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_ACCTargObj1_dBPower : 32|16@1+ (1,0) [0|65535] ""  FrontCamera
+ SG_ RADC_ACCTargObj5_dBPower : 48|16@1+ (1,0) [0|65535] ""  FrontCamera
+BO_ 1281 TeslaRadarAlertMatrix: 8 Radar
+ SG_ RADC_a001_ecuInternalPerf : 0|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a002_flashPerformance : 1|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a003_vBatHigh : 2|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a004_adjustmentNotDone : 3|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a005_adjustmentReq : 4|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a006_adjustmentNotOk : 5|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a007_sensorBlinded : 6|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a008_plantModeActive : 7|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a009_configMismatch : 8|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a010_canBusOff : 9|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a011_bdyMIA : 10|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a012_espMIA : 11|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a013_gtwMIA : 12|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a014_sccmMIA : 13|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a015_adasMIA : 14|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a016_bdyInvalidCount : 15|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a017_adasInvalidCount : 16|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a018_espInvalidCount : 17|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a019_sccmInvalidCount : 18|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a020_bdyInvalidChkSm : 19|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a021_espInvalidChkSm : 20|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a022_sccmInvalidChkSm : 21|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a023_sccmInvalidChkSm : 22|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a024_absValidity : 23|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a025_ambTValidity : 24|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a026_brakeValidity : 25|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a027_CntryCdValidity : 26|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a028_espValidity : 27|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a029_longAccOffValidity : 28|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a030_longAccValidity : 29|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a031_odoValidity : 30|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a032_gearValidity : 31|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a033_steerAngValidity : 32|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a034_steerAngSpdValidity : 33|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a035_indctrValidity : 34|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a036_vehStandStillValidity : 35|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a037_vinValidity : 36|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a038_whlRotValidity : 37|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a039_whlSpdValidity : 38|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a040_whlStandStillValidity : 39|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a041_wiperValidity : 40|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a042_xwdValidity : 41|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a043_yawOffValidity : 42|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a044_yawValidity : 43|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a045_bsdSanity : 44|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a046_rctaSanity : 45|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a047_lcwSanity : 46|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a048_steerAngOffSanity : 47|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a049_tireSizeSanity : 48|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a050_velocitySanity : 49|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a051_yawSanity : 50|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a052_radomeHtrInop : 51|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a053_espmodValidity : 52|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a054_gtwmodValidity : 53|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a055_stwmodValidity : 54|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a056_bcmodValidity : 55|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a057_dimodValidity : 56|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a058_opmodValidity : 57|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a059_drmiInvalidChkSm : 58|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a060_drmiInvalidCount : 59|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a061_radPositionMismatch : 60|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ RADC_a062_strRackMismatch : 61|1@1+ (1,0) [0|1] ""  FrontCamera
+ SG_ unused62 : 62|2@1+ (1,0) [0|3] ""  FrontCamera
+
 CM_ SG_ 210 LM_Offset "centiNewton-meters for ease of calculation without FP math in Panda";
 CM_ SG_ 210 Vib_Amp "Steering wheel haptic, amplitude";
 CM_ SG_ 210 Vib_Freq "Steering wheel haptic, frequency";
