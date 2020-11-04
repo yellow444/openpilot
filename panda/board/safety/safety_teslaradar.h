@@ -262,7 +262,7 @@ static void teslaradar_rx_hook(CAN_FIFOMailBox_TypeDef *to_push)
       tesla_radar_status = 0;
       puts("Tesla Radar Inactive! (timeout 1) \n");
     } else
-    if ((ts_elapsed <= TESLA_RADAR_TIMEOUT) && (tesla_radar_status == 2)) {
+    if (((int)ts_elapsed <= TESLA_RADAR_TIMEOUT) && (tesla_radar_status == 2)) {
       tesla_last_radar_signal = ts;
     }
     return;
@@ -278,11 +278,11 @@ static void teslaradar_rx_hook(CAN_FIFOMailBox_TypeDef *to_push)
       tesla_last_radar_signal = ts;
       puts("Tesla Radar Initializing... \n");
     } else
-    if ((ts_elapsed > TESLA_RADAR_TIMEOUT) && (tesla_radar_status > 0)) {
+    if (((int)ts_elapsed > TESLA_RADAR_TIMEOUT) && (tesla_radar_status > 0)) {
       tesla_radar_status = 0;
       puts("Tesla Radar Inactive! (timeout 2) \n");
     } else
-    if ((ts_elapsed <= TESLA_RADAR_TIMEOUT) && (tesla_radar_status > 0)) {
+    if (((int)ts_elapsed <= TESLA_RADAR_TIMEOUT) && (tesla_radar_status > 0)) {
       tesla_last_radar_signal = ts;
     }
     return;
