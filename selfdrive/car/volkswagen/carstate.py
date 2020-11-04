@@ -14,7 +14,7 @@ class CarState(CarStateBase):
 
     ### START OF MAIN CONFIG OPTIONS ###
     ### Do NOT modify here, modify in /data/bb_openpilot.cfg and reboot
-    self.useTeslaRadar = False
+    self.useTeslaRadar = True
     self.radarVIN = "5YJXCCE40HF060571"
     self.radarOffset = 0.
     self.radarPosition = 2
