@@ -250,7 +250,7 @@ static int volkswagen_pq_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
       // DBC speed scale 0.01: 0.3m/s = 108, sum both wheels to compare
       volkswagen_moving = (wheel_speed_fl + wheel_speed_fr) > 216;
       // Current KP/h for tesla radar
-      actual_speed_kph = (int)(double(wheel_speed_fl + wheel_speed_fr) / 200);
+      actual_speed_kph = (int)(((double) (wheel_speed_fl + wheel_speed_fr)) / 200. 0);
     }
 
     // Update driver input torque samples
