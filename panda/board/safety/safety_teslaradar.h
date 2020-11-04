@@ -24,7 +24,7 @@ int tesla_radar_x169_id = 0;
 int tesla_radar_x119_id = 0;
 int tesla_radar_x109_id = 0;
 
-#include "drivers/can.h"
+#include "../drivers/can.h"
 
 static int add_tesla_crc(uint32_t MLB, uint32_t MHB , int msg_len) {
   //"""Calculate CRC8 using 1D poly, FF start, FF end"""
