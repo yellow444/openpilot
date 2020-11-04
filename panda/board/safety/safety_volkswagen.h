@@ -60,7 +60,7 @@ const int VOLKSWAGEN_MQB_RX_CHECKS_LEN = sizeof(volkswagen_mqb_rx_checks) / size
 #define MSG_TESLA_x109  0x109
 
 // Transmit of GRA_Neu is allowed on bus 0 and 2 to keep compatibility with gateway and camera integration
-const AddrBus VOLKSWAGEN_PQ_TX_MSGS[] = {{MSG_HCA_1, 0}, {MSG_GRA_NEU, 0}, {MSG_GRA_NEU, 1}, {MSG_GRA_NEU, 2}, {MSG_LDW_1, 0}, {MSG_MOB_1, 1}, {MSG_GAS_COMMAND, 2}, {MSG_TESLA_x2B9, 2}, {MSG_TESLA_x159, 2}, {MSG_TESLA_x219, 2}, {MSG_TESLA_x149 , 2}, {MSG_TESLA_x129 ,2}, {MSG_TESLA_x1A9 ,2}, {MSG_TESLA_x199 ,2}, {MSG_TESLA_x169 ,2}, {MSG_TESLA_x119 ,2}, {MSG_TESLA_x109 ,2}};
+const AddrBus VOLKSWAGEN_PQ_TX_MSGS[] = {{MSG_HCA_1, 0}, {MSG_GRA_NEU, 0}, {MSG_GRA_NEU, 1}, {MSG_GRA_NEU, 2}, {MSG_LDW_1, 0}, {MSG_MOB_1, 1}, {MSG_GAS_COMMAND, 2}, {MSG_TESLA_x2B9, 2}, {MSG_TESLA_x159, 2}, {MSG_TESLA_x219, 2}, {MSG_TESLA_x149 , 2}, {MSG_TESLA_x129 ,2}, {MSG_TESLA_x1A9 ,2}, {MSG_TESLA_x199 ,2}, {MSG_TESLA_x169 ,2}, {MSG_TESLA_x119 ,2}, {MSG_TESLA_x109 ,2}, {MSG_TESLA_VIN, 2}};
 const int VOLKSWAGEN_PQ_TX_MSGS_LEN = sizeof(VOLKSWAGEN_PQ_TX_MSGS) / sizeof(VOLKSWAGEN_PQ_TX_MSGS[0]);
 
 AddrCheckStruct volkswagen_pq_rx_checks[] = {
