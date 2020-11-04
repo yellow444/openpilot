@@ -142,7 +142,7 @@ def create_radar_VIN_msg(id,radarVIN,radarCAN,radarTriggerMessage,useRadar,radar
     struct.pack_into('BBBBBBBB', msg, 0, id,ord(radarVIN[3]),ord(radarVIN[4]),ord(radarVIN[5]),ord(radarVIN[6]),ord(radarVIN[7]),ord(radarVIN[8]),ord(radarVIN[9]))
   if id == 2:
     struct.pack_into('BBBBBBBB', msg, 0, id,ord(radarVIN[10]),ord(radarVIN[11]),ord(radarVIN[12]),ord(radarVIN[13]),ord(radarVIN[14]),ord(radarVIN[15]),ord(radarVIN[16]))
-  return [msg_id, 0, msg.raw, 0]
+  return [msg_id, 2, msg.raw, 0]
 
 def create_pq_acc_buttons_control(packer, bus, buttonStatesToSend, CS, idx):
   values = {
