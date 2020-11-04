@@ -18,7 +18,7 @@ class CarState(CarStateBase):
     self.radarVIN = "5YJXCCE40HF060571"
     self.radarOffset = 0.
     self.radarPosition = 2
-    self.radarEpasType = 2
+    self.radarEpasType = 3
     ### END OF MAIN CONFIG OPTIONS ###
 
     if CP.safetyModel == car.CarParams.SafetyModel.volkswagenPq:
