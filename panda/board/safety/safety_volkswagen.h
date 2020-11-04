@@ -163,6 +163,8 @@ static void volkswagen_pq_init(int16_t param) {
   return;
 }
 
+void can_send(CAN_FIFOMailBox_TypeDef *to_push, uint8_t bus_number);
+
 static int volkswagen_mqb_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
   bool valid = addr_safety_check(to_push, volkswagen_mqb_rx_checks, VOLKSWAGEN_MQB_RX_CHECKS_LEN,
