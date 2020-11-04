@@ -249,7 +249,7 @@ static void teslaradar_rx_hook(CAN_FIFOMailBox_TypeDef *to_push)
 
 
   //looking for radar messages;
-  if ((addr == 0x300) && (bus_number ==tesla_radar_can))
+  if ((addr == 0x300) && (bus_number == tesla_radar_can))
   {
     uint32_t ts = TIM2->CNT;
     uint32_t ts_elapsed = get_ts_elapsed(ts, tesla_last_radar_signal);
