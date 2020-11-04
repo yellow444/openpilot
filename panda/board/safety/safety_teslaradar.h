@@ -1,7 +1,7 @@
 int tesla_radar_status = 0; //0-not present, 1-initializing, 2-active
 uint32_t tesla_last_radar_signal = 0;
 const int TESLA_RADAR_TIMEOUT = 1000000; // 1 second between real time checks
-char radar_VIN[] = "5YJXCCE40HF060571"; //leave empty if your radar VIN matches the car VIN
+char radar_VIN[] = "                 "; //leave empty if your radar VIN matches the car VIN
 uint8_t tesla_radar_can = 2; // 0, 1 or 2 set from EON via fake message
 int tesla_radar_vin_complete = 0; //set to 7 when complete vin is received
 int tesla_radar_should_send = 0; //set to 1 from EON via fake message when we want to use it
