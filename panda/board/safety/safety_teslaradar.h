@@ -24,8 +24,6 @@ int tesla_radar_x169_id = 0;
 int tesla_radar_x119_id = 0;
 int tesla_radar_x109_id = 0;
 
-#include "../drivers/can.h"
-
 static int add_tesla_crc(uint32_t MLB, uint32_t MHB , int msg_len) {
   //"""Calculate CRC8 using 1D poly, FF start, FF end"""
   int crc_lookup[256] = { 0x00, 0x1D, 0x3A, 0x27, 0x74, 0x69, 0x4E, 0x53, 0xE8, 0xF5, 0xD2, 0xCF, 0x9C, 0x81, 0xA6, 0xBB,
@@ -78,6 +76,8 @@ static int add_tesla_cksm2(uint32_t dl, uint32_t dh, int msg_id, int msg_len) {
   to_check.RDHR = dh;
   return add_tesla_cksm(&to_check,msg_id,msg_len);
 }
+
+void can_send(CAN_FIFOMailBox_TypeDef *to_push, uint8_t bus_number);
 
 static void send_fake_message(uint32_t RIR, uint32_t RDTR,int msg_len, int msg_addr, uint8_t bus_num, uint32_t data_lo, uint32_t data_hi) {
   CAN_FIFOMailBox_TypeDef to_send;
