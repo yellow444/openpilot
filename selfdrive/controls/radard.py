@@ -386,7 +386,7 @@ def radard_thread(sm=None, pm=None, can_sock=None):
     can_sock = messaging.sub_sock('can')
 
   if sm is None:
-    if CP.carName == "tesla":
+    if CP.carName == "volkswagen":
       sm = messaging.SubMaster(['model', 'controlsState', 'liveParameters', 'pathPlan'])
     else:
       sm = messaging.SubMaster(['model', 'controlsState', 'liveParameters'])
@@ -395,7 +395,7 @@ def radard_thread(sm=None, pm=None, can_sock=None):
   # *** publish radarState and liveTracks
   if pm is None:
     pm = messaging.PubMaster(['radarState', 'liveTracks'])
-  if CP.carName == "tesla":
+  if CP.carName == "volkswagen":
     icLeads = messaging.pub_sock('uiIcLeads')
     ahbInfo = messaging.pub_sock('ahbInfo')
 
@@ -411,7 +411,7 @@ def radard_thread(sm=None, pm=None, can_sock=None):
     can_strings = messaging.drain_sock_raw(can_sock, wait_for_one=True)
 
 
-    if CP.carName == "tesla":
+    if CP.carName == "volkswagen":
       rr,rrext,ahbCarDetected = RI.update(can_strings,v_ego)
     else:
       rr = RI.update(can_strings)
@@ -430,7 +430,7 @@ def radard_thread(sm=None, pm=None, can_sock=None):
 
     pm.send('radarState', dat)
 
-    if CP.carName == "tesla":
+    if CP.carName == "volkswagen":
       icLeads.send(datext.to_bytes())
       ahbInfoMsg = tesla.AHBinfo.new_message()
       ahbInfoMsg.source = 0
