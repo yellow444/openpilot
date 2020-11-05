@@ -99,7 +99,7 @@ class RadarInterface(RadarInterfaceBase):
         self.track_id = 0
         self.radar_fault = False
         self.radar_wrong_config = False
-        self.radar_off_can = False
+        self.radar_off_can = True
         self.radar_ts = 0.05
         if not self.radar_off_can:
             self.pts = {}
