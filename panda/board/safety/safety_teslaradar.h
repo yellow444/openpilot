@@ -210,7 +210,7 @@ static void activate_tesla_radar(uint32_t RIR, uint32_t RDTR) {
         //send 2A9
         MLB = 0x41431642;
         MHB = 0x10020000 | (radarPosition << 4) | (radarEpasType << 12);
-        if ((sizeof(radar_VIN) >= 4) && ((int)(radar_VIN[7]) == 0x32)) {
+        if ((sizeof(radar_VIN) >= 4) && ((int)(radar_VIN[7]) == 0x34)) {
             //also change to AWD if needed (most likely) if manual VIN and if position 8 of VIN is a 2 (dual motor)
             MLB = MLB | 0x08;
         }
