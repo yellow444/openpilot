@@ -95,7 +95,7 @@ class CarInterface(CarInterfaceBase):
 
       # OP LONG parameters
       ret.gasMaxBP = [0., 5.]  # m/s
-      ret.gasMaxV = [0.2, 1.0]  # max gas allowed
+      ret.gasMaxV = [0.3, 1.0]  # max gas allowed
       ret.brakeMaxBP = [5., 20.]  # m/s
       ret.brakeMaxV = [0.8, 1.]  # max brake allowed
       ret.openpilotLongitudinalControl = True
@@ -110,7 +110,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpBP = [0., 8., 35.]
       ret.lateralTuning.pid.kiBP = [0., 8., 35.]
       ret.lateralTuning.pid.kpV = [0.15, 0.19, 0.21]
-      ret.lateralTuning.pid.kiV = [0.07, 0.08, 0.09]
+      ret.lateralTuning.pid.kiV = [0.09, 0.10, 0.11]
 
       ret.stoppingControl = True
       ret.directAccelControl = False
