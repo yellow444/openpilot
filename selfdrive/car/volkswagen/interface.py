@@ -94,23 +94,23 @@ class CarInterface(CarInterfaceBase):
       tire_stiffness_factor = 1.0
 
       # OP LONG parameters
-      ret.gasMaxBP = [0.]  # m/s
-      ret.gasMaxV = [1]  # max gas allowed
+      ret.gasMaxBP = [0., 5.]  # m/s
+      ret.gasMaxV = [0.3, 1.0]  # max gas allowed
       ret.brakeMaxBP = [5., 20.]  # m/s
-      ret.brakeMaxV = [1., 0.8]  # max brake allowed
+      ret.brakeMaxV = [0.8, 1.]  # max brake allowed
       ret.openpilotLongitudinalControl = True
       ret.longitudinalTuning.deadzoneBP = [0.]
       ret.longitudinalTuning.deadzoneV = [0.]
       ret.longitudinalTuning.kpBP = [0., 5., 25.]
-      ret.longitudinalTuning.kpV = [2.0, 1.4, 0.95]
+      ret.longitudinalTuning.kpV = [1.0, 1.2, 2.0]
       ret.longitudinalTuning.kiBP = [0., 5., 25.]
-      ret.longitudinalTuning.kiV = [0.32, 0.28, 0.24]
+      ret.longitudinalTuning.kiV = [0.15, 0.2, 0.4]
 
       # PQ lateral tuning HCA_Status 7
-      ret.lateralTuning.pid.kpBP = [0., 8., 35.]
-      ret.lateralTuning.pid.kiBP = [0., 8., 35.]
-      ret.lateralTuning.pid.kpV = [0.18, 0.22, 0.25]
-      ret.lateralTuning.pid.kiV = [0.06, 0.07, 0.08]
+      ret.lateralTuning.pid.kpBP = [0., 14., 35.]
+      ret.lateralTuning.pid.kiBP = [0., 14., 35.]
+      ret.lateralTuning.pid.kpV = [0.12, 0.17, 0.19]
+      ret.lateralTuning.pid.kiV = [0.09, 0.10, 0.11]
 
       ret.stoppingControl = True
       ret.directAccelControl = False
