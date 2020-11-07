@@ -101,9 +101,9 @@ class CarInterface(CarInterfaceBase):
       ret.openpilotLongitudinalControl = True
       ret.longitudinalTuning.deadzoneBP = [0.]
       ret.longitudinalTuning.deadzoneV = [0.]
-      ret.longitudinalTuning.kpBP = [0., 5., 25.]
+      ret.longitudinalTuning.kpBP = [0., 3., 25.]
       ret.longitudinalTuning.kpV = [1.0, 1.5, 2.3]
-      ret.longitudinalTuning.kiBP = [0., 5., 25.]
+      ret.longitudinalTuning.kiBP = [0., 3., 25.]
       ret.longitudinalTuning.kiV = [0.15, 0.2, 0.4]
 
       # PQ lateral tuning HCA_Status 7
