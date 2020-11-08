@@ -102,9 +102,9 @@ class CarInterface(CarInterfaceBase):
       ret.longitudinalTuning.deadzoneBP = [0.]
       ret.longitudinalTuning.deadzoneV = [0.]
       ret.longitudinalTuning.kpBP = [0.]
-      ret.longitudinalTuning.kpV = [0.7]
+      ret.longitudinalTuning.kpV = [0.95]
       ret.longitudinalTuning.kiBP = [0.]
-      ret.longitudinalTuning.kiV = [0.083]
+      ret.longitudinalTuning.kiV = [0.103]
 
       # PQ lateral tuning HCA_Status 7
       ret.lateralTuning.pid.kpBP = [0., 10., 35.]
