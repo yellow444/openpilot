@@ -132,7 +132,7 @@ class CarController():
       mobEnabled = self.mobEnabled
       mobPreEnable = self.mobPreEnable
       # TODO make sure we use the full 8190 when calculating braking.
-      apply_brake = self.brake_limiter(actuators.brake * 1000)
+      apply_brake = self.brake_limiter(actuators.brake * 900)
 
       CS.brake_warning = False
       if enabled:
@@ -145,8 +145,8 @@ class CarController():
           elif not mobPreEnable:
             mobPreEnable = True
             apply_brake = 0
-          elif apply_brake > 1199:
-            apply_brake = 1200
+          elif apply_brake > 999:
+            apply_brake = 1000
             CS.brake_warning = True
         else:
           mobPreEnable = False
