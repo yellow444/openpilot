@@ -11,10 +11,10 @@ VisualAlert = car.CarControl.HUDControl.VisualAlert
 class CarController():
   def __init__(self, dbc_name, CP, VM):
     self.apply_steer_last = 0
+    self.apply_brake_last = 0
+    self.apply_gas_last = 0
     self.mobPreEnable = False
     self.mobEnabled = False
-    self.ACCSlowDown = False
-    self.ACCSpeedUp = False
     self.radarVin_idx = 0
 
     self.packer_pt = CANPacker(DBC[CP.carFingerprint]['pt'])
@@ -132,7 +132,7 @@ class CarController():
       mobEnabled = self.mobEnabled
       mobPreEnable = self.mobPreEnable
       # TODO make sure we use the full 8190 when calculating braking.
-      apply_brake = actuators.brake * 1400
+      apply_brake = self.brake_limiter(actuators.brake * 1400)
 
       CS.brake_warning = False
       if enabled:
@@ -275,3 +275,14 @@ class CarController():
           self.graMsgSentCount = 0
 
     return can_sends
+
+  def brake_limiter(self, apply_brake):
+    if apply_brake > self.apply_brake_last:
+      if (apply_brake - self.apply_brake_last) > 10:
+        apply_brake = apply_brake + 10
+    elif self.apply_brake_last > apply_brake:
+      if (self.apply_brake_last - apply_brake):
+        apply_brake = apply_brake - 10
+
+    self.apply_brake_last = apply_brake
+    return apply_brake
