@@ -111,6 +111,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kiBP = [0., 10., 35.]
       ret.lateralTuning.pid.kpV = [0.04, 0.05, 0.07]
       ret.lateralTuning.pid.kiV = [0.02, 0.03, 0.05]
+      ret.lateralTuning.pid.kf = 0.00005
 
       ret.stoppingControl = True
       ret.directAccelControl = False
