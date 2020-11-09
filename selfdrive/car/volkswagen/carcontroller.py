@@ -175,7 +175,7 @@ class CarController():
       idx = (frame / P.MOB_STEP) % 16
 
       can_sends.append(
-        self.create_awv_control(self.packer_pt, CANBUS.pt, idx, green_led, orange_led))
+        self.create_awv_control(self.packer_pt, CANBUS.pt, idx, orange_led, green_led))
 
     # --------------------------------------------------------------------------
     #                                                                         #
