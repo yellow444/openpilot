@@ -169,8 +169,8 @@ class CarController():
     #                                                                         #
     # --------------------------------------------------------------------------
     if frame % P.AWV_STEP == 0:
-      green_led = self.mobEnabled and self.mobPreEnable
-      orange_led = False
+      green_led = 1 if enabled else 0
+      orange_led = 1 if self.mobPreEnable and self.mobEnabled else 0
 
       idx = (frame / P.MOB_STEP) % 16
 
