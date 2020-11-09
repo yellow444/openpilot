@@ -195,13 +195,11 @@ class CarInterface(CarInterfaceBase):
       if not ret.cruiseState.enabled:
         self.pqCounter = 0
 
-    ret.pqBrakingError = False
     if self.CC.mobPreEnable:
       if self.CS.ActiveACCBraking == 0:
         self.pqBrakingCounter += 1
         if (self.pqBrakingCounter > 30):
           events.append(create_event('pqBrakingError', [ET.NO_ENTRY, ET.WARNING]))
-          ret.pqBrakingError = True
       else:
         self.pqBrakingCounter = 0
     else:
