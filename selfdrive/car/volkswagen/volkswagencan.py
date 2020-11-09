@@ -92,6 +92,17 @@ def create_pq_braking_control(packer, bus, apply_brake, idx, brake_enabled, brak
   values["PQ_MOB_CHECKSUM"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5]
   return packer.make_can_msg("MOB_1", bus, values)
 
+def create_pq_awv_control(packer, bus, idx, led_orange, led_green):
+  values = {
+    "AWV_2_Fehler" : 1 if led_orange else 0,
+    "AWV_2_Status" : 1 if led_green else 0,
+    "AWV_Zaehler": idx,
+  }
+
+  dat = packer.make_can_msg("mAWV", bus, values)[2]
+  values["AWV_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4]
+  return packer.make_can_msg("mAWV", bus, values)
+
 def create_pq_pedal_control(packer, bus, apply_gas, idx):
   # Common gas pedal msg generator
   enable = apply_gas > 0.001

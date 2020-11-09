@@ -10,6 +10,7 @@ class CarControllerParams:
   # FIXME: LDW is sent at 20Hz on PQ, need to make this conditional
   # LDW_STEP = 10                  # LDW_02 message frequency 10Hz
   LDW_STEP = 5                   # LDW_02 message frequency 20Hz
+  AWV_STEP = 4                   # AWV message frequency 25Hz
   GRA_ACC_STEP = 3               # GRA_ACC_01 message frequency 33Hz
 
   GRA_VBP_STEP = 100             # Send ACC virtual button presses once a second
