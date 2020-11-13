@@ -534,7 +534,6 @@ def controlsd_thread(sm=None, pm=None, can_sock=None):
       events.append(create_event('radarCommIssue', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     elif not sm.all_alive_and_valid():
       events.append(create_event('commIssue', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
-      print("commIssue: ", sm.alive)
     if not sm['pathPlan'].mpcSolutionValid:
       events.append(create_event('plannerError', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
     if not sm['pathPlan'].sensorValid:
