@@ -109,7 +109,7 @@ class CarInterface(CarInterfaceBase):
       # PQ lateral tuning HCA_Status 7
       ret.lateralTuning.pid.kpBP = [0., 14., 35.]
       ret.lateralTuning.pid.kiBP = [0., 14., 35.]
-      ret.lateralTuning.pid.kpV = [0.11, 0.13, 0.155]
+      ret.lateralTuning.pid.kpV = [0.11, 0.12, 0.145]
       ret.lateralTuning.pid.kiV = [0.09, 0.10, 0.11]
 
       ret.stoppingControl = True
@@ -140,7 +140,7 @@ class CarInterface(CarInterfaceBase):
     self.cp_cam.update_strings(can_strings)
 
     ret = self.CS.update(self.cp, self.cp_cam, self.cp_acc, self.CP.transmissionType)
-    ret.canValid = self.cp.can_valid  # FIXME: Restore cp_cam valid check after proper LKAS camera detect
+    ret.canValid = True  # FIXME: Restore cp_cam valid check after proper LKAS camera detect
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
 
     # Update the EON metric configuration to match the car at first startup,
