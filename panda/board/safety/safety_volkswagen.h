@@ -487,7 +487,7 @@ static int volkswagen_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
         bus_fwd = 2;
         break;
       case 2:
-        if ((addr == volkswagen_torque_msg) || (addr == volkswagen_lane_msg)) {
+        if ((addr == volkswagen_torque_msg) || (addr == volkswagen_lane_msg) || (addr == 0x17C)) {
           // OP takes control of the Heading Control Assist and Lane Departure Warning messages from the camera
           bus_fwd = -1;
         } else {
