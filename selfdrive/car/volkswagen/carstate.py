@@ -384,15 +384,15 @@ class CarState(CarStateBase):
       ("MFA_v_Einheit_02", "Einheiten_1", 0),       # MPH vs KMH speed display
       ("Bremsinfo", "Kombi_1", 0),                  # Manual handbrake applied
       ("GRA_Status", "Motor_2", 0),                 # ACC engagement status
-      ("Hauptschalter", "GRA_neu", 0),              # ACC button, on/off
-      ("Abbrechen", "GRA_neu", 0),                  # ACC button, cancel
-      ("Setzen", "GRA_neu", 0),                     # ACC button, set
-      ("Lang_Tip_up", "GRA_neu", 0),                # ACC button, increase or accel, long press
-      ("Lang_Tip_down", "GRA_neu", 0),              # ACC button, decrease or decel, long press
-      ("Kurz_Tip_up", "GRA_neu", 0),                # ACC button, increase or accel, short press
-      ("Kurz_Tip_down", "GRA_neu", 0),              # ACC button, decrease or decel, short press
-      ("Wiederaufnahme", "GRA_neu", 0),             # ACC button, resume
-      ("Zeitlueckenverstellung", "GRA_neu", 0),     # ACC button, time gap adj
+      ("GRA_Hauptschalt", "GRA_neu", 0),              # ACC button, on/off
+      ("GRA_Abbrechen", "GRA_neu", 0),                  # ACC button, cancel
+      ("GRA_Neu_Setzen", "GRA_neu", 0),                     # ACC button, set
+      ("GRA_Up_lang", "GRA_neu", 0),                # ACC button, increase or accel, long press
+      ("GRA_Down_lang", "GRA_neu", 0),              # ACC button, decrease or decel, long press
+      ("GRA_Up_kurz", "GRA_neu", 0),                # ACC button, increase or accel, short press
+      ("GRA_Down_kurz", "GRA_neu", 0),              # ACC button, decrease or decel, short press
+      ("GRA_Recall", "GRA_neu", 0),                 # ACC button, resume
+      ("GRA_Zeitluecke", "GRA_neu", 0),     # ACC button, time gap adj
     ]
 
     checks = [
