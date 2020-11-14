@@ -12,7 +12,7 @@ class CarState(CarStateBase):
     can_define = CANDefine(DBC[CP.carFingerprint]['pt'])
 
     if CP.safetyModel == car.CarParams.SafetyModel.volkswagenPq:
-      # Configure for PQ35/PQ46/NMS network messaging
+      # Configure for PQ35/PQ46/NMS network messaging fork
       self.get_can_parser = self.get_pq_can_parser
       self.get_cam_can_parser = self.get_pq_cam_can_parser
       self.update = self.update_pq
