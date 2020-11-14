@@ -442,7 +442,7 @@ class CarState(CarStateBase):
     checks = [
       # sig_address, frequency
       # FIXME: LDW_02 should be checked when we have better detection of installed hardware
-      #("LDW_02", 10),  # From R242 Driver assistance camera
+      ("LDW_02", 10),  # From R242 Driver assistance camera
     ]
 
     if CP.networkLocation == NWL.gateway:
