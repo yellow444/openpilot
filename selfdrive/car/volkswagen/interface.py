@@ -38,6 +38,9 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.pid.kiV = [0.1]
     tire_stiffness_factor = 1.0
 
+    # Check for Comma Pedal
+    ret.enableGasInterceptor = True
+
     ret.lateralTuning.pid.kpBP = [0.]
     ret.lateralTuning.pid.kiBP = [0.]
 
@@ -80,6 +83,23 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.58
       ret.centerToFront = ret.wheelbase * 0.45  # Estimated
       ret.steerRatio = 16.4
+
+      # OP LONG parameters
+      ret.gasMaxBP = [0., 5.]  # m/s
+      ret.gasMaxV = [0.3, 1.0]  # max gas allowed
+      ret.brakeMaxBP = [5., 20.]  # m/s
+      ret.brakeMaxV = [0.8, 1.]  # max brake allowed
+      ret.openpilotLongitudinalControl = True
+      ret.longitudinalTuning.deadzoneBP = [0.]
+      ret.longitudinalTuning.deadzoneV = [0.]
+      ret.longitudinalTuning.kpBP = [0., 5., 25.]
+      ret.longitudinalTuning.kpV = [1.0, 1.2, 2.0]
+      ret.longitudinalTuning.kiBP = [0., 5., 25.]
+      ret.longitudinalTuning.kiV = [0.15, 0.2, 0.4]
+
+      ret.stoppingControl = True
+      ret.directAccelControl = False
+      ret.startAccel = 0.0
 
     # Determine installed network location: take a manually forced setting if
     # present, otherwise assume camera for C2/BP and gateway for white/grey Panda.
