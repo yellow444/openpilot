@@ -123,7 +123,7 @@ class CarController():
     #                                                                         #
     #                                                                         #
     # --------------------------------------------------------------------------
-    if frame % P.MOB_STEP == 0:
+    if (frame % P.MOB_STEP == 0) and CS.CP.enableGasInterceptor:
       mobEnabled = self.mobEnabled
       mobPreEnable = self.mobPreEnable
       # TODO make sure we use the full 8190 when calculating braking.
@@ -162,7 +162,7 @@ class CarController():
       #                                                                         #
       #                                                                         #
       # --------------------------------------------------------------------------
-      if frame % P.AWV_STEP == 0:
+      if (frame % P.AWV_STEP == 0) and CS.CP.enableGasInterceptor:
         green_led = 1 if enabled else 0
         orange_led = 1 if self.mobPreEnable and self.mobEnabled else 0
 
