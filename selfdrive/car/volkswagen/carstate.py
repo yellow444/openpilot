@@ -268,7 +268,7 @@ class CarState(CarStateBase):
     # third stalk type controls.
     # TODO: Check to see what info we need to passthru and spoof on PQ
     self.graHauptschalter = pt_cp.vl["GRA_Neu"]['GRA_Hauptschalt']
-    self.graSenderCoding = pt_cp.vl["GRA_neu"]['GRA_Sender']
+    self.graSenderCoding = pt_cp.vl["GRA_Neu"]['GRA_Sender']
     self.graTypHauptschalter = False
     self.graButtonTypeInfo = False
     self.graTipStufe2 = False
