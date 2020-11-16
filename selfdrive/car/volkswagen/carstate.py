@@ -500,4 +500,8 @@ class CarState(CarStateBase):
       signals += [("ACA_V_Wunsch", "ACC_GRA_Anziege", 0)]  # ACC set speed
       checks += [("ACC_GRA_Anziege", 25)]  # From J428 ACC radar control module
 
+    if CP.enableGasInterceptor:
+      signals += [("INTERCEPTOR_GAS", "GAS_SENSOR", 0), ("INTERCEPTOR_GAS2", "GAS_SENSOR", 0)]
+      checks += [("GAS_SENSOR", 50)]
+
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.cam)
