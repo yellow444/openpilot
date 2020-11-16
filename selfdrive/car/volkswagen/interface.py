@@ -85,17 +85,17 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 16.4
 
       # OP LONG parameters
-      ret.gasMaxBP = [0., 5.]  # m/s
+      ret.gasMaxBP = [0., 1.]  # m/s
       ret.gasMaxV = [0.3, 1.0]  # max gas allowed
-      ret.brakeMaxBP = [5., 20.]  # m/s
-      ret.brakeMaxV = [0.8, 1.]  # max brake allowed
+      ret.brakeMaxBP = [0.]  # m/s
+      ret.brakeMaxV = [1.]  # max brake allowed
       ret.openpilotLongitudinalControl = True
       ret.longitudinalTuning.deadzoneBP = [0.]
       ret.longitudinalTuning.deadzoneV = [0.]
-      ret.longitudinalTuning.kpBP = [0., 5., 25.]
-      ret.longitudinalTuning.kpV = [1.0, 1.3, 2.2]
-      ret.longitudinalTuning.kiBP = [0., 5., 25.]
-      ret.longitudinalTuning.kiV = [0.25, 0.4, 0.6]
+      ret.longitudinalTuning.kpBP = [0.]
+      ret.longitudinalTuning.kpV = [0.95]
+      ret.longitudinalTuning.kiBP = [0.]
+      ret.longitudinalTuning.kiV = [0.12]
 
       # PQ lateral tuning HCA_Status 7
       ret.lateralTuning.pid.kpBP = [0., 14., 35.]
