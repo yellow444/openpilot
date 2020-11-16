@@ -130,7 +130,29 @@ def create_pq_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert,
   }
   return packer.make_can_msg("LDW_1", bus, values)
 
-pass
-
 def create_pq_acc_buttons_control(packer, bus, buttonStatesToSend, CS, idx):
-  pass
+  values = {
+    "Zaehler__GRA_neu_": idx,
+    "Tiptronik_Bedienteilfehler": 0,
+    "Frei_GRA_neu_1_2": 0,
+    "Limiter_ein": 0,
+    "Zeitlueckenverstellung": 0,
+    "Tiptronic_Tip_Up__4_1_": 0,
+    "Tiptronic_Tip_Down__4_1_": 0,
+    "Sender_Codierung__4_1_": CS.graSenderCoding,
+    "Wiederaufnahme": 0,
+    "Setzen": 0,
+    "GRA_Neu_frei_1": 0,
+    "Bedienteil_Fehler": 0,
+    "Lang_Tip_up": buttonStatesToSend["accelCruiseLong"],
+    "Lang_Tip_down": buttonStatesToSend["decelCruiseLong"],
+    "Kurz_Tip_up": buttonStatesToSend["accelCruise"],
+    "Kurz_Tip_down": buttonStatesToSend["decelCruise"],
+    "Abbrechen": 1 if (buttonStatesToSend["cancel"] or CS.buttonStates["cancel"]) else 0,
+    "Hauptschalter": CS.graHauptschalter,
+  }
+
+  dat = packer.make_can_msg("GRA_neu", bus, values)[2]
+  values["Checksumme_GRA_Neu"] = dat[1] ^ dat[2] ^ dat[3]
+  return packer.make_can_msg("GRA_neu", bus, values)
+
