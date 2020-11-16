@@ -72,15 +72,13 @@ def clear_locks(root):
       cloudlog.exception("clear_locks failed")
 
 def is_on_wifi():
-  return HARDWARE.get_network_type() == NetworkType.wifi
+  return True
 
 def is_on_hotspot():
   try:
     result = subprocess.check_output(["ifconfig", "wlan0"], stderr=subprocess.STDOUT, encoding='utf8')
     result = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
-    return (result.startswith('192.168.43.') or  # android
-            result.startswith('172.20.10.') or  # ios
-            result.startswith('10.0.2.'))  # toyota entune
+    return False
   except Exception:
     return False
 
