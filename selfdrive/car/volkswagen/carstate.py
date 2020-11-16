@@ -274,7 +274,7 @@ class CarState(CarStateBase):
     # Pick up the GRA_ACC_01 CAN message counter so we can sync to it for
     # later cruise-control button spamming.
     # FIXME: will need msg counter and checksum algo to spoof GRA_neu
-    self.graMsgBusCounter = 0
+    self.graMsgBusCounter = pt_cp.vl["GRA_Neu"]['GRA_Neu_Zaehler']
 
     # Check to make sure the electric power steering rack is configured to
     # accept and respond to HCA_01 messages and has not encountered a fault.
@@ -419,6 +419,7 @@ class CarState(CarStateBase):
       ("GRA_Down_kurz", "GRA_Neu", 0),              # ACC button, decrease or decel, short press
       ("GRA_Recall", "GRA_Neu", 0),                 # ACC button, resume
       ("GRA_Zeitluecke", "GRA_Neu", 0),     # ACC button, time gap adj
+      ("GRA_Neu_Zaehler", "GRA_Neu", 0),  # ACC button, time gap adj
     ]
 
     checks = [
