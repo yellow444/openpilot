@@ -268,6 +268,7 @@ class CarState(CarStateBase):
     # third stalk type controls.
     # TODO: Check to see what info we need to passthru and spoof on PQ
     self.graHauptschalter = pt_cp.vl["GRA_Neu"]['GRA_Hauptschalt']
+    self.graSenderCoding = pt_cp.vl["GRA_neu"]['GRA_Sender']
     self.graTypHauptschalter = False
     self.graButtonTypeInfo = False
     self.graTipStufe2 = False
@@ -418,8 +419,9 @@ class CarState(CarStateBase):
       ("GRA_Up_kurz", "GRA_Neu", 0),                # ACC button, increase or accel, short press
       ("GRA_Down_kurz", "GRA_Neu", 0),              # ACC button, decrease or decel, short press
       ("GRA_Recall", "GRA_Neu", 0),                 # ACC button, resume
-      ("GRA_Zeitluecke", "GRA_Neu", 0),     # ACC button, time gap adj
-      ("GRA_Neu_Zaehler", "GRA_Neu", 0),  # ACC button, time gap adj
+      ("GRA_Zeitluecke", "GRA_Neu", 0),             # ACC button, time gap adj
+      ("GRA_Neu_Zaehler", "GRA_Neu", 0),            # ACC button, time gap adj
+      ("GRA_Sender", "GRA_Neu", 0),                 # GRA Sender Coding
     ]
 
     checks = [
