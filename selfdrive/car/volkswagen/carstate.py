@@ -249,7 +249,7 @@ class CarState(CarStateBase):
 
     # Update ACC setpoint. When the setpoint reads as 255, the driver has not
     # yet established an ACC setpoint, so treat it as zero.
-    ret.cruiseState.speed = acc_cp.vl["ACC_GRA_Anziege"]['ACA_V_Wunsch'] * CV.KPH_TO_MS
+    ret.cruiseState.speed = pt_cp.vl["Motor_2"]['Soll_Geschwindigkeit_bei_GRA_Be'] * CV.KPH_TO_MS
     if ret.cruiseState.speed > 70:  # 255 kph in m/s == no current setpoint
       ret.cruiseState.speed = 0
 
@@ -409,6 +409,7 @@ class CarState(CarStateBase):
       ("MFA_v_Einheit_02", "Einheiten_1", 0),       # MPH vs KMH speed display
       ("Bremsinfo", "Kombi_1", 0),                  # Manual handbrake applied
       ("GRA_Status", "Motor_2", 0),                 # ACC engagement status
+      ("Soll_Geschwindigkeit_bei_GRA_Be", "Motor_2", 0),  # ACC speed setpoint from ECU??? check this
       ("GRA_Hauptschalt", "GRA_Neu", 0),              # ACC button, on/off
       ("GRA_Abbrechen", "GRA_Neu", 0),                  # ACC button, cancel
       ("GRA_Neu_Setzen", "GRA_Neu", 0),                     # ACC button, set
