@@ -26,6 +26,7 @@ class CarController():
       self.create_hud_control = volkswagencan.create_pq_hud_control
       self.create_braking_control = volkswagencan.create_pq_braking_control
       self.create_gas_control = volkswagencan.create_pq_pedal_control
+      self.create_awv_control = volkswagencan.create_pq_awv_control
       self.ldw_step = CarControllerParams.PQ_LDW_STEP
 
     self.hcaSameTorqueCount = 0
@@ -154,6 +155,21 @@ class CarController():
       self.mobPreEnable = mobPreEnable
       self.mobEnabled = mobEnabled
       can_sends.append(self.create_braking_control(self.packer_pt, CANBUS.br, apply_brake, idx, mobEnabled, mobPreEnable))
+
+      # --------------------------------------------------------------------------
+      #                                                                         #
+      # Prepare PQ_MOB for sending the braking message                          #
+      #                                                                         #
+      #                                                                         #
+      # --------------------------------------------------------------------------
+      if frame % P.AWV_STEP == 0:
+        green_led = 1 if enabled else 0
+        orange_led = 1 if self.mobPreEnable and self.mobEnabled else 0
+
+        idx = (frame / P.MOB_STEP) % 16
+
+        can_sends.append(
+          self.create_awv_control(self.packer_pt, CANBUS.pt, idx, orange_led, green_led))
 
     # --------------------------------------------------------------------------
     #                                                                         #
