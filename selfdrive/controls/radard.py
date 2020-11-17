@@ -116,9 +116,6 @@ class RadarD():
     self.ready = False
     self.icCarLR = None
     self.use_tesla_radar = use_tesla_radar
-    if self.use_tesla_radar:
-      if (RI.TRACK_RIGHT_LANE or RI.TRACK_LEFT_LANE):
-        self.icCarLR = messaging.pub_sock('uiIcCarLR')
 
     self.lane_width = 3.0
     #only used for left and right lanes
