@@ -119,7 +119,7 @@ class RadarD():
     if self.use_tesla_radar:
       if (RI.TRACK_RIGHT_LANE or RI.TRACK_LEFT_LANE):
         self.icCarLR = messaging.pub_sock('uiIcCarLR')
-    
+
     self.lane_width = 3.0
     #only used for left and right lanes
     self.path_x = np.arange(0.0, 160.0, 0.1)    # 160 meters is max
@@ -197,7 +197,7 @@ class RadarD():
         aLeadK = clusters[cluster_idxs[idx]].aLeadK
         aLeadTau = clusters[cluster_idxs[idx]].aLeadTau
         self.tracks[idens[idx]].reset_a_lead(aLeadK, aLeadTau)
-    
+
     ### START REVIEW SECTION
 
     #################################################################
@@ -211,7 +211,7 @@ class RadarD():
         datrl.v1Vrel = float(0.)
         datrl.v1Dy = float(0.)
         datrl.v1Id = int(0)
-        datrl.v2Type = int(0) 
+        datrl.v2Type = int(0)
         datrl.v2Dx = float(0.)
         datrl.v2Vrel = float(0.)
         datrl.v2Dy = float(0.)
@@ -221,12 +221,12 @@ class RadarD():
         datrl.v3Vrel = float(0.)
         datrl.v3Dy = float(0.)
         datrl.v3Id = int(0)
-        datrl.v4Type = int(0) 
+        datrl.v4Type = int(0)
         datrl.v4Dx = float(0.)
         datrl.v4Vrel = float(0.)
         datrl.v4Dy = float(0.)
         datrl.v4Id = int(0)
-        lane_offset = 0. 
+        lane_offset = 0.
       #LEFT LANE
       if self.RI.TRACK_LEFT_LANE:
         ll_track_pts = np.array([self.tracks[iden].get_key_for_cluster_dy(-self.lane_width) for iden in idens])
@@ -280,7 +280,7 @@ class RadarD():
               datrl.v2Type = 0
             datrl.v2Dx = float(ll_lead2_clusters[0].dRel)
             datrl.v2Vrel = float(ll_lead2_clusters[0].vRel)
-            datrl.v2Dy = float(-ll_lead2_clusters[0].yRel - lane_offset) 
+            datrl.v2Dy = float(-ll_lead2_clusters[0].yRel - lane_offset)
             datrl.v2Id = int(ll_lead2_clusters[0].track_id % 32)
       #RIGHT LANE
       if self.RI.TRACK_RIGHT_LANE:
@@ -321,7 +321,7 @@ class RadarD():
                         if c.is_truck(rl_lead2_clusters)]) > 0)
         # publish data
         if rl_lead_len > 0:
-          datrl.v3Type = int(rl_lead_clusters[0].oClass) 
+          datrl.v3Type = int(rl_lead_clusters[0].oClass)
           if datrl.v3Type == 1 and rl_lead1_truck:
             datrl.v3Type = 0
           datrl.v3Dx = float(rl_lead_clusters[0].dRel)
@@ -337,10 +337,10 @@ class RadarD():
             datrl.v4Dy = float(-rl_lead2_clusters[0].yRel + lane_offset)
             datrl.v4Id = int(rl_lead2_clusters[0].track_id % 32)
       if (self.RI.TRACK_RIGHT_LANE or self.RI.TRACK_LEFT_LANE):
-        self.icCarLR.send(datrl.to_bytes())      
+        self.icCarLR.send(datrl.to_bytes())
 
       ### END REVIEW SECTION
-    
+
 
     # *** publish radarState ***
     dat = messaging.new_message('radarState')
@@ -357,7 +357,7 @@ class RadarD():
       l2d,l2x = get_lead(self.v_ego, self.ready, clusters, sm['model'].leadFuture, low_speed_override=False, use_tesla_radar=self.use_tesla_radar)
       dat.radarState.leadOne = l1d
       dat.radarState.leadTwo = l2d
-    
+
       datext.lead1trackId = l1x['trackId']
       datext.lead1oClass = l1x['oClass']
       datext.lead1length = l1x['length']
@@ -369,7 +369,7 @@ class RadarD():
 
 # fuses camera and radar data for best lead detection
 def radard_thread(sm=None, pm=None, can_sock=None):
-  set_realtime_priority(2)
+  config_realtime_process(2, Priority.CTRL_LOW)
 
   # wait for stats about the car to come in from controls
   cloudlog.info("radard is waiting for CarParams")
@@ -403,7 +403,7 @@ def radard_thread(sm=None, pm=None, can_sock=None):
   rk = Ratekeeper(1.0 / CP.radarTimeStep, print_delay_threshold=None)
   RD = RadarD(CP.radarTimeStep, RI, use_tesla_radar,RI.delay)
 
-  has_radar = not CP.radarOffCan 
+  has_radar = not CP.radarOffCan
   v_ego = 0.
   print("Working with ",CP.carName," with radarOffCan=",CP.radarOffCan)
   while 1:
