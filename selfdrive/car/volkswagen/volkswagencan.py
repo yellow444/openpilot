@@ -82,7 +82,7 @@ def create_pq_braking_control(packer, bus, apply_brake, idx, brake_enabled, brak
     "MOB_Bremsstgr": abs(apply_brake),
     "MOB_Standby": 1 if (brake_enabled) else 0,
     "MOB_Freigabe": 1 if (brake_enabled and brake_pre_enable) else 0,
-    "MOB_Anhaltewunsch": 1 if stopping_wish else 0,
+    "MOB_Anhaltewunsch": 1,
   }
 
   dat = packer.make_can_msg("MOB_1", bus, values)[2]
