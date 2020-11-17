@@ -175,6 +175,7 @@ class CarState(CarStateBase):
     ret.vEgoRaw = float(np.mean([ret.wheelSpeeds.fl, ret.wheelSpeeds.fr, ret.wheelSpeeds.rl, ret.wheelSpeeds.rr]))
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
 
+
     ret.standstill = ret.vEgoRaw < 0.1
 
     # Update steering angle, rate, yaw rate, and driver input torque. VW send
@@ -280,6 +281,11 @@ class CarState(CarStateBase):
     # Check to make sure the electric power steering rack is configured to
     # accept and respond to HCA_01 messages and has not encountered a fault.
     self.steeringFault = pt_cp.vl["Lenkhilfe_2"]['LH2_Sta_HCA'] not in [3, 5, 7]
+
+    # Read ABS pump for checking in ACC braking is working.
+    if self.CP.enableGasInterceptor:
+      self.ABSWorking = pt_cp.vl["Bremse_8"]["BR8_Sta_ADR_BR"]
+      self.currentSpeed = ret.vEgo
 
     return ret
 
@@ -422,6 +428,7 @@ class CarState(CarStateBase):
       ("GRA_Zeitluecke", "GRA_Neu", 0),             # ACC button, time gap adj
       ("GRA_Neu_Zaehler", "GRA_Neu", 0),            # ACC button, time gap adj
       ("GRA_Sender", "GRA_Neu", 0),                 # GRA Sender Coding
+      ("BR8_Sta_ADR_BR", "Bremse_8", 0),           # ABS Pump actively braking for ACC
     ]
 
     checks = [
@@ -432,6 +439,7 @@ class CarState(CarStateBase):
       ("Motor_3", 100),           # From J623 Engine control module
       ("Airbag_1", 50),           # From J234 Airbag control module
       ("Bremse_5", 50),           # From J104 ABS/ESP controller
+      ("Bremse_8", 50),           # From J??? ABS/ACC controller
       ("GRA_Neu", 50),            # From J??? steering wheel control buttons
       ("Kombi_1", 50),            # From J285 Instrument cluster
       ("Motor_2", 50),            # From J623 Engine control module

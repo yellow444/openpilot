@@ -128,8 +128,8 @@ class CarController():
       mobPreEnable = self.mobPreEnable
       # TODO make sure we use the full 8190 when calculating braking.
       apply_brake = actuators.brake * 1200
+      stopping_wish = False
 
-      CS.brake_warning = False
       if enabled:
         if (apply_brake < 40):
           apply_brake = 0
@@ -143,6 +143,8 @@ class CarController():
           elif apply_brake > 1199:
             apply_brake = 1200
             CS.brake_warning = True
+          if CS.currentSpeed < 5.6:
+            stopping_wish = True
         else:
           mobPreEnable = False
           mobEnabled = False
@@ -154,7 +156,7 @@ class CarController():
       idx = (frame / P.MOB_STEP) % 16
       self.mobPreEnable = mobPreEnable
       self.mobEnabled = mobEnabled
-      can_sends.append(self.create_braking_control(self.packer_pt, CANBUS.br, apply_brake, idx, mobEnabled, mobPreEnable))
+      can_sends.append(self.create_braking_control(self.packer_pt, CANBUS.br, apply_brake, idx, mobEnabled, mobPreEnable, stopping_wish))
 
       # --------------------------------------------------------------------------
       #                                                                         #
@@ -165,11 +167,15 @@ class CarController():
       if (frame % P.AWV_STEP == 0) and CS.CP.enableGasInterceptor:
         green_led = 1 if enabled else 0
         orange_led = 1 if self.mobPreEnable and self.mobEnabled else 0
+        if enabled:
+          braking_working = 0 if (CS.ABSWorking == 0) else 5
+        else:
+          braking_working = 0
 
         idx = (frame / P.MOB_STEP) % 16
 
         can_sends.append(
-          self.create_awv_control(self.packer_pt, CANBUS.pt, idx, orange_led, green_led))
+          self.create_awv_control(self.packer_pt, CANBUS.pt, idx, orange_led, green_led, braking_working))
 
     # --------------------------------------------------------------------------
     #                                                                         #

@@ -75,25 +75,26 @@ def create_pq_steering_control(packer, bus, apply_steer, idx, lkas_enabled):
   values["HCA_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4]
   return packer.make_can_msg("HCA_1", bus, values)
 
-def create_pq_braking_control(packer, bus, apply_brake, idx, brake_enabled, brake_pre_enable):
+def create_pq_braking_control(packer, bus, apply_brake, idx, brake_enabled, brake_pre_enable, stopping_wish):
   values = {
     "PQ_MOB_COUNTER": idx,
     "MOB_Bremsmom": abs(apply_brake),
     "MOB_Bremsstgr": abs(apply_brake),
     "MOB_Standby": 1 if (brake_enabled) else 0,
     "MOB_Freigabe": 1 if (brake_enabled and brake_pre_enable) else 0,
-    "MOB_Anhaltewunsch": 0,
+    "MOB_Anhaltewunsch": 1 if stopping_wish else 0,
   }
 
   dat = packer.make_can_msg("MOB_1", bus, values)[2]
   values["PQ_MOB_CHECKSUM"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5]
   return packer.make_can_msg("MOB_1", bus, values)
 
-def create_pq_awv_control(packer, bus, idx, led_orange, led_green):
+def create_pq_awv_control(packer, bus, idx, led_orange, led_green, abs_working):
   values = {
     "AWV_2_Fehler" : 1 if led_orange else 0,
     "AWV_2_Status" : 1 if led_green else 0,
     "AWV_Zaehler": idx,
+    "AWV_Text": abs_working,
   }
 
   dat = packer.make_can_msg("mAWV", bus, values)[2]
