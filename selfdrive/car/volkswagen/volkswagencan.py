@@ -145,6 +145,18 @@ def create_pq_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert,
   }
   return packer.make_can_msg("LDW_1", bus, values)
 
+def create_pq_acc_buttons_control(packer, bus, buttonStatesToSend, CS, idx):
+  values = {
+    "GRA_Neu_Zaehler": idx,
+    "GRA_Sender": CS.graSenderCoding,
+    "GRA_Abbrechen": 1 if (buttonStatesToSend["cancel"] or CS.buttonStates["cancel"]) else 0,
+    "GRA_Hauptschalt": CS.graHauptschalter,
+  }
+
+  dat = packer.make_can_msg("GRA_Neu", bus, values)[2]
+  values["GRA_Checksum"] = dat[1] ^ dat[2] ^ dat[3]
+  return packer.make_can_msg("GRA_Neu", bus, values)
+
 def create_radar_VIN_msg(id,radarVIN,radarCAN,radarTriggerMessage,useRadar,radarPosition,radarEpasType):
   msg_id = 0x560
   msg_len = 8
