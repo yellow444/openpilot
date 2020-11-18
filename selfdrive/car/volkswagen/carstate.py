@@ -249,13 +249,14 @@ class CarState(CarStateBase):
     # third stalk type controls.
     # TODO: Check to see what info we need to passthru and spoof on PQ
     self.graHauptschalter = pt_cp.vl["GRA_Neu"]['GRA_Hauptschalt']
+    self.graSenderCoding = pt_cp.vl["GRA_Neu"]['GRA_Sender']
     self.graTypHauptschalter = False
     self.graButtonTypeInfo = False
     self.graTipStufe2 = False
     # Pick up the GRA_ACC_01 CAN message counter so we can sync to it for
     # later cruise-control button spamming.
     # FIXME: will need msg counter and checksum algo to spoof GRA_neu
-    self.graMsgBusCounter = 0
+    self.graMsgBusCounter = pt_cp.vl["GRA_Neu"]['GRA_Neu_Zaehler']
 
     # Check to make sure the electric power steering rack is configured to
     # accept and respond to HCA_01 messages and has not encountered a fault.
@@ -390,15 +391,17 @@ class CarState(CarStateBase):
       ("MFA_v_Einheit_02", "Einheiten_1", 0),       # MPH vs KMH speed display
       ("Bremsinfo", "Kombi_1", 0),                  # Manual handbrake applied
       ("GRA_Status", "Motor_2", 0),                 # ACC engagement status
-      ("GRA_Hauptschalt", "GRA_Neu", 0),              # ACC button, on/off
-      ("GRA_Abbrechen", "GRA_Neu", 0),                  # ACC button, cancel
-      ("GRA_Neu_Setzen", "GRA_Neu", 0),                     # ACC button, set
+      ("GRA_Hauptschalt", "GRA_Neu", 0),            # ACC button, on/off
+      ("GRA_Abbrechen", "GRA_Neu", 0),              # ACC button, cancel
+      ("GRA_Neu_Setzen", "GRA_Neu", 0),             # ACC button, set
       ("GRA_Up_lang", "GRA_Neu", 0),                # ACC button, increase or accel, long press
       ("GRA_Down_lang", "GRA_Neu", 0),              # ACC button, decrease or decel, long press
       ("GRA_Up_kurz", "GRA_Neu", 0),                # ACC button, increase or accel, short press
       ("GRA_Down_kurz", "GRA_Neu", 0),              # ACC button, decrease or decel, short press
       ("GRA_Recall", "GRA_Neu", 0),                 # ACC button, resume
-      ("GRA_Zeitluecke", "GRA_Neu", 0),     # ACC button, time gap adj
+      ("GRA_Zeitluecke", "GRA_Neu", 0),             # ACC button, time gap adj
+      ("GRA_Sender", "GRA_Neu",0),                  # ACC button, sender coding
+      ("GRA_Neu_Zaehler", "GRA_Neu",0),             # ACC button, counter
     ]
 
     checks = [
