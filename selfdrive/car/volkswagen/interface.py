@@ -27,7 +27,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.enableCamera = True  # Stock camera detection doesn't apply to VW
     ret.carName = "volkswagen"
-    ret.radarOffCan = True
+    ret.radarOffCan = False
 
     # Common default parameters that may be overridden per-vehicle
     ret.steerRateCost = 1.0

@@ -111,7 +111,7 @@ class RadarInterface(RadarInterfaceBase):
             self.trigger_start_msg = RADAR_A_MSGS[0]
             self.trigger_end_msg = RADAR_B_MSGS[-1]
 
-        self.delay = int(round(0.1 / CP.radarTimeStep))  # 0.1s delay of radar
+        self.delay = int(round(0.1 / 0.05))  # 0.1s delay of radar
 
     def update(self, can_strings, v_ego):
         # radard at 20Hz and return no points
