@@ -81,7 +81,7 @@ def _create_radard_can_parser():
 
     checks = list(zip(RADAR_A_MSGS + RADAR_B_MSGS, [6] * (msg_a_n + msg_b_n)))
 
-    return CANParser(os.path.splitext(dbc_f)[0].encode("utf8"), signals, checks, 2)
+    return CANParser(os.path.splitext(dbc_f)[0].encode("utf8"), signals, checks, 1)
 
 
 class RadarInterface(RadarInterfaceBase):
@@ -111,7 +111,7 @@ class RadarInterface(RadarInterfaceBase):
             self.trigger_start_msg = RADAR_A_MSGS[0]
             self.trigger_end_msg = RADAR_B_MSGS[-1]
 
-        self.delay = int(round(0.1 / self.radar_ts))  # 0.1s delay of radar
+        self.delay = int(round(0.1 / CP.radarTimeStep))  # 0.1s delay of radar
 
     def update(self, can_strings, v_ego):
         # radard at 20Hz and return no points
