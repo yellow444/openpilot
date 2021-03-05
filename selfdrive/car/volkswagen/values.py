@@ -1,5 +1,6 @@
 # flake8: noqa
 
+from cereal import car
 from selfdrive.car import dbc_dict
 from cereal import car
 Ecu = car.CarParams.Ecu
