@@ -70,6 +70,26 @@ FINGERPRINTS = {
 }
 
 FW_VERSIONS = {
+  CAR.AUDI_A3: {
+    (Ecu.engine, 0x7e0, None): [
+      b'04E906023BL',  # 2018 A3 e-tron sportback (CXUA)
+    ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'0DD300046G ',  # 2018 A3 e-tron sportback (DQ400E)
+    ],
+    (Ecu.srs, 0x715, None): [
+      b'5Q0959655J ',  # 2018 A3 e-tron sportback
+    ],
+    (Ecu.eps, 0x712, None): [
+      b'5Q0909144T ',  # Shared
+    ],
+    (Ecu.fwdRadar, 0x757, None): [
+      b'5Q0907572G ',  # Shared
+    ],
+    (Ecu.fwdCamera, 0x74f, None): [
+      b'3Q0980654H ',  # Shared
+    ],
+  },
   CAR.GOLF: {
     (Ecu.engine, 0x7e0, None): [
       b'8V0906259P ',  # 2018 Golf R (DJJA)
