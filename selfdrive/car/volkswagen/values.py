@@ -77,9 +77,6 @@ FW_VERSIONS = {
     (Ecu.transmission, 0x7e1, None): [
       b'0DD300046G ',  # 2018 A3 e-tron sportback (DQ400E)
     ],
-    (Ecu.esp, 0x713, None): [
-      b'5Q0614517BL',  # 2018 A3 e-tron sportback
-    ],
     (Ecu.srs, 0x715, None): [
       b'5Q0959655J ',  # 2018 A3 e-tron sportback
     ],
