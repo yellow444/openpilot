@@ -1,6 +1,5 @@
 # flake8: noqa
 
-from cereal import car
 from selfdrive.car import dbc_dict
 from cereal import car
 Ecu = car.CarParams.Ecu
@@ -27,8 +26,8 @@ class CANBUS:
   pt = 0
   cam = 2
 
-TRANS = car.CarParams.TransmissionType
-GEAR = car.CarState.GearShifter
+TransmissionType = car.CarParams.TransmissionType
+GearShifter = car.CarState.GearShifter
 
 BUTTON_STATES = {
   "accelCruise": False,
@@ -81,13 +80,13 @@ FW_VERSIONS = {
       b'5Q0959655J ',  # 2018 A3 e-tron sportback
     ],
     (Ecu.eps, 0x712, None): [
-      b'5Q0909144T ',  # Shared
+      b'5Q0909144T ',  # 2018 A3 e-tron sportback
     ],
     (Ecu.fwdRadar, 0x757, None): [
-      b'5Q0907572G ',  # Shared
+      b'5Q0907572G ',
     ],
     (Ecu.fwdCamera, 0x74f, None): [
-      b'3Q0980654H ',  # Shared
+      b'3Q0980654H ',
     ],
   },
   CAR.GOLF: {

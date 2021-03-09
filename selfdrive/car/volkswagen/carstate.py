@@ -4,15 +4,15 @@ from selfdrive.config import Conversions as CV
 from selfdrive.car.interfaces import CarStateBase
 from opendbc.can.parser import CANParser
 from opendbc.can.can_define import CANDefine
-from selfdrive.car.volkswagen.values import DBC, CANBUS, TRANS, GEAR, BUTTON_STATES, CarControllerParams
+from selfdrive.car.volkswagen.values import DBC, CANBUS, TransmissionType, GearShifter, BUTTON_STATES, CarControllerParams
 
 class CarState(CarStateBase):
   def __init__(self, CP):
     super().__init__(CP)
     can_define = CANDefine(DBC[CP.carFingerprint]['pt'])
-    if CP.transmissionType == TRANS.automatic:
+    if CP.transmissionType == TransmissionType.automatic:
       self.shifter_values = can_define.dv["Getriebe_11"]['GE_Fahrstufe']
-    elif CP.transmissionType == TRANS.direct:
+    elif CP.transmissionType == TransmissionType.direct:
       self.shifter_values = can_define.dv["EV_Gearshift"]['GearPosition']
     self.buttonStates = BUTTON_STATES.copy()
 
@@ -45,16 +45,16 @@ class CarState(CarStateBase):
     ret.brakeLights = bool(pt_cp.vl["ESP_05"]['ESP_Status_Bremsdruck'])
 
     # Update gear and/or clutch position data.
-    if trans_type == TRANS.automatic:
+    if trans_type == TransmissionType.automatic:
       ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(pt_cp.vl["Getriebe_11"]['GE_Fahrstufe'], None))
-    elif trans_type == TRANS.direct:
+    elif trans_type == TransmissionType.direct:
       ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(pt_cp.vl["EV_Gearshift"]['GearPosition'], None))
-    elif trans_type == TRANS.manual:
+    elif trans_type == TransmissionType.manual:
       ret.clutchPressed = not pt_cp.vl["Motor_14"]['MO_Kuppl_schalter']
       if bool(pt_cp.vl["Gateway_72"]['BCM1_Rueckfahrlicht_Schalter']):
-        ret.gearShifter = GEAR.reverse
+        ret.gearShifter = GearShifter.reverse
       else:
-        ret.gearShifter = GEAR.drive
+        ret.gearShifter = GearShifter.drive
 
     # Update door and trunk/hatch lid open status.
     ret.doorOpen = any([pt_cp.vl["Gateway_72"]['ZV_FT_offen'],
@@ -224,13 +224,13 @@ class CarState(CarStateBase):
       ("Einheiten_01", 1),  # From J??? not known if gateway, cluster, or BCM
     ]
 
-    if CP.transmissionType == TRANS.automatic:
+    if CP.transmissionType == TransmissionType.automatic:
       signals += [("GE_Fahrstufe", "Getriebe_11", 0)]  # Auto trans gear selector position
       checks += [("Getriebe_11", 20)]  # From J743 Auto transmission control module
-    elif CP.transmissionType == TRANS.direct:
+    elif CP.transmissionType == TransmissionType.direct:
       signals += [("GearPosition", "EV_Gearshift", 0)]  # EV gear selector position
       checks += [("EV_Gearshift", 10)]  # From J??? unknown EV control module
-    elif CP.transmissionType == TRANS.manual:
+    elif CP.transmissionType == TransmissionType.manual:
       signals += [("MO_Kuppl_schalter", "Motor_14", 0),  # Clutch switch
                   ("BCM1_Rueckfahrlicht_Schalter", "Gateway_72", 0)]  # Reverse light from BCM
       checks += [("Motor_14", 10)]  # From J623 Engine control module
