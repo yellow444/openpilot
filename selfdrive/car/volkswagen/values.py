@@ -53,10 +53,12 @@ MQB_LDW_MESSAGES = {
 class CAR:
   GOLF = "VOLKSWAGEN GOLF"
   AUDI_A3 = "AUDI A3"
+  SKODA_KODIAQ = "SKODA KODIAQ"
 
 MQB_CARS = {
   CAR.GOLF,                 # Chassis AU, 2013-2020, includes Golf, Alltrack, Sportwagen, GTI, GTI TCR, GTE, GTD, Clubsport, Golf R, e-Golf
-  CAR.AUDI_A3               # Chassis 8V, 2013-2019, includes A3, A3 e-tron, A3 g-tron, S3, RS3
+  CAR.AUDI_A3,              # Chassis 8V, 2013-2019, includes A3, A3 e-tron, A3 g-tron, S3, RS3
+  CAR.SKODA_KODIAQ          # Chassis 5N, 2016-2020, includes Kodiaq
 }
 
 FINGERPRINTS = {
@@ -112,10 +114,31 @@ FW_VERSIONS = {
     (Ecu.fwdCamera, 0x74f, None): [
       b'\xf1\x873Q0980654H \xf1\x890272\xf1\x82\x0460041116',
     ],
-  }
+  },
+  CAR.SKODA_KODIAQ: {
+    (Ecu.engine, 0x7e0, None): [
+      b'\xf1\x8704E906027DD\xf1\x893123',  # 2018 Skoda Kodiaq (CZEA)
+    ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'\xf1\x870D9300043  \xf1\x895202',  # 2018 Skoda Kodiaq (DQ250)
+    ],
+    (Ecu.srs, 0x715, None): [
+      b'\xf1\x873Q0959655BJ\xf1\x890703\xf1\x82\0161213001211001205212111052100',  # 2018 Skoda Kodiaq
+    ],
+    (Ecu.eps, 0x712, None): [
+      b'\xf1\x875Q0909143P \xf1\x892051\xf1\x820527T6050405',  # 2018 Skoda Kodiaq
+    ],
+    (Ecu.fwdRadar, 0x757, None): [
+      b'\xf1\x872Q0907572R \xf1\x890372',  # 2018 Skoda Kodiaq
+    ],
+    (Ecu.fwdCamera, 0x74f, None): [
+      b'\xf1\x873QD980654  \xf1\x890610\xf1\x82\00414041403',  # 2018 Skoda Kodiaq
+    ],
+  },
 }
 
 DBC = {
   CAR.GOLF: dbc_dict('vw_mqb_2010', None),
   CAR.AUDI_A3: dbc_dict('vw_mqb_2010', None),
+  CAR.SKODA_KODIAQ: dbc_dict('vw_mqb_2010', None),
 }

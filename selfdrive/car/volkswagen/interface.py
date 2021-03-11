@@ -56,6 +56,11 @@ class CarInterface(CarInterfaceBase):
         ret.mass = 1397 + STD_CARGO_KG
         ret.wheelbase = 2.62
 
+      elif candidate == CAR.SKODA_KODIAQ:
+        # Averages of all 5N Kodiaq variants
+        ret.mass = 1569 + STD_CARGO_KG
+        ret.wheelbase = 2.79
+
       ret.centerToFront = ret.wheelbase * 0.45
 
     ret.enableCamera = True  # Stock camera detection doesn't apply to VW
