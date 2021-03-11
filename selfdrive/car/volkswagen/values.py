@@ -71,22 +71,22 @@ FINGERPRINTS = {
 FW_VERSIONS = {
   CAR.AUDI_A3: {
     (Ecu.engine, 0x7e0, None): [
-      b'04E906023BL',  # 2018 A3 e-tron sportback (CXUA)
+      b'\xf1\x8704E906023BL\xf1\x895190', # 2018 A3 e-tron Sportback (CXUA)
     ],
     (Ecu.transmission, 0x7e1, None): [
-      b'0DD300046G ',  # 2018 A3 e-tron sportback (DQ400E)
+      b'\xf1\x870DD300046G \xf1\x891601', # 2018 A3 e-tron Sportback (DQ400E)
     ],
     (Ecu.srs, 0x715, None): [
-      b'5Q0959655J ',  # 2018 A3 e-tron sportback
+      b'\xf1\x875Q0959655J \xf1\x890830\xf1\x82\x13121111111111--341117141212231291163221',  # 2018 A3 e-tron Sportback
     ],
     (Ecu.eps, 0x712, None): [
-      b'5Q0909144T ',  # 2018 A3 e-tron sportback
+      b'\xf1\x875Q0909144T \xf1\x891072\xf1\x82\x0521G00807A1',  # 2018 A3 e-tron Sportback
     ],
     (Ecu.fwdRadar, 0x757, None): [
-      b'5Q0907572G ',
+      b'\xf1\x875Q0907572G \xf1\x890571', # 2018 A3 e-tron Sportback
     ],
     (Ecu.fwdCamera, 0x74f, None): [
-      b'3Q0980654H ',
+      b'\xf1\x873Q0980654H \xf1\x890272\xf1\x82\x0436041111', # 2018 A3 e-tron Sportback
     ],
   },
   CAR.GOLF: {
