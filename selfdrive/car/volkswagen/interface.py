@@ -56,6 +56,13 @@ class CarInterface(CarInterfaceBase):
         ret.mass = 1397 + STD_CARGO_KG
         ret.wheelbase = 2.62
 
+      elif candidate == CAR.PASSAT_B8:
+        # Averages of all non-China 3C Passat variants
+        # Up to 350kg spread in curb weight between variants, might need to identify in more detail later
+        # TODO: Chinese market B8 has 8cm longer wheelbase, find out how to identify
+        ret.mass = 1551 + STD_CARGO_KG
+        ret.wheelbase = 2.79
+
       elif candidate == CAR.SKODA_KODIAQ:
         # Averages of all 5N Kodiaq variants
         ret.mass = 1569 + STD_CARGO_KG

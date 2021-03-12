@@ -52,14 +52,19 @@ MQB_LDW_MESSAGES = {
 
 class CAR:
   GOLF = "VOLKSWAGEN GOLF"
+  PASSAT_B8 = "VOLKSWAGEN PASSAT"
   AUDI_A3 = "AUDI A3"
   SKODA_KODIAQ = "SKODA KODIAQ"
 
 MQB_CARS = {
   CAR.GOLF,                 # Chassis AU, 2013-2020, includes Golf, Alltrack, Sportwagen, GTI, GTI TCR, GTE, GTD, Clubsport, Golf R, e-Golf
+  CAR.PASSAT_B8,            # Chassis 3C, 2014-2020, includes Passat, Alltrack, GTE (does not include North America NMS Passat)
   CAR.AUDI_A3,              # Chassis 8V, 2013-2019, includes A3, A3 e-tron, A3 g-tron, S3, RS3
   CAR.SKODA_KODIAQ          # Chassis 5N, 2016-2020, includes Kodiaq
 }
+
+# During MQB FPv2 testing, ignore all traditional CAN fingerprints
+IGNORED_FINGERPRINTS = [CAR.GOLF, CAR.AUDI_A3]
 
 FINGERPRINTS = {
   CAR.GOLF: [{
@@ -131,6 +136,26 @@ FW_VERSIONS = {
       b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\0041A041403',  # 2019 Golf R
     ],
   },
+  CAR.PASSAT_B8: {
+    (Ecu.engine, 0x7e0, None): [
+      b'\xf1\x8704E906023AH\xf1\x893379',  # 2016 Passat GTE wagon (CUKC)
+    ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'\xf1\x870DD300045T \xf1\x891601',  # 2016 Passat GTE wagon (DQ400E)
+    ],
+    (Ecu.srs, 0x715, None): [
+      b'\xf1\x875Q0959655S \xf1\x890870\xf1\x82\02315120011111200631145171716121691132111',  # 2016 Passat GTE wagon
+    ],
+    (Ecu.eps, 0x712, None): [
+      b'\xf1\x875Q0909143M \xf1\x892041\xf1\x820522B0080803',  # 2016 Passat GTE wagon
+    ],
+    (Ecu.fwdRadar, 0x757, None): [
+      b'\xf1\x875Q0907572R \xf1\x890771',  # 2016 Passat GTE wagon (retrofitted)
+    ],
+    (Ecu.fwdCamera, 0x74f, None): [
+      b'\xf1\x873QD980654  \xf1\x890610\xf1\x82\00414041403',  # 2018 Skoda Kodiaq
+    ],
+  },
   CAR.SKODA_KODIAQ: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704E906027DD\xf1\x893123',  # 2018 Skoda Kodiaq (CZEA)
@@ -155,6 +180,7 @@ FW_VERSIONS = {
 
 DBC = {
   CAR.GOLF: dbc_dict('vw_mqb_2010', None),
+  CAR.PASSAT_B8: dbc_dict('vw_mqb_2010', None),
   CAR.AUDI_A3: dbc_dict('vw_mqb_2010', None),
   CAR.SKODA_KODIAQ: dbc_dict('vw_mqb_2010', None),
 }
