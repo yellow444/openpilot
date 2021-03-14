@@ -194,6 +194,9 @@ FW_VERSIONS = {
     (Ecu.fwdRadar, 0x757, None): [
       b'\xf1\x875Q0907572R \xf1\x890771',  # 2016 Passat GTE wagon (retrofitted)
     ],
+    (Ecu.fwdCamera, 0x74f, None): [
+      b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\00414041403',  # 2016 Passat GTE wagon
+    ],
   },
   CAR.SKODA_KODIAQ: {
     (Ecu.engine, 0x7e0, None): [
