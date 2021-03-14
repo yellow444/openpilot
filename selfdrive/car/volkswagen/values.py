@@ -163,19 +163,27 @@ FW_VERSIONS = {
   },
   CAR.JETTA_MK7: {
     (Ecu.engine, 0x7e0, None): [
+      b'\xf1\x8704E906024B \xf1\x895594',  # 2018 Jetta (DGXA)
       b'\xf1\x8704E906024AK\xf1\x899937',  # 2020 Jetta (? 1.4 TSI)
     ],
     (Ecu.transmission, 0x7e1, None): [
+      b'\xf1\x8709S927158R \xf1\x893552',  # 2018 Jetta (AQ300)
       b'\xf1\x8709S927158R \xf1\x893587',  # 2020 Jetta (?)
     ],
     (Ecu.srs, 0x715, None): [
+      b'\xf1\x875Q0959655AG\xf1\x890336\xf1\x82\02314171231313500314611011630169333463100',  # 2018 Jetta
       b'\xf1\x875Q0959655BR\xf1\x890403\xf1\x82\02311170031313300314240011150119333433100',  # 2020 Jetta
     ],
     (Ecu.eps, 0x712, None): [
+      b'\xf1\x875QM909144B \xf1\x891081\xf1\x82\00521A10A01A1',  # 2018 Jetta
       b'\xf1\x875QM909144C \xf1\x891082\xf1\x82\00521A10A01A1',  # 2020 Jetta
     ],
     (Ecu.fwdRadar, 0x757, None): [
+      b'\xf1\x875Q0907572N \xf1\x890681',  # 2018 Jetta
       b'\xf1\x875Q0907572R \xf1\x890771',  # 2020 Jetta
+    ],
+    (Ecu.fwdCamera, 0x74f, None): [
+      b'\xf1\x873QD980654  \xf1\x891272\xf1\x82\0041H041119',  # 2018 Jetta
     ],
   },
   CAR.PASSAT_B8: {
