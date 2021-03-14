@@ -186,21 +186,25 @@ FW_VERSIONS = {
   CAR.SKODA_KODIAQ: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704E906027DD\xf1\x893123',  # 2018 Skoda Kodiaq (CZEA)
+      b'\xf1\x875NA907115E \xf1\x890003',  # 2018 Skoda Kodiaq (DGVA)
     ],
     (Ecu.transmission, 0x7e1, None): [
       b'\xf1\x870D9300043  \xf1\x895202',  # 2018 Skoda Kodiaq (DQ250)
+      b'\xf1\x870DL300012M \xf1\x892107',  # 2018 Skoda Kodiaq (DQ500)
     ],
     (Ecu.srs, 0x715, None): [
       b'\xf1\x873Q0959655BJ\xf1\x890703\xf1\x82\0161213001211001205212111052100',  # 2018 Skoda Kodiaq
     ],
     (Ecu.eps, 0x712, None): [
       b'\xf1\x875Q0909143P \xf1\x892051\xf1\x820527T6050405',  # 2018 Skoda Kodiaq
+      b'\xf1\x875Q0909143P \xf1\x892051\xf1\x820527T6060405',  # 2018 Skoda Kodiaq
     ],
     (Ecu.fwdRadar, 0x757, None): [
       b'\xf1\x872Q0907572R \xf1\x890372',  # 2018 Skoda Kodiaq
     ],
     (Ecu.fwdCamera, 0x74f, None): [
       b'\xf1\x873QD980654  \xf1\x890610\xf1\x82\00414041403',  # 2018 Skoda Kodiaq
+      b'\xf1\x873QD980654  \xf1\x891272\xf1\x82\00469041118',  # 2018 Skoda Kodiaq
     ],
   },
 }
