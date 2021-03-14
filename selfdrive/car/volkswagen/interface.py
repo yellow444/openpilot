@@ -56,7 +56,7 @@ class CarInterface(CarInterfaceBase):
         ret.mass = 1397 + STD_CARGO_KG
         ret.wheelbase = 2.62
 
-      elif candiate == CAR.JETTA_MK7:
+      elif candidate == CAR.JETTA_MK7:
         # Averages of all BU Jetta variants
         # China variant has 5cm longer wheelbase, might need to identify in more detail later
         ret.mass = 1328 + STD_CARGO_KG
