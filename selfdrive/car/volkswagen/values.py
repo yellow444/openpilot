@@ -52,12 +52,14 @@ MQB_LDW_MESSAGES = {
 
 class CAR:
   GOLF = "VOLKSWAGEN GOLF"
+  JETTA_MK7 = "VOLKSWAGEN JETTA"
   PASSAT_B8 = "VOLKSWAGEN PASSAT"
   AUDI_A3 = "AUDI A3"
   SKODA_KODIAQ = "SKODA KODIAQ"
 
 MQB_CARS = {
   CAR.GOLF,                 # Chassis AU, 2013-2020, includes Golf, Alltrack, Sportwagen, GTI, GTI TCR, GTE, GTD, Clubsport, Golf R, e-Golf
+  CAR.JETTA_MK7,            # Chassis BU, 2018-2021, includes Jetta and Jetta GLI, marketed as Sagitar in China with a longer wheelbase
   CAR.PASSAT_B8,            # Chassis 3C, 2014-2020, includes Passat, Alltrack, GTE (does not include North America NMS Passat)
   CAR.AUDI_A3,              # Chassis 8V, 2013-2019, includes A3, A3 e-tron, A3 g-tron, S3, RS3
   CAR.SKODA_KODIAQ          # Chassis 5N, 2016-2020, includes Kodiaq
@@ -147,6 +149,23 @@ FW_VERSIONS = {
       b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\0041A041403',  # 2019 Golf R
     ],
   },
+  CAR.JETTA_MK7: {
+    (Ecu.engine, 0x7e0, None): [
+      b'\xf1\x8704E906024AK\xf1\x899937',  # 2020 Jetta (? 1.4 TSI)
+    ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'\xf1\x8709S927158R \xf1\x893587',  # 2020 Jetta (?)
+    ],
+    (Ecu.srs, 0x715, None): [
+      b'\xf1\x875Q0959655BR\xf1\x890403\xf1\x82\02311170031313300314240011150119333433100',  # 2020 Jetta
+    ],
+    (Ecu.eps, 0x712, None): [
+      b'\xf1\x875QM909144C \xf1\x891082\xf1\x82\00521A10A01A1',  # 2020 Jetta
+    ],
+    (Ecu.fwdRadar, 0x757, None): [
+      b'\xf1\x875Q0907572R \xf1\x890771',  # 2020 Jetta
+    ],
+  },
   CAR.PASSAT_B8: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704E906023AH\xf1\x893379',  # 2016 Passat GTE wagon (CUKC)
@@ -188,6 +207,7 @@ FW_VERSIONS = {
 
 DBC = {
   CAR.GOLF: dbc_dict('vw_mqb_2010', None),
+  CAR.JETTA_MK7: dbc_dict('vw_mqb_2010', None),
   CAR.PASSAT_B8: dbc_dict('vw_mqb_2010', None),
   CAR.AUDI_A3: dbc_dict('vw_mqb_2010', None),
   CAR.SKODA_KODIAQ: dbc_dict('vw_mqb_2010', None),
