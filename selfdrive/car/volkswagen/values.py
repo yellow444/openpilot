@@ -107,7 +107,7 @@ FW_VERSIONS = {
       b'\xf1\x878V0906259P \xf1\x890001',  # 2018 Golf R (DJJA)
       b'\xf1\x8704L906026NF\xf1\x899528',  # 2019 Golf (DFGA)
       b'\xf1\x878V0906259Q \xf1\x890002',  # 2019 Golf R (DLRA)
-      b'\xf1\x870EA906016S \xf1\x897207',  # 2020 e-Golf
+      b'\xf1\x870EA906016S \xf1\x897207',  # 2020 e-Golf (EBSA)
     ],
     (Ecu.transmission, 0x7e1, None): [
       b'\xf1\x870CW300047D \xf1\x895261',  # 2015 Golf (DQ200)
