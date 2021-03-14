@@ -152,6 +152,7 @@ FW_VERSIONS = {
       b'\xf1\x873Q0980654H \xf1\x890272\xf1\x82\x0460041116',  # 2018 Golf R (modified parameterization)
       b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\00444041403',  # 2019 Golf
       b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\0041A041403',  # 2019 Golf R
+      b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\0041J041403',  # 2020 e-Golf
     ],
   },
   CAR.JETTA_MK7: {
