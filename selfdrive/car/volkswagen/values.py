@@ -101,6 +101,7 @@ FW_VERSIONS = {
   CAR.GOLF: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704E906016A \xf1\x897697',  # 2015 Golf (CJZA)
+      b'\xf1\x875G0906259J \xf1\x890002',  # 2016 Golf R wagon (CJXB)
       b'\xf1\x8704L906056HE\xf1\x893758',  # 2018 Golf wagon (DDYA)
       b'\xf1\x8704E906023BN\xf1\x894518',  # 2018 Golf GTE (CUKB)
       b'\xf1\x878V0906259P \xf1\x890001',  # 2018 Golf R (DJJA)
@@ -110,6 +111,7 @@ FW_VERSIONS = {
     ],
     (Ecu.transmission, 0x7e1, None): [
       b'\xf1\x870CW300047D \xf1\x895261',  # 2015 Golf (DQ200)
+      b'\xf1\x870D9300012  \xf1\x894913',  # 2016 Golf R wagon (DQ250)
       b'\xf1\x870CW300042F \xf1\x891604',  # 2018 Golf wagon (DQ200)
       b'\xf1\x870DD300046F \xf1\x891601',  # 2018 Golf GTE (DQ400E)
       b'\xf1\x870GC300012A \xf1\x891403',  # 2018 Golf R (DQ381)
@@ -117,7 +119,8 @@ FW_VERSIONS = {
       b'\xf1\x870GC300014B \xf1\x892405',  # 2019 Golf R (DQ381)
     ],
     (Ecu.srs, 0x715, None): [
-      b'\xf1\x875Q0959655AA\xf1\x890386\xf1\x82\0211413001113120043114317121C111C9113'  # 2015 Golf
+      b'\xf1\x875Q0959655AA\xf1\x890386\xf1\x82\0211413001113120043114317121C111C9113',  # 2015 Golf
+      b'\xf1\x875Q0959655AA\xf1\x890388\xf1\x82\0211413001113120053114317121C111C9113',  # 2016 Golf R wagon
       b'\xf1\x875Q0959655BH\xf1\x890336\xf1\x82\02314160011123300314211012230229333463100',  # 2018 Golf wagon
       b'\xf1\x875Q0959655S \xf1\x890870\xf1\x82\x1315120011211200061104171717101791132111',  # 2018 Golf GTE
       b'\xf1\x875Q0959655J \xf1\x890830\xf1\x82\x13271212111312--071104171838103891131211',  # 2018 Golf R
@@ -127,6 +130,7 @@ FW_VERSIONS = {
     ],
     (Ecu.eps, 0x712, None): [
       b'\xf1\x875Q0909144P \xf1\x891043\xf1\x82\00511A00403A0',  # 2015 Golf
+      b'\xf1\x873Q0909144H \xf1\x895061\xf1\x82\00566A0J612A1',  # 2016 Golf R wagon (progressive ratio)
       b'\xf1\x875Q0909144AA\xf1\x891081\xf1\x82\00521A00441A1',  # 2018 Golf wagon
       b'\xf1\x875Q0909144AA\xf1\x891081\xf1\x82\x0521A00641A1',  # 2018 Golf GTE
       b'\xf1\x873Q0909144L \xf1\x895081\xf1\x82\x0571A0JA15A1',  # 2018 Golf R (progressive ratio)
@@ -135,7 +139,8 @@ FW_VERSIONS = {
       b'\xf1\x875Q0909144AB\xf1\x891082\xf1\x82\00521A07B05A1',  # 2020 e-Golf
     ],
     (Ecu.fwdRadar, 0x757, None): [
-      b'\xf1\x875Q0907572D \xf1\x890304\xf1\x82\00101'  # 2015 Golf
+      b'\xf1\x875Q0907572D \xf1\x890304\xf1\x82\00101',  # 2015 Golf
+      b'\xf1\x875Q0907572F \xf1\x890400\xf1\x82\00101',  # 2016 Golf R wagon
       b'\xf1\x875Q0907572J \xf1\x890654',  # 2018 Golf wagon
       b'\xf1\x875Q0907572H \xf1\x890620',  # 2018 Golf GTE
       b'\xf1\x875Q0907572J \xf1\x890654',  # 2018 Golf R
