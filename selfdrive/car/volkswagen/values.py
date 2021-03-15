@@ -167,11 +167,11 @@ FW_VERSIONS = {
   CAR.JETTA_MK7: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704E906024B \xf1\x895594',  # 2018 Jetta (DGXA)
-      b'\xf1\x8704E906024AK\xf1\x899937',  # 2020 Jetta (? 1.4 TSI)
+      b'\xf1\x8704E906024AK\xf1\x899937',  # 2020 Jetta (DGXA)
     ],
     (Ecu.transmission, 0x7e1, None): [
       b'\xf1\x8709S927158R \xf1\x893552',  # 2018 Jetta (AQ300)
-      b'\xf1\x8709S927158R \xf1\x893587',  # 2020 Jetta (?)
+      b'\xf1\x8709S927158R \xf1\x893587',  # 2020 Jetta (AQ300)
     ],
     (Ecu.srs, 0x715, None): [
       b'\xf1\x875Q0959655AG\xf1\x890336\xf1\x82\02314171231313500314611011630169333463100',  # 2018 Jetta
