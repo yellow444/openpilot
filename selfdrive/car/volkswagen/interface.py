@@ -74,6 +74,11 @@ class CarInterface(CarInterfaceBase):
         ret.mass = 1569 + STD_CARGO_KG
         ret.wheelbase = 2.79
 
+      elif candidate == CAR.SKODA_SCALA:
+        # Averages of all NW Scala variants
+        ret.mass = 1192 + STD_CARGO_KG
+        ret.wheelbase = 2.65
+
       ret.centerToFront = ret.wheelbase * 0.45
 
     ret.enableCamera = True  # Stock camera detection doesn't apply to VW

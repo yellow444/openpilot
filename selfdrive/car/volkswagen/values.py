@@ -56,13 +56,16 @@ class CAR:
   PASSAT_B8 = "VOLKSWAGEN PASSAT"
   AUDI_A3 = "AUDI A3"
   SKODA_KODIAQ = "SKODA KODIAQ"
+  SKODA_SCALA = "SKODA SCALA"
 
 MQB_CARS = {
   CAR.GOLF,                 # Chassis AU, 2013-2020, includes Golf, Alltrack, Sportwagen, GTI, GTI TCR, GTE, GTD, Clubsport, Golf R, e-Golf
   CAR.JETTA_MK7,            # Chassis BU, 2018-2021, includes Jetta and Jetta GLI, marketed as Sagitar in China with a longer wheelbase
   CAR.PASSAT_B8,            # Chassis 3C, 2014-2020, includes Passat, Alltrack, GTE (does not include North America NMS Passat)
   CAR.AUDI_A3,              # Chassis 8V, 2013-2019, includes A3, A3 e-tron, A3 g-tron, S3, RS3
-  CAR.SKODA_KODIAQ          # Chassis 5N, 2016-2020, includes Kodiaq
+  CAR.SKODA_KODIAQ,         # Chassis 5N, 2016-2020, includes Kodiaq
+  CAR.SKODA_SCALA,          # Chassis NW, 2019-2021, includes Scala
+
 }
 
 # During MQB FPv2 testing, ignore all traditional CAN fingerprints
@@ -230,6 +233,26 @@ FW_VERSIONS = {
       b'\xf1\x873QD980654  \xf1\x891272\xf1\x82\00469041118',  # 2018 Skoda Kodiaq
     ],
   },
+  CAR.SKODA_SCALA: {
+    (Ecu.engine, 0x7e0, None): [
+      b'\xf1\x8704C906025AK\xf1\x897053',  # 2020 Skoda Scala (DKRF)
+    ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'\xf1\x870CW300050  \xf1\x891709',  # 2020 Skoda Scala (DQ200G2)
+    ],
+    (Ecu.srs, 0x715, None): [
+      b'\xf1\x872Q0959655AM\xf1\x890351\xf1\x82\022111104111104112104040404111111112H14',  # 2020 Skoda Scala
+    ],
+    (Ecu.eps, 0x712, None): [
+      b'\xf1\x872Q1909144M \xf1\x896041',  # 2020 Skoda Scala
+    ],
+    (Ecu.fwdRadar, 0x757, None): [
+      b'\xf1\x872Q0907572R \xf1\x890372',  # 2020 Skoda Scala
+    ],
+    (Ecu.fwdCamera, 0x74f, None): [
+      b'\xf1\x873Q0980654R \xf1\x890460\xf1\x82\0046s041313',  # 2020 Skoda Scala
+    ],
+  },
 }
 
 DBC = {
@@ -238,4 +261,5 @@ DBC = {
   CAR.PASSAT_B8: dbc_dict('vw_mqb_2010', None),
   CAR.AUDI_A3: dbc_dict('vw_mqb_2010', None),
   CAR.SKODA_KODIAQ: dbc_dict('vw_mqb_2010', None),
+  CAR.SKODA_SCALA: dbc_dict('vw_mqb_2010', None),
 }
