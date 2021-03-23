@@ -103,10 +103,6 @@ FW_VERSIONS = {
       b'\xf1\x875Q0907572G \xf1\x890571',  # 2017 Audi A3 Prestige
       b'\xf1\x875Q0907572G \xf1\x890571',  # 2018 A3 e-tron Sportback
     ],
-    (Ecu.fwdCamera, 0x74f, None): [
-      # FIXME: Comma's 2017 Audi A3 Prestige is known to have a camera, need to re-FP
-      b'\xf1\x873Q0980654H \xf1\x890272\xf1\x82\x0436041111',  # 2018 A3 e-tron Sportback
-    ],
   },
   CAR.GOLF_MK7: {
     (Ecu.engine, 0x7e0, None): [
@@ -173,17 +169,6 @@ FW_VERSIONS = {
       b'\xf1\x875Q0907572P \xf1\x890682',  # 2019 Golf, Golf GTI, Golf R
       b'\xf1\x875Q0907572P \xf1\x890682',  # 2020 e-Golf
     ],
-    (Ecu.fwdCamera, 0x74f, None): [
-      b'\xf1\x875Q0980653E \xf1\x890050\xf1\x82\00401010253',  # 2014 Golf
-      b'\xf1\x875Q0980653F \xf1\x890052\xf1\x82\00401010401',  # 2014 e-Golf
-      b'\xf1\x873Q0980654H \xf1\x890272\xf1\x82\x041P041117',  # 2018 Golf GTE
-      b'\xf1\x873QD980654  \xf1\x891272\xf1\x82\0041M041119',  # 2018 Golf GTI
-      b'\xf1\x873Q0980654H \xf1\x890272\xf1\x82\x0460041116',  # 2018 Golf R (modified parameterization)
-      b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\00444041403',  # 2019 Golf
-      b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\x041M041403',  # 2019 Golf GTI
-      b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\0041A041403',  # 2019 Golf R
-      b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\0041J041403',  # 2020 e-Golf
-    ],
   },
   CAR.JETTA_MK7: {
     (Ecu.engine, 0x7e0, None): [
@@ -213,9 +198,6 @@ FW_VERSIONS = {
       b'\xf1\x875Q0907572R \xf1\x890771',  # 2020 Jetta
       b'\xf1\x875Q0907572R \xf1\x890771',  # 2021 Jetta GLI
     ],
-    (Ecu.fwdCamera, 0x74f, None): [
-      b'\xf1\x873QD980654  \xf1\x891272\xf1\x82\0041H041119',  # 2018,2019 Jetta
-    ],
   },
   CAR.PASSAT_B8: {
     (Ecu.engine, 0x7e0, None): [
@@ -233,9 +215,6 @@ FW_VERSIONS = {
     (Ecu.fwdRadar, 0x757, None): [
       b'\xf1\x875Q0907572R \xf1\x890771',  # 2016 Passat GTE wagon (retrofitted)
     ],
-    (Ecu.fwdCamera, 0x74f, None): [
-      b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\00414041403',  # 2016 Passat GTE wagon
-    ],
   },
   CAR.SEAT_ATECA_MK1: {
     (Ecu.engine, 0x7e0, None): [
@@ -252,9 +231,6 @@ FW_VERSIONS = {
     ],
     (Ecu.fwdRadar, 0x757, None): [
       b'\xf1\x872Q0907572M \xf1\x890233',  # 2018 SEAT Ateca
-    ],
-    (Ecu.fwdCamera, 0x74f, None): [
-      b'\xf1\x873QD980654  \xf1\x891272\xf1\x82\00441041118',  # 2018 SEAT Ateca
     ],
   },
   CAR.SKODA_KODIAQ_MK1: {
@@ -276,10 +252,6 @@ FW_VERSIONS = {
     (Ecu.fwdRadar, 0x757, None): [
       b'\xf1\x872Q0907572R \xf1\x890372',  # 2018 Skoda Kodiaq
     ],
-    (Ecu.fwdCamera, 0x74f, None): [
-      b'\xf1\x873QD980654  \xf1\x890610\xf1\x82\00414041403',  # 2018 Skoda Kodiaq
-      b'\xf1\x873QD980654  \xf1\x891272\xf1\x82\00469041118',  # 2018 Skoda Kodiaq
-    ],
   },
   CAR.SKODA_SCALA_MK1: {
     (Ecu.engine, 0x7e0, None): [
@@ -296,9 +268,6 @@ FW_VERSIONS = {
     ],
     (Ecu.fwdRadar, 0x757, None): [
       b'\xf1\x872Q0907572R \xf1\x890372',  # 2020 Skoda Scala
-    ],
-    (Ecu.fwdCamera, 0x74f, None): [
-      b'\xf1\x873Q0980654R \xf1\x890460\xf1\x82\0046s041313',  # 2020 Skoda Scala
     ],
   },
 }
