@@ -120,6 +120,7 @@ FW_VERSIONS = {
       b'\xf1\x875G0906259L \xf1\x890002',  # 2018 Golf GTI (CXCB)
       b'\xf1\x878V0906259P \xf1\x890001',  # 2018 Golf R (DJJA)
       b'\xf1\x8704L906026NF\xf1\x899528',  # 2019 Golf (DFGA)
+      b'\xf1\x875G0906259Q \xf1\x890002',  # 2019 Golf GTI (DKFA)
       b'\xf1\x878V0906259Q \xf1\x890002',  # 2019 Golf R (DLRA)
       b'\xf1\x870EA906016S \xf1\x897207',  # 2020 e-Golf (EBSA)
     ],
@@ -132,6 +133,7 @@ FW_VERSIONS = {
       b'\xf1\x870D9300020S \xf1\x895201',  # 2018 Golf GTI (DQ250)
       b'\xf1\x870GC300012A \xf1\x891403',  # 2018 Golf R (DQ381)
       b'\xf1\x870GC300043T \xf1\x899999',  # 2019 Golf (DQ381)
+      b'\xf1\x870GC300020G \xf1\x892404',  # 2019 Golf GTI (DQ381)
       b'\xf1\x870GC300014B \xf1\x892405',  # 2019 Golf R (DQ381)
     ],
     (Ecu.srs, 0x715, None): [
@@ -144,6 +146,7 @@ FW_VERSIONS = {
       b'\xf1\x875Q0959655J \xf1\x890830\xf1\x82\023272512111312--07110417182C102C91131211',  # 2018 Golf GTI
       b'\xf1\x875Q0959655J \xf1\x890830\xf1\x82\x13271212111312--071104171838103891131211',  # 2018 Golf R
       b'\xf1\x875Q0959655BH\xf1\x890336\xf1\x82\02314160011123300314211012230229333463100',  # 2019 Golf
+      b'\xf1\x875Q0959655J \xf1\x890830\xf1\x82\x13272512111312--07110417182C102C91131211',  # 2019 Golf GTI
       b'\xf1\x875Q0959655J \xf1\x890830\xf1\x82\023271212111312--071104171838103891131211',  # 2019 Golf R
       b'\xf1\x875Q0959655S \xf1\x890870\xf1\x82\02324230011211200061104171724102491132111',  # 2020 e-Golf
     ],
@@ -154,7 +157,7 @@ FW_VERSIONS = {
       b'\xf1\x873Q0909144H \xf1\x895061\xf1\x82\00566A0J612A1',  # 2016 Golf R wagon (progressive ratio)
       b'\xf1\x875Q0909144AA\xf1\x891081\xf1\x82\00521A00441A1',  # 2018 Golf wagon
       b'\xf1\x875Q0909144AA\xf1\x891081\xf1\x82\x0521A00641A1',  # 2018 Golf GTE
-      b'\xf1\x875QN909144A \xf1\x895081\xf1\x82\00571A01A17A1',  # 2018 Golf GTI
+      b'\xf1\x875QN909144A \xf1\x895081\xf1\x82\x0571A01A17A1',  # 2018,2019 Golf GTI
       b'\xf1\x873Q0909144L \xf1\x895081\xf1\x82\x0571A0JA15A1',  # 2018 Golf R (progressive ratio)
       b'\xf1\x875Q0909144AB\xf1\x891082\xf1\x82\00521A00642A1',  # 2019 Golf
       b'\xf1\x873Q0909144M \xf1\x895082\xf1\x82\00571A0JA16A1',  # 2019 Golf R (progressive ratio)
@@ -168,7 +171,7 @@ FW_VERSIONS = {
       b'\xf1\x875Q0907572J \xf1\x890654',  # 2018 Golf wagon
       b'\xf1\x875Q0907572H \xf1\x890620',  # 2018 Golf GTE
       b'\xf1\x875Q0907572J \xf1\x890654',  # 2018 Golf R, Golf GTI
-      b'\xf1\x875Q0907572P \xf1\x890682',  # 2019 Golf, Golf R
+      b'\xf1\x875Q0907572P \xf1\x890682',  # 2019 Golf, Golf GTI, Golf R
       b'\xf1\x875Q0907572P \xf1\x890682',  # 2020 e-Golf
     ],
     (Ecu.fwdCamera, 0x74f, None): [
@@ -178,6 +181,7 @@ FW_VERSIONS = {
       b'\xf1\x873QD980654  \xf1\x891272\xf1\x82\0041M041119',  # 2018 Golf GTI
       b'\xf1\x873Q0980654H \xf1\x890272\xf1\x82\x0460041116',  # 2018 Golf R (modified parameterization)
       b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\00444041403',  # 2019 Golf
+      b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\x041M041403',  # 2019 Golf GTI
       b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\0041A041403',  # 2019 Golf R
       b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\0041J041403',  # 2020 e-Golf
     ],
