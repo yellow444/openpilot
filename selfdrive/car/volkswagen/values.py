@@ -51,39 +51,38 @@ MQB_LDW_MESSAGES = {
 }
 
 class CAR:
-  GOLF = "VOLKSWAGEN GOLF"
-  JETTA_MK7 = "VOLKSWAGEN JETTA"
-  PASSAT_B8 = "VOLKSWAGEN PASSAT"
-  AUDI_A3 = "AUDI A3"
-  SEAT_ATECA = "SEAT ATECA"
-  SKODA_KODIAQ = "SKODA KODIAQ"
-  SKODA_SCALA = "SKODA SCALA"
+  GOLF_MK7 = "VOLKSWAGEN GOLF 7TH GEN"
+  JETTA_MK7 = "VOLKSWAGEN JETTA 7TH GEN"
+  PASSAT_B8 = "VOLKSWAGEN PASSAT 8TH GEN"
+  AUDI_A3_MK3 = "AUDI A3 3RD GEN"
+  SEAT_ATECA_MK1 = "SEAT ATECA 1ST GEN"
+  SKODA_KODIAQ_MK1 = "SKODA KODIAQ 1ST GEN"
+  SKODA_SCALA_MK1 = "SKODA SCALA 1ST GEN"
 
 MQB_CARS = {
-  CAR.GOLF,                 # Chassis AU, 2013-2020, includes Golf, Alltrack, Sportwagen, GTI, GTI TCR, GTE, GTD, Clubsport, Golf R, e-Golf
+  CAR.GOLF_MK7,             # Chassis AU, 2013-2020, includes Golf, Alltrack, Sportwagen, GTI, GTI TCR, GTE, GTD, Clubsport, Golf R, e-Golf
   CAR.JETTA_MK7,            # Chassis BU, 2018-2021, includes Jetta and Jetta GLI, marketed as Sagitar in China with a longer wheelbase
   CAR.PASSAT_B8,            # Chassis 3C, 2014-2020, includes Passat, Alltrack, GTE (does not include North America NMS Passat)
-  CAR.AUDI_A3,              # Chassis 8V, 2013-2019, includes A3, A3 e-tron, A3 g-tron, S3, RS3
-  CAR.SEAT_ATECA,           # Chassis 5F, 2016-2021, includes Ateca and CUPRA Ateca
-  CAR.SKODA_KODIAQ,         # Chassis 5N, 2016-2020, includes Kodiaq
-  CAR.SKODA_SCALA,          # Chassis NW, 2019-2021, includes Scala
-
+  CAR.AUDI_A3_MK3,          # Chassis 8V, 2013-2019, includes A3, A3 e-tron, A3 g-tron, S3, RS3
+  CAR.SEAT_ATECA_MK1,       # Chassis 5F, 2016-2021, includes Ateca and CUPRA Ateca
+  CAR.SKODA_KODIAQ_MK1,     # Chassis 5N, 2016-2020, includes Kodiaq
+  CAR.SKODA_SCALA_MK1,      # Chassis NW, 2019-2021, includes Scala
 }
 
 # During MQB FPv2 testing, ignore all traditional CAN fingerprints
-IGNORED_FINGERPRINTS = [CAR.GOLF, CAR.AUDI_A3]
+IGNORED_FINGERPRINTS = [CAR.GOLF_MK7, CAR.AUDI_A3_MK3]
 
 FINGERPRINTS = {
-  CAR.GOLF: [{
+  CAR.GOLF_MK7: [{
     64: 8, 134: 8, 159: 8, 173: 8, 178: 8, 253: 8, 257: 8, 260: 8, 262: 8, 264: 8, 278: 8, 279: 8, 283: 8, 286: 8, 288: 8, 289: 8, 290: 8, 294: 8, 299: 8, 302: 8, 346: 8, 385: 8, 418: 8, 427: 8, 668: 8, 679: 8, 681: 8, 695: 8, 779: 8, 780: 8, 783: 8, 792: 8, 795: 8, 804: 8, 806: 8, 807: 8, 808: 8, 809: 8, 870: 8, 896: 8, 897: 8, 898: 8, 901: 8, 917: 8, 919: 8, 927: 8, 949: 8, 958: 8, 960: 4, 981: 8, 987: 8, 988: 8, 991: 8, 997: 8, 1000: 8, 1019: 8, 1120: 8, 1122: 8, 1123: 8, 1124: 8, 1153: 8, 1162: 8, 1175: 8, 1312: 8, 1385: 8, 1413: 8, 1440: 5, 1514: 8, 1515: 8, 1520: 8, 1529: 8, 1600: 8, 1601: 8, 1603: 8, 1605: 8, 1624: 8, 1626: 8, 1629: 8, 1631: 8, 1646: 8, 1648: 8, 1712: 6, 1714: 8, 1716: 8, 1717: 8, 1719: 8, 1720: 8, 1721: 8
   }],
-  CAR.AUDI_A3: [{
+  CAR.AUDI_A3_MK3: [{
     64: 8, 134: 8, 159: 8, 173: 8, 178: 8, 253: 8, 257: 8, 260: 8, 262: 8, 278: 8, 279: 8, 283: 8, 285: 8, 286: 8, 288: 8, 289: 8, 290: 8, 294: 8, 295: 8, 299: 8, 302: 8, 346: 8, 418: 8, 427: 8, 506: 8, 679: 8, 681: 8, 695: 8, 779: 8, 780: 8, 783: 8, 787: 8, 788: 8, 789: 8, 792: 8, 802: 8, 804: 8, 806: 8, 807: 8, 808: 8, 809: 8, 846: 8, 847: 8, 870: 8, 896: 8, 897: 8, 898: 8, 901: 8, 917: 8, 919: 8, 949: 8, 958: 8, 960: 4, 981: 8, 987: 8, 988: 8, 991: 8, 997: 8, 1000: 8, 1019: 8, 1122: 8, 1123: 8, 1124: 8, 1153: 8, 1162: 8, 1175: 8, 1312: 8, 1385: 8, 1413: 8, 1440: 5, 1514: 8, 1515: 8, 1520: 8, 1600: 8, 1601: 8, 1603: 8, 1624: 8, 1629: 8, 1631: 8, 1646: 8, 1648: 8, 1712: 6, 1714: 8, 1716: 8, 1717: 8, 1719: 8, 1720: 8, 1721: 8, 1792: 8, 1872: 8, 1976: 8, 1977: 8, 1982: 8, 1985: 8
   }],
 }
 
 FW_VERSIONS = {
-  CAR.AUDI_A3: {
+  CAR.AUDI_A3_MK3: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x875G0906259L \xf1\x890002',  # 2017 Audi A3 Prestige (CNTC)
       b'\xf1\x8704E906023BL\xf1\x895190',  # 2018 A3 e-tron Sportback (CXUA)
@@ -109,7 +108,7 @@ FW_VERSIONS = {
       b'\xf1\x873Q0980654H \xf1\x890272\xf1\x82\x0436041111',  # 2018 A3 e-tron Sportback
     ],
   },
-  CAR.GOLF: {
+  CAR.GOLF_MK7: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704E906016AD\xf1\x895758',  # 2014 Golf (CPTA)
       b'\xf1\x870EA906016A \xf1\x898343',  # 2014 e-Golf (EAGA)
@@ -238,7 +237,7 @@ FW_VERSIONS = {
       b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\00414041403',  # 2016 Passat GTE wagon
     ],
   },
-  CAR.SEAT_ATECA: {
+  CAR.SEAT_ATECA_MK1: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704E906027KA\xf1\x893749',  # 2018 SEAT Ateca (CZEA)
     ],
@@ -258,7 +257,7 @@ FW_VERSIONS = {
       b'\xf1\x873QD980654  \xf1\x891272\xf1\x82\00441041118',  # 2018 SEAT Ateca
     ],
   },
-  CAR.SKODA_KODIAQ: {
+  CAR.SKODA_KODIAQ_MK1: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704E906027DD\xf1\x893123',  # 2018 Skoda Kodiaq (CZEA)
       b'\xf1\x875NA907115E \xf1\x890003',  # 2018 Skoda Kodiaq (DGVA)
@@ -282,7 +281,7 @@ FW_VERSIONS = {
       b'\xf1\x873QD980654  \xf1\x891272\xf1\x82\00469041118',  # 2018 Skoda Kodiaq
     ],
   },
-  CAR.SKODA_SCALA: {
+  CAR.SKODA_SCALA_MK1: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704C906025AK\xf1\x897053',  # 2020 Skoda Scala (DKRF)
     ],
@@ -305,11 +304,11 @@ FW_VERSIONS = {
 }
 
 DBC = {
-  CAR.GOLF: dbc_dict('vw_mqb_2010', None),
+  CAR.GOLF_MK7: dbc_dict('vw_mqb_2010', None),
   CAR.JETTA_MK7: dbc_dict('vw_mqb_2010', None),
   CAR.PASSAT_B8: dbc_dict('vw_mqb_2010', None),
-  CAR.AUDI_A3: dbc_dict('vw_mqb_2010', None),
-  CAR.SEAT_ATECA: dbc_dict('vw_mqb_2010', None),
-  CAR.SKODA_KODIAQ: dbc_dict('vw_mqb_2010', None),
-  CAR.SKODA_SCALA: dbc_dict('vw_mqb_2010', None),
+  CAR.AUDI_A3_MK3: dbc_dict('vw_mqb_2010', None),
+  CAR.SEAT_ATECA_MK1: dbc_dict('vw_mqb_2010', None),
+  CAR.SKODA_KODIAQ_MK1: dbc_dict('vw_mqb_2010', None),
+  CAR.SKODA_SCALA_MK1: dbc_dict('vw_mqb_2010', None),
 }
