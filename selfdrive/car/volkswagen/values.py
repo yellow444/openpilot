@@ -57,6 +57,7 @@ class CAR:
   AUDI_A3_MK3 = "AUDI A3 3RD GEN"
   SEAT_ATECA_MK1 = "SEAT ATECA 1ST GEN"
   SKODA_KODIAQ_MK1 = "SKODA KODIAQ 1ST GEN"
+  SKODA_OCTAVIA_MK3 = "SKODA OCTAVIA 3RD GEN"
   SKODA_SCALA_MK1 = "SKODA SCALA 1ST GEN"
 
 MQB_CARS = {
@@ -65,6 +66,7 @@ MQB_CARS = {
   CAR.PASSAT_B8,            # Chassis 3C, 2014-2020, includes Passat, Alltrack, GTE (does not include North America NMS Passat)
   CAR.AUDI_A3_MK3,          # Chassis 8V, 2013-2019, includes A3, A3 e-tron, A3 g-tron, S3, RS3
   CAR.SEAT_ATECA_MK1,       # Chassis 5F, 2016-2021, includes Ateca and CUPRA Ateca
+  CAR.SKODA_OCTAVIA_MK3,    # Chassis 5E/NE, 2013-2019, includes Octavia, Octavia Scout, Octavia RS
   CAR.SKODA_KODIAQ_MK1,     # Chassis 5N, 2016-2020, includes Kodiaq
   CAR.SKODA_SCALA_MK1,      # Chassis NW, 2019-2021, includes Scala
 }
@@ -253,6 +255,23 @@ FW_VERSIONS = {
       b'\xf1\x872Q0907572R \xf1\x890372',  # 2018 Skoda Kodiaq
     ],
   },
+  CAR.SKODA_OCTAVIA_MK3: {
+    (Ecu.engine, 0x7e0, None): [
+      b'\xf1\x8704L906021DT\xf1\x898127',  # 2015 Skoda Octavia (CKFC)
+    ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'\xf1\x870D9300041P \xf1\x894507',  # 2015 Skoda Octavia (DQ250)
+    ],
+    (Ecu.srs, 0x715, None): [
+      b'\xf1\x873Q0959655AC\xf1\x890200\xf1\x82\r11120011100010022212110200',  # 2015 Skoda Octavia
+    ],
+    (Ecu.eps, 0x712, None): [
+      b'\xf1\x875Q0909144R \xf1\x891061\xf1\x82\x0516A00604A1',  # 2015 Skoda Octavia
+    ],
+    (Ecu.fwdRadar, 0x757, None): [
+      b'\xf1\x875Q0907572D \xf1\x890304\xf1\x82\x0101',  # 2015 Skoda Octavia
+    ],
+  },
   CAR.SKODA_SCALA_MK1: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704C906025AK\xf1\x897053',  # 2020 Skoda Scala (DKRF)
@@ -279,5 +298,6 @@ DBC = {
   CAR.AUDI_A3_MK3: dbc_dict('vw_mqb_2010', None),
   CAR.SEAT_ATECA_MK1: dbc_dict('vw_mqb_2010', None),
   CAR.SKODA_KODIAQ_MK1: dbc_dict('vw_mqb_2010', None),
+  CAR.SKODA_OCTAVIA_MK3: dbc_dict('vw_mqb_2010', None),
   CAR.SKODA_SCALA_MK1: dbc_dict('vw_mqb_2010', None),
 }
