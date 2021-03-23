@@ -109,6 +109,7 @@ FW_VERSIONS = {
   CAR.GOLF_MK7: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704E906016AD\xf1\x895758',  # 2014 Golf (CPTA)
+      b'\xf1\x875G0906259  \xf1\x890007',  # 2014 Golf GTI (CHHB)
       b'\xf1\x870EA906016A \xf1\x898343',  # 2014 e-Golf (EAGA)
       b'\xf1\x8704E906016A \xf1\x897697',  # 2015 Golf (CJZA)
       b'\xf1\x875G0906259J \xf1\x890002',  # 2016 Golf R wagon (CJXB)
@@ -123,6 +124,7 @@ FW_VERSIONS = {
     ],
     (Ecu.transmission, 0x7e1, None): [
       b'\xf1\x870CW300045  \xf1\x894531',  # 2014 Golf (DQ200)
+      b'\xf1\x870D9300040S \xf1\x894311',  # 2014 Golf GTI (DQ250)
       b'\xf1\x870CW300047D \xf1\x895261',  # 2015 Golf (DQ200)
       b'\xf1\x870D9300012  \xf1\x894913',  # 2016 Golf R wagon (DQ250)
       b'\xf1\x870CW300042F \xf1\x891604',  # 2018 Golf wagon (DQ200)
@@ -135,6 +137,7 @@ FW_VERSIONS = {
     ],
     (Ecu.srs, 0x715, None): [
       b'\xf1\x875Q0959655M \xf1\x890361\xf1\x82\0211413001112120041114115121611169112',  # 2014 Golf
+      b'\xf1\x875Q0959655AA\xf1\x890386\xf1\x82\0211413001113120053114317121C111C9113',  # 2014 Golf GTI
       b'\xf1\x875Q0959655S \xf1\x890870\xf1\x82\02324230011211200621143171724112491132111',  # 2014 e-Golf
       b'\xf1\x875Q0959655AA\xf1\x890386\xf1\x82\0211413001113120043114317121C111C9113',  # 2015 Golf
       b'\xf1\x875Q0959655AA\xf1\x890388\xf1\x82\0211413001113120053114317121C111C9113',  # 2016 Golf R wagon
@@ -149,6 +152,7 @@ FW_VERSIONS = {
     ],
     (Ecu.eps, 0x712, None): [
       b'\xf1\x875Q0909144L \xf1\x891021\xf1\x82\00522A00402A0',  # 2014 Golf
+      b'\xf1\x873Q0909144F \xf1\x895043\xf1\x82\00561A01612A0',  # 2014 Golf GTI
       b'\xf1\x875Q0909144S \xf1\x891063\xf1\x82\00516A07A02A1',  # 2014 e-Golf
       b'\xf1\x875Q0909144P \xf1\x891043\xf1\x82\00511A00403A0',  # 2015 Golf
       b'\xf1\x873Q0909144H \xf1\x895061\xf1\x82\00566A0J612A1',  # 2016 Golf R wagon (progressive ratio)
@@ -162,6 +166,7 @@ FW_VERSIONS = {
     ],
     (Ecu.fwdRadar, 0x757, None): [
       b'\xf1\x875Q0907572A \xf1\x890141\xf1\x82\00101',  # 2014 Golf
+      b'\xf1\x875Q0907572B \xf1\x890200\xf1\x82\00101',  # 2014 Golf GTI
       b'\xf1\x875Q0907572C \xf1\x890210\xf1\x82\00101',  # 2014 e-Golf
       b'\xf1\x875Q0907572D \xf1\x890304\xf1\x82\00101',  # 2015 Golf
       b'\xf1\x875Q0907572F \xf1\x890400\xf1\x82\00101',  # 2016 Golf R wagon
