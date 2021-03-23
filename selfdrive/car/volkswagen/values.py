@@ -110,6 +110,7 @@ FW_VERSIONS = {
   CAR.GOLF: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704E906016AD\xf1\x895758',  # 2014 Golf (CPTA)
+      b'\xf1\x870EA906016A \xf1\x898343',  # 2014 e-Golf (EAGA)
       b'\xf1\x8704E906016A \xf1\x897697',  # 2015 Golf (CJZA)
       b'\xf1\x875G0906259J \xf1\x890002',  # 2016 Golf R wagon (CJXB)
       b'\xf1\x8704L906056HE\xf1\x893758',  # 2018 Golf wagon (DDYA)
@@ -131,6 +132,7 @@ FW_VERSIONS = {
     ],
     (Ecu.srs, 0x715, None): [
       b'\xf1\x875Q0959655M \xf1\x890361\xf1\x82\0211413001112120041114115121611169112',  # 2014 Golf
+      b'\xf1\x875Q0959655S \xf1\x890870\xf1\x82\02324230011211200621143171724112491132111',  # 2014 e-Golf
       b'\xf1\x875Q0959655AA\xf1\x890386\xf1\x82\0211413001113120043114317121C111C9113',  # 2015 Golf
       b'\xf1\x875Q0959655AA\xf1\x890388\xf1\x82\0211413001113120053114317121C111C9113',  # 2016 Golf R wagon
       b'\xf1\x875Q0959655BH\xf1\x890336\xf1\x82\02314160011123300314211012230229333463100',  # 2018 Golf wagon
@@ -142,6 +144,7 @@ FW_VERSIONS = {
     ],
     (Ecu.eps, 0x712, None): [
       b'\xf1\x875Q0909144L \xf1\x891021\xf1\x82\00522A00402A0',  # 2014 Golf
+      b'\xf1\x875Q0909144S \xf1\x891063\xf1\x82\00516A07A02A1',  # 2014 e-Golf
       b'\xf1\x875Q0909144P \xf1\x891043\xf1\x82\00511A00403A0',  # 2015 Golf
       b'\xf1\x873Q0909144H \xf1\x895061\xf1\x82\00566A0J612A1',  # 2016 Golf R wagon (progressive ratio)
       b'\xf1\x875Q0909144AA\xf1\x891081\xf1\x82\00521A00441A1',  # 2018 Golf wagon
@@ -153,6 +156,7 @@ FW_VERSIONS = {
     ],
     (Ecu.fwdRadar, 0x757, None): [
       b'\xf1\x875Q0907572A \xf1\x890141\xf1\x82\00101',  # 2014 Golf
+      b'\xf1\x875Q0907572C \xf1\x890210\xf1\x82\00101',  # 2014 e-Golf
       b'\xf1\x875Q0907572D \xf1\x890304\xf1\x82\00101',  # 2015 Golf
       b'\xf1\x875Q0907572F \xf1\x890400\xf1\x82\00101',  # 2016 Golf R wagon
       b'\xf1\x875Q0907572J \xf1\x890654',  # 2018 Golf wagon
@@ -163,6 +167,7 @@ FW_VERSIONS = {
     ],
     (Ecu.fwdCamera, 0x74f, None): [
       b'\xf1\x875Q0980653E \xf1\x890050\xf1\x82\00401010253',  # 2014 Golf
+      b'\xf1\x875Q0980653F \xf1\x890052\xf1\x82\00401010401',  # 2014 e-Golf
       b'\xf1\x873Q0980654H \xf1\x890272\xf1\x82\x041P041117',  # 2018 Golf GTE
       b'\xf1\x873Q0980654H \xf1\x890272\xf1\x82\x0460041116',  # 2018 Golf R (modified parameterization)
       b'\xf1\x873Q0980654L \xf1\x890610\xf1\x82\00444041403',  # 2019 Golf
