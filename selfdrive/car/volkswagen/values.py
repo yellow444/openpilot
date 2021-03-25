@@ -64,6 +64,7 @@ class CAR:
   SKODA_KODIAQ_MK1 = "SKODA KODIAQ 1ST GEN"
   SKODA_OCTAVIA_MK3 = "SKODA OCTAVIA 3RD GEN"
   SKODA_SCALA_MK1 = "SKODA SCALA 1ST GEN"
+  SKODA_SUPERB_MK3 = "SKODA SUPERB 3RD GEN"           # Chassis 3V/NP, Mk3 Skoda Superb and variants
 
 # During MQB FPv2 testing, ignore all traditional CAN fingerprints
 IGNORED_FINGERPRINTS = [CAR.GOLF_MK7, CAR.AUDI_A3_MK3]
@@ -288,6 +289,21 @@ FW_VERSIONS = {
       b'\xf1\x872Q0907572R \xf1\x890372',  # 2020 Skoda Scala
     ],
   },
+  CAR.SKODA_SUPERB_MK3: {
+    (Ecu.engine, 0x7e0, None): [
+      b'\xf1\x8704L906026KB\xf1\x894071',
+    ],
+    (Ecu.transmission, 0x7e1, None): [],  # Only onboarded Superb is a manual
+    (Ecu.srs, 0x715, None): [
+      b'\xf1\x875Q0959655BH\xf1\x890336\xf1\x82\02331310031313100313131013141319331413100',
+    ],
+    (Ecu.eps, 0x712, None): [
+      b'\xf1\x875Q0910143B \xf1\x892201\xf1\x82\00563UZ060700',
+    ],
+    (Ecu.fwdRadar, 0x757, None): [
+      b'\xf1\x873Q0907572C \xf1\x890195',
+    ],
+  },
 }
 
 DBC = {
@@ -299,4 +315,5 @@ DBC = {
   CAR.SKODA_KODIAQ_MK1: dbc_dict('vw_mqb_2010', None),
   CAR.SKODA_OCTAVIA_MK3: dbc_dict('vw_mqb_2010', None),
   CAR.SKODA_SCALA_MK1: dbc_dict('vw_mqb_2010', None),
+  CAR.SKODA_SUPERB_MK3: dbc_dict('vw_mqb_2010', None),
 }
