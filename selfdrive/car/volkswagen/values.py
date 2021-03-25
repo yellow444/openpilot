@@ -2,7 +2,11 @@
 
 from selfdrive.car import dbc_dict
 from cereal import car
+
 Ecu = car.CarParams.Ecu
+NetworkLocation = car.CarParams.NetworkLocation
+TransmissionType = car.CarParams.TransmissionType
+GearShifter = car.CarState.GearShifter
 
 class CarControllerParams:
   HCA_STEP = 2                   # HCA_01 message frequency 50Hz
@@ -26,9 +30,6 @@ class CANBUS:
   pt = 0
   cam = 2
 
-TransmissionType = car.CarParams.TransmissionType
-GearShifter = car.CarState.GearShifter
-
 BUTTON_STATES = {
   "accelCruise": False,
   "decelCruise": False,
@@ -50,26 +51,19 @@ MQB_LDW_MESSAGES = {
   "laneAssistDeactivated": 10,          # "Lane Assist deactivated." silent with persistent icon afterward
 }
 
+# Check the 7th and 8th characters of the VIN before adding a new CAR. If the
+# chassis code is already listed below, don't add a new CAR, just add to the
+# FW_VERSIONS for that existing CAR.
+
 class CAR:
-  GOLF_MK7 = "VOLKSWAGEN GOLF 7TH GEN"
+  GOLF_MK7 = "VOLKSWAGEN GOLF 7TH GEN"                # Chassis 5G/AU/BA/BE, Mk7 VW Golf and variants
   JETTA_MK7 = "VOLKSWAGEN JETTA 7TH GEN"
   PASSAT_B8 = "VOLKSWAGEN PASSAT 8TH GEN"
-  AUDI_A3_MK3 = "AUDI A3 3RD GEN"
+  AUDI_A3_MK3 = "AUDI A3 3RD GEN"                     # Chassis 8V/FF, Mk3 Audi A3 and variants
   SEAT_ATECA_MK1 = "SEAT ATECA 1ST GEN"
   SKODA_KODIAQ_MK1 = "SKODA KODIAQ 1ST GEN"
   SKODA_OCTAVIA_MK3 = "SKODA OCTAVIA 3RD GEN"
   SKODA_SCALA_MK1 = "SKODA SCALA 1ST GEN"
-
-MQB_CARS = {
-  CAR.GOLF_MK7,             # Chassis AU, 2013-2020, includes Golf, Alltrack, Sportwagen, GTI, GTI TCR, GTE, GTD, Clubsport, Golf R, e-Golf
-  CAR.JETTA_MK7,            # Chassis BU, 2018-2021, includes Jetta and Jetta GLI, marketed as Sagitar in China with a longer wheelbase
-  CAR.PASSAT_B8,            # Chassis 3C, 2014-2020, includes Passat, Alltrack, GTE (does not include North America NMS Passat)
-  CAR.AUDI_A3_MK3,          # Chassis 8V, 2013-2019, includes A3, A3 e-tron, A3 g-tron, S3, RS3
-  CAR.SEAT_ATECA_MK1,       # Chassis 5F, 2016-2021, includes Ateca and CUPRA Ateca
-  CAR.SKODA_OCTAVIA_MK3,    # Chassis 5E/NE, 2013-2019, includes Octavia, Octavia Scout, Octavia RS
-  CAR.SKODA_KODIAQ_MK1,     # Chassis 5N, 2016-2020, includes Kodiaq
-  CAR.SKODA_SCALA_MK1,      # Chassis NW, 2019-2021, includes Scala
-}
 
 # During MQB FPv2 testing, ignore all traditional CAN fingerprints
 IGNORED_FINGERPRINTS = [CAR.GOLF_MK7, CAR.AUDI_A3_MK3]
