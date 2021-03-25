@@ -204,18 +204,23 @@ FW_VERSIONS = {
   CAR.PASSAT_B8: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704E906023AH\xf1\x893379',  # 2016 Passat GTE wagon (CUKC)
+      b'\xf1\x8704L906026GA\xf1\x892013',
     ],
     (Ecu.transmission, 0x7e1, None): [
       b'\xf1\x870DD300045T \xf1\x891601',  # 2016 Passat GTE wagon (DQ400E)
+      b'\xf1\x870D9300014L \xf1\x895002',
     ],
     (Ecu.srs, 0x715, None): [
       b'\xf1\x875Q0959655S \xf1\x890870\xf1\x82\02315120011111200631145171716121691132111',  # 2016 Passat GTE wagon
+      b'\xf1\x873Q0959655AN\xf1\x890306\xf1\x82\r58160058140013036914110311',
     ],
     (Ecu.eps, 0x712, None): [
       b'\xf1\x875Q0909143M \xf1\x892041\xf1\x820522B0080803',  # 2016 Passat GTE wagon
+      b'\xf1\x875Q0909144T \xf1\x891072\xf1\x82\00521B00703A1',
     ],
     (Ecu.fwdRadar, 0x757, None): [
       b'\xf1\x875Q0907572R \xf1\x890771',  # 2016 Passat GTE wagon (retrofitted)
+      b'\xf1\x873Q0907572C \xf1\x890195',
     ],
   },
   CAR.SEAT_ATECA_MK1: {
