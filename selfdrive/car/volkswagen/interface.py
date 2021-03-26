@@ -82,7 +82,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1328 + STD_CARGO_KG
       ret.wheelbase = 2.71
 
-    elif candidate == CAR.PASSAT_B8:
+    elif candidate == CAR.PASSAT_MK8:
       # Averages of all non-China 3C Passat variants
       # Up to 350kg spread in curb weight between variants, might need to identify in more detail later
       # TODO: Chinese market B8 has 8cm longer wheelbase, find out how to identify
