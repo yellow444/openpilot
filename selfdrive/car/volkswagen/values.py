@@ -81,22 +81,27 @@ FINGERPRINTS = {
 FW_VERSIONS = {
   CAR.AUDI_A3_MK3: {
     (Ecu.engine, 0x7e0, None): [
+      b'\xf1\x878V0906264B \xf1\x890003',
       b'\xf1\x875G0906259L \xf1\x890002',  # 2017 Audi A3 Prestige (CNTC)
       b'\xf1\x8704E906023BL\xf1\x895190',  # 2018 A3 e-tron Sportback (CXUA)
     ],
     (Ecu.transmission, 0x7e1, None): [
+      b'\xf1\x870CW300048  \xf1\x895201',
       b'\xf1\x870D9300013B \xf1\x894931',  # 2017 Audi A3 Prestige (DQ250)
       b'\xf1\x870DD300046G \xf1\x891601',  # 2018 A3 e-tron Sportback (DQ400E)
     ],
     (Ecu.srs, 0x715, None): [
+      b'\xf1\x875Q0959655N \xf1\x890361\xf1\x82\0211212001112111104110411111521159114',
       b'\xf1\x875Q0959655J \xf1\x890830\xf1\x82\023121111111211--261117141112231291163221',  # 2017 Audi A3 Prestige
       b'\xf1\x875Q0959655J \xf1\x890830\xf1\x82\x13121111111111--341117141212231291163221',  # 2018 A3 e-tron Sportback
     ],
     (Ecu.eps, 0x712, None): [
+      b'\xf1\x875Q0909144P \xf1\x891043\xf1\x82\00503G00803A0',
       b'\xf1\x875Q0909144T \xf1\x891072\xf1\x82\00521G00807A1',  # 2017 Audi A3 Prestige
       b'\xf1\x875Q0909144T \xf1\x891072\xf1\x82\x0521G00807A1',  # 2018 A3 e-tron Sportback
     ],
     (Ecu.fwdRadar, 0x757, None): [
+      b'\xf1\x875Q0907572D \xf1\x890304\xf1\x82\00101',
       b'\xf1\x875Q0907572G \xf1\x890571',  # 2017 Audi A3 Prestige
       b'\xf1\x875Q0907572G \xf1\x890571',  # 2018 A3 e-tron Sportback
     ],
