@@ -267,7 +267,7 @@ FW_VERSIONS = {
       b'\xf1\x875Q0907572R \xf1\x890771',  # 2021 Jetta GLI
     ],
   },
-  CAR.PASSAT_B8: {
+  CAR.PASSAT_MK8: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704E906023AH\xf1\x893379',  # 2016 Passat GTE wagon (CUKC)
       b'\xf1\x8704L906026GA\xf1\x892013',
