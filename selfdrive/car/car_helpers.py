@@ -145,8 +145,8 @@ def fingerprint(logcan, sendcan):
           # fingerprint done
           car_fingerprint = candidate_cars[b][0]
 
-    # bail if no cars left or we've been waiting for more than 2s
-    failed = all(len(cc) == 0 for cc in candidate_cars.values()) or frame > 200
+    # bail after 100ms if no candidates left, or we've been waiting for more than 2s
+    failed = (all(len(cc) == 0 for cc in candidate_cars.values()) and frame > 10) or frame > 200
     succeeded = car_fingerprint is not None
     done = failed or succeeded
 
