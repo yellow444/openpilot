@@ -64,7 +64,7 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.pid.kpV = [0.6]
     ret.lateralTuning.pid.kiV = [0.2]
 
-    # Per-chassis tuning values, override tuning defaults here if desire
+    # Per-chassis tuning values, override tuning defaults here if desired
 
     if candidate == CAR.GOLF_MK7:
       # Averages of all AU Golf variants
