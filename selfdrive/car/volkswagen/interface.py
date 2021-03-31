@@ -87,9 +87,9 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.74
 
     elif candidate == CAR.AUDI_A3_MK3:
-      # Temporarily carry forward old tuning values while we test vehicle identification
-      ret.mass = 1500 + STD_CARGO_KG
-      ret.wheelbase = 2.64
+      # Averages of all 8V A3 variants
+      ret.mass = 1335 + STD_CARGO_KG
+      ret.wheelbase = 2.61
 
     elif candidate == CAR.SEAT_ATECA_MK1:
       # Averages of all 5F Ateca variants
@@ -181,7 +181,6 @@ class CarInterface(CarInterfaceBase):
   def apply(self, c):
     can_sends = self.CC.update(c.enabled, self.CS, self.frame, c.actuators,
                    c.hudControl.visualAlert,
-                   c.hudControl.audibleAlert,
                    c.hudControl.leftLaneVisible,
                    c.hudControl.rightLaneVisible)
     self.frame += 1
