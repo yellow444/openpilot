@@ -80,8 +80,9 @@ class CarState(CarStateBase):
     # detection box is dynamic based on speed and road curvature.
     # Refer to VW Self Study Program 890253: Volkswagen Driver Assist Systems,
     # pages 32-35.
-    ret.leftBlindspot = bool(ext_cp.vl["SWA_01"]["SWA_Infostufe_SWA_li"]) or bool(ext_cp.vl["SWA_01"]["SWA_Warnung_SWA_li"])
-    ret.rightBlindspot = bool(ext_cp.vl["SWA_01"]["SWA_Infostufe_SWA_re"]) or bool(ext_cp.vl["SWA_01"]["SWA_Warnung_SWA_re"])
+    if self.CP.enableBsm:
+      ret.leftBlindspot = bool(ext_cp.vl["SWA_01"]["SWA_Infostufe_SWA_li"]) or bool(ext_cp.vl["SWA_01"]["SWA_Warnung_SWA_li"])
+      ret.rightBlindspot = bool(ext_cp.vl["SWA_01"]["SWA_Infostufe_SWA_re"]) or bool(ext_cp.vl["SWA_01"]["SWA_Warnung_SWA_re"])
 
     # Consume factory LDW data relevant for factory SWA (Lane Change Assist)
     # and capture it for forwarding to the blind spot radar controller
@@ -210,6 +211,7 @@ class CarState(CarStateBase):
       ("ESP_21", 50),       # From J104 ABS/ESP controller
       ("Motor_20", 50),     # From J623 Engine control module
       ("TSK_06", 50),       # From J623 Engine control module
+      ("ESP_02", 50),
       ("GRA_ACC_01", 33),   # From J??? steering wheel control buttons
       ("Gateway_72", 10),   # From J533 CAN gateway (aggregated data)
       ("Motor_14", 10),     # From J623 Engine control module
@@ -232,9 +234,11 @@ class CarState(CarStateBase):
 
     if CP.networkLocation == NetworkLocation.fwdCamera:
       # Extended CAN devices other than the camera are here on CANBUS.pt
-      # TODO: Add bsm checks[] when we have solid autodetection
-      signals += MqbExtraSignals.acc_radar[0] + MqbExtraSignals.bsm[0]
+      signals += MqbExtraSignals.acc_radar[0]
       checks += MqbExtraSignals.acc_radar[1]
+      if CP.enableBsm:
+        signals += MqbExtraSignals.bsm[0]
+        checks += MqbExtraSignals.bsm[1]
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.pt)
 
@@ -247,9 +251,11 @@ class CarState(CarStateBase):
 
     if CP.networkLocation == NetworkLocation.gateway:
       # Extended CAN devices other than the camera are here on CANBUS.cam
-      # TODO: Add bsm checks[] when we have solid autodetection
-      signals += MqbExtraSignals.acc_radar[0] + MqbExtraSignals.bsm[0]
+      signals += MqbExtraSignals.acc_radar[0]
       checks += MqbExtraSignals.acc_radar[1]
+      if CP.enableBsm:
+        signals += MqbExtraSignals.bsm[0]
+        checks += MqbExtraSignals.bsm[1]
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.cam)
 
