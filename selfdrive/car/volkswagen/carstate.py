@@ -247,7 +247,7 @@ class CarState(CarStateBase):
 
     # TODO: Add fwd_camera checks[] when we have solid autodetection
     signals = MqbExtraSignals.lkas_camera[0]
-    checks = []
+    checks = MqbExtraSignals.lkas_camera[1]
 
     if CP.networkLocation == NetworkLocation.gateway:
       # Extended CAN devices other than the camera are here on CANBUS.cam
