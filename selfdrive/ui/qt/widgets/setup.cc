@@ -8,9 +8,9 @@
 #include <QVBoxLayout>
 
 #include "QrCode.hpp"
-#include "request_repeater.hpp"
+#include "request_repeater.h"
 #include "common/params.h"
-#include "setup.hpp"
+#include "setup.h"
 
 using qrcodegen::QrCode;
 
@@ -23,13 +23,17 @@ PairingQRWidget::PairingQRWidget(QWidget* parent) : QWidget(parent) {
 
   QTimer* timer = new QTimer(this);
   timer->start(30 * 1000);
-  connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
-  refresh(); // don't wait for the first refresh
+  connect(timer, &QTimer::timeout, this, &PairingQRWidget::refresh);
+}
+
+void PairingQRWidget::showEvent(QShowEvent *event){
+  refresh();
 }
 
 void PairingQRWidget::refresh(){
-  QString IMEI = QString::fromStdString(Params().get("IMEI"));
-  QString serial = QString::fromStdString(Params().get("HardwareSerial"));
+  Params params;
+  QString IMEI = QString::fromStdString(params.get("IMEI"));
+  QString serial = QString::fromStdString(params.get("HardwareSerial"));
 
   if (std::min(IMEI.length(), serial.length()) <= 5) {
     qrCode->setText("Error getting serial: contact support");
@@ -179,7 +183,7 @@ SetupWidget::SetupWidget(QWidget* parent) : QFrame(parent) {
     background: #585858;
   )");
   finishRegistationLayout->addWidget(finishButton);
-  QObject::connect(finishButton, SIGNAL(released()), this, SLOT(showQrCode()));
+  QObject::connect(finishButton, &QPushButton::released, this, &SetupWidget::showQrCode);
 
   QWidget* finishRegistration = new QWidget;
   finishRegistration->setLayout(finishRegistationLayout);

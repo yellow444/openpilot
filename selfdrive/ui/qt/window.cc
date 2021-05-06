@@ -1,4 +1,4 @@
-#include "window.hpp"
+#include "window.h"
 #include "selfdrive/hardware/hw.h"
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
@@ -11,19 +11,20 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
   QObject::connect(homeWindow, &HomeWindow::closeSettings, this, &MainWindow::closeSettings);
   QObject::connect(&qs, &QUIState::uiUpdate, homeWindow, &HomeWindow::update);
   QObject::connect(&qs, &QUIState::offroadTransition, homeWindow, &HomeWindow::offroadTransition);
+  QObject::connect(&qs, &QUIState::offroadTransition, homeWindow, &HomeWindow::offroadTransitionSignal);
   QObject::connect(&device, &Device::displayPowerChanged, homeWindow, &HomeWindow::displayPowerChanged);
 
   settingsWindow = new SettingsWindow(this);
   main_layout->addWidget(settingsWindow);
   QObject::connect(settingsWindow, &SettingsWindow::closeSettings, this, &MainWindow::closeSettings);
   QObject::connect(&qs, &QUIState::offroadTransition, settingsWindow, &SettingsWindow::offroadTransition);
-  QObject::connect(settingsWindow, SIGNAL(reviewTrainingGuide()), this, SLOT(reviewTrainingGuide()));
+  QObject::connect(settingsWindow, &SettingsWindow::reviewTrainingGuide, this, &MainWindow::reviewTrainingGuide);
 
   onboardingWindow = new OnboardingWindow(this);
   main_layout->addWidget(onboardingWindow);
 
   main_layout->setCurrentWidget(onboardingWindow);
-  QObject::connect(onboardingWindow, SIGNAL(onboardingDone()), this, SLOT(closeSettings()));
+  QObject::connect(onboardingWindow, &OnboardingWindow::onboardingDone, this, &MainWindow::closeSettings);
   onboardingWindow->updateActiveScreen();
 
   device.setAwake(true, true);
