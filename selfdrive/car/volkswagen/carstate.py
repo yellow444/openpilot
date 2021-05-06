@@ -256,8 +256,8 @@ class CarState(CarStateBase):
         signals += MqbExtraSignals.bsm[0]
         checks += MqbExtraSignals.bsm[1]
         # FIXME: Ugly hax, assume BSM and LKAS are packaged together until we can separately detect LKAS
-        signals = MqbExtraSignals.lkas_camera[0]
-        checks = MqbExtraSignals.lkas_camera[1]
+        signals += MqbExtraSignals.lkas_camera[0]
+        checks += MqbExtraSignals.lkas_camera[1]
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.cam)
 
