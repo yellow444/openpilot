@@ -245,9 +245,8 @@ class CarState(CarStateBase):
   @staticmethod
   def get_cam_can_parser(CP):
 
-    # TODO: Add fwd_camera checks[] when we have solid autodetection
-    signals = MqbExtraSignals.lkas_camera[0]
-    checks = MqbExtraSignals.lkas_camera[1]
+    signals = []
+    checks = []
 
     if CP.networkLocation == NetworkLocation.gateway:
       # Extended CAN devices other than the camera are here on CANBUS.cam
@@ -256,6 +255,9 @@ class CarState(CarStateBase):
       if CP.enableBsm:
         signals += MqbExtraSignals.bsm[0]
         checks += MqbExtraSignals.bsm[1]
+        # FIXME: Ugly hax, assume BSM and LKAS are packaged together until we can separately detect LKAS
+        signals = MqbExtraSignals.lkas_camera[0]
+        checks = MqbExtraSignals.lkas_camera[1]
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.cam)
 
