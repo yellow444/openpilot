@@ -1,17 +1,19 @@
-#include <iostream>
-#include <stdio.h>
-#include <cmath>
-#include <unistd.h>
-#include <assert.h>
+#include "selfdrive/ui/ui.h"
 
-#include "common/util.h"
-#include "common/swaglog.h"
-#include "common/visionimg.h"
-#include "common/watchdog.h"
+#include <assert.h>
+#include <stdio.h>
+#include <unistd.h>
+
+#include <cmath>
+#include <iostream>
+
+#include "selfdrive/common/swaglog.h"
+#include "selfdrive/common/util.h"
+#include "selfdrive/common/visionimg.h"
+#include "selfdrive/common/watchdog.h"
 #include "selfdrive/hardware/hw.h"
-#include "ui.h"
-#include "paint.h"
-#include "qt_window.h"
+#include "selfdrive/ui/paint.h"
+#include "selfdrive/ui/qt/qt_window.h"
 
 #define BACKLIGHT_DT 0.25
 #define BACKLIGHT_TS 2.00
@@ -219,14 +221,8 @@ static void update_state(UIState *s) {
 static void update_params(UIState *s) {
   const uint64_t frame = s->sm->frame;
   UIScene &scene = s->scene;
-  Params params;
   if (frame % (5*UI_FREQ) == 0) {
-    scene.is_metric = params.getBool("IsMetric");
-  } else if (frame % (6*UI_FREQ) == 0) {
-    scene.athenaStatus = NET_DISCONNECTED;
-    if (auto last_ping = params.get<float>("LastAthenaPingTime"); last_ping) {
-      scene.athenaStatus = nanos_since_boot() - *last_ping < 70e9 ? NET_CONNECTED : NET_ERROR;
-    }
+    scene.is_metric = Params().getBool("IsMetric");
   }
 }
 
@@ -309,7 +305,7 @@ void QUIState::update() {
   update_status(&ui_state);
   update_vision(&ui_state);
 
-  if (ui_state.scene.started != started_prev) {
+  if (ui_state.scene.started != started_prev || ui_state.sm->frame == 1) {
     started_prev = ui_state.scene.started;
     emit offroadTransition(!ui_state.scene.started);
 
