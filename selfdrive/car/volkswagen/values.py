@@ -380,19 +380,24 @@ FW_VERSIONS = {
   },
   CAR.SKODA_OCTAVIA_MK3: {
     (Ecu.engine, 0x7e0, None): [
-      b'\xf1\x8704L906021DT\xf1\x898127',  # 2015 Skoda Octavia (CKFC)
+      b'\xf1\x8704E906027HD\xf1\x893742',
+      b'\xf1\x8704L906021DT\xf1\x898127',
     ],
     (Ecu.transmission, 0x7e1, None): [
-      b'\xf1\x870D9300041P \xf1\x894507',  # 2015 Skoda Octavia (DQ250)
+      b'\xf1\x870CW300043B \xf1\x891601',
+      b'\xf1\x870D9300041P \xf1\x894507',
     ],
     (Ecu.srs, 0x715, None): [
-      b'\xf1\x873Q0959655AC\xf1\x890200\xf1\x82\r11120011100010022212110200',  # 2015 Skoda Octavia
+      b'\xf1\x873Q0959655AC\xf1\x890200\xf1\x82\r11120011100010022212110200',
+      b'\xf1\x873Q0959655CN\xf1\x890720\xf1\x82\x0e3221003221002105755331052100',
     ],
     (Ecu.eps, 0x712, None): [
-      b'\xf1\x875Q0909144R \xf1\x891061\xf1\x82\x0516A00604A1',  # 2015 Skoda Octavia
+      b'\xf1\x875Q0909144AB\xf1\x891082\xf1\x82\x0521T00403A1',
+      b'\xf1\x875Q0909144R \xf1\x891061\xf1\x82\x0516A00604A1',
     ],
     (Ecu.fwdRadar, 0x757, None): [
-      b'\xf1\x875Q0907572D \xf1\x890304\xf1\x82\x0101',  # 2015 Skoda Octavia
+      b'\xf1\x875Q0907572D \xf1\x890304\xf1\x82\x0101',
+      b'\xf1\x875Q0907572P \xf1\x890682',
     ],
   },
   CAR.SKODA_SCALA_MK1: {
