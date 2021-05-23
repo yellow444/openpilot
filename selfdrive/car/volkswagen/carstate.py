@@ -186,7 +186,6 @@ class CarState(CarStateBase):
       ("KBI_MFA_v_Einheit_02", "Einheiten_01", 0),  # MPH vs KMH speed display
       ("KBI_Handbremse", "Kombi_01", 0),            # Manual handbrake applied
       ("TSK_Status", "TSK_06", 0),                  # ACC engagement status from drivetrain coordinator
-      ("TSK_Fahrzeugmasse_02", "Motor_16", 0),      # Estimated vehicle mass from drivetrain coordinator
       ("GRA_Hauptschalter", "GRA_ACC_01", 0),       # ACC button, on/off
       ("GRA_Abbrechen", "GRA_ACC_01", 0),           # ACC button, cancel
       ("GRA_Tip_Setzen", "GRA_ACC_01", 0),          # ACC button, set
@@ -209,8 +208,8 @@ class CarState(CarStateBase):
       ("ESP_21", 50),       # From J104 ABS/ESP controller
       ("Motor_20", 50),     # From J623 Engine control module
       ("TSK_06", 50),       # From J623 Engine control module
-      ("ESP_02", 50),
-      ("GRA_ACC_01", 33),   # From J??? steering wheel control buttons
+      ("ESP_02", 50),       # From J104 ABS/ESP controller
+      ("GRA_ACC_01", 33),   # From J533 CAN gateway (via LIN from steering wheel controls)
       ("Gateway_72", 10),   # From J533 CAN gateway (aggregated data)
       ("Motor_14", 10),     # From J623 Engine control module
       ("Airbag_02", 5),     # From J234 Airbag control module
@@ -258,7 +257,7 @@ class CarState(CarStateBase):
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.cam, enforce_checks=False)
 
 class MqbExtraSignals:
-  # Additional signal and message lists to dynamically add for optional or bus-portable controllers
+  # Additional signal and message lists for optional or bus-portable controllers
   acc_radar = ([
     ("ACC_Wunschgeschw", "ACC_02", 0),              # ACC set speed
     ("AWV2_Freigabe", "ACC_10", 0),                 # FCW brake jerk release
