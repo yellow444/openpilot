@@ -214,7 +214,6 @@ class CarState(CarStateBase):
       ("Motor_14", 10),     # From J623 Engine control module
       ("Airbag_02", 5),     # From J234 Airbag control module
       ("Kombi_01", 2),      # From J285 Instrument cluster
-      ("Motor_16", 2),      # From J623 Engine control module
       ("Einheiten_01", 1),  # From J??? not known if gateway, cluster, or BCM
     ]
 
@@ -231,56 +230,59 @@ class CarState(CarStateBase):
 
     if CP.networkLocation == NetworkLocation.fwdCamera:
       # Extended CAN devices other than the camera are here on CANBUS.pt
-      signals += MqbExtraSignals.acc_radar[0]
-      checks += MqbExtraSignals.acc_radar[1]
+      signals += MqbExtraSignals.fwd_radar_signals
+      checks += MqbExtraSignals.fwd_radar_checks
       if CP.enableBsm:
-        signals += MqbExtraSignals.bsm[0]
-        checks += MqbExtraSignals.bsm[1]
+        signals += MqbExtraSignals.bsm_radar_signals
+        checks += MqbExtraSignals.bsm_radar_checks
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.pt)
 
   @staticmethod
   def get_cam_can_parser(CP):
 
-    # FIXME: Need to detect LKAS camera properly for checks to work
-    signals = MqbExtraSignals.lkas_camera[0]
-    checks = []  #checks = MqbExtraSignals.lkas_camera[1]
+    signals = [
+      # sig_name, sig_address, default
+      ("LDW_SW_Warnung_links", "LDW_02", 0),          # Blind spot in warning mode on left side due to lane departure
+      ("LDW_SW_Warnung_rechts", "LDW_02", 0),         # Blind spot in warning mode on right side due to lane departure
+      ("LDW_Seite_DLCTLC", "LDW_02", 0),              # Direction of most likely lane departure (left or right)
+      ("LDW_DLC", "LDW_02", 0),                       # Lane departure, distance to line crossing
+      ("LDW_TLC", "LDW_02", 0),                       # Lane departure, time to line crossing
+    ]
+    checks = [
+      # sig_address, frequency
+      # ("LDW_02", 10)        # From R242 Driver assistance camera
+    ]
 
     if CP.networkLocation == NetworkLocation.gateway:
       # Extended CAN devices other than the camera are here on CANBUS.cam
-      signals += MqbExtraSignals.acc_radar[0]
-      checks += MqbExtraSignals.acc_radar[1]
+      signals += MqbExtraSignals.fwd_radar_signals
+      checks += MqbExtraSignals.fwd_radar_checks
       if CP.enableBsm:
-        signals += MqbExtraSignals.bsm[0]
-        checks += MqbExtraSignals.bsm[1]
+        signals += MqbExtraSignals.bsm_radar_signals
+        checks += MqbExtraSignals.bsm_radar_checks
 
+    # TODO: Re-enable checks enforcement with CP.enableStockCamera
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.cam, enforce_checks=False)
 
 class MqbExtraSignals:
   # Additional signal and message lists for optional or bus-portable controllers
-  acc_radar = ([
+  fwd_radar_signals = [
     ("ACC_Wunschgeschw", "ACC_02", 0),              # ACC set speed
     ("AWV2_Freigabe", "ACC_10", 0),                 # FCW brake jerk release
     ("ANB_Teilbremsung_Freigabe", "ACC_10", 0),     # AEB partial braking release
     ("ANB_Zielbremsung_Freigabe", "ACC_10", 0),     # AEB target braking release
-  ], [
+  ]
+  fwd_radar_checks = [
     ("ACC_10", 50),                                 # From J428 ACC radar control module
     ("ACC_02", 17),                                 # From J428 ACC radar control module
-  ])
-  lkas_camera = ([
-    ("LDW_SW_Warnung_links", "LDW_02", 0),          # Blind spot in warning mode on left side due to lane departure
-    ("LDW_SW_Warnung_rechts", "LDW_02", 0),         # Blind spot in warning mode on right side due to lane departure
-    ("LDW_Seite_DLCTLC", "LDW_02", 0),              # Direction of most likely lane departure (left or right)
-    ("LDW_DLC", "LDW_02", 0),                       # Lane departure, distance to line crossing
-    ("LDW_TLC", "LDW_02", 0),                       # Lane departure, time to line crossing
-  ], [
-    ("LDW_02", 10),                                 # From R242 Driver assistance camera
-  ])
-  bsm = ([
+  ]
+  bsm_radar_signals = [
     ("SWA_Infostufe_SWA_li", "SWA_01", 0),          # Blind spot object info, left
     ("SWA_Warnung_SWA_li", "SWA_01", 0),            # Blind spot object warning, left
     ("SWA_Infostufe_SWA_re", "SWA_01", 0),          # Blind spot object info, right
     ("SWA_Warnung_SWA_re", "SWA_01", 0),            # Blind spot object warning, right
-  ], [
+  ]
+  bsm_radar_checks = [
     ("SWA_01", 20),                                 # From J1086 Lane Change Assist
-  ])
+  ]
