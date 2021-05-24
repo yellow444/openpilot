@@ -249,6 +249,7 @@ class CarState(CarStateBase):
       ("LDW_DLC", "LDW_02", 0),                       # Lane departure, distance to line crossing
       ("LDW_TLC", "LDW_02", 0),                       # Lane departure, time to line crossing
     ]
+
     checks = [
       # sig_address, frequency
       # ("LDW_02", 10)        # From R242 Driver assistance camera
