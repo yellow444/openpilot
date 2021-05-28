@@ -143,7 +143,7 @@ class CarState(CarStateBase):
     self.graMsgBusCounter = pt_cp.vl["GRA_ACC_01"]['COUNTER']
 
     # Additional safety checks performed in CarInterface.
-    self.hcaStatus = self.hca_status_values.get(pt_cp.vl["LH_EPS_03"]["EPS_HCA_Status"])
+    self.hca_status = self.hca_status_values.get(pt_cp.vl["LH_EPS_03"]["EPS_HCA_Status"])
     self.parkingBrakeSet = bool(pt_cp.vl["Kombi_01"]['KBI_Handbremse'])  # FIXME: need to include an EPB check as well
     ret.espDisabled = pt_cp.vl["ESP_21"]['ESP_Tastung_passiv'] != 0
 

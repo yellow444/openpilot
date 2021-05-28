@@ -157,9 +157,9 @@ class CarInterface(CarInterfaceBase):
     # Vehicle health and operation safety checks
     if self.CS.parkingBrakeSet:
       events.add(EventName.parkBrake)
-    if self.CS.hcaStatus in ["disabled", "fault"]:
+    if self.CS.hca_status in ["disabled", "fault"]:
       events.add(EventName.steerUnavailable)
-    elif self.CS.hcaStatus in ["initializing", "rejected"]:
+    elif self.CS.hca_status in ["initializing", "rejected"]:
       events.add(EventName.steerTempUnavailable)
 
     ret.events = events.to_msg()
