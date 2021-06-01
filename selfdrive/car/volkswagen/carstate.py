@@ -38,6 +38,11 @@ class CarState(CarStateBase):
     ret.steeringPressed = abs(ret.steeringTorque) > CarControllerParams.STEER_DRIVER_ALLOWANCE
     ret.yawRate = pt_cp.vl["ESP_02"]['ESP_Gierrate'] * (1, -1)[int(pt_cp.vl["ESP_02"]['ESP_VZ_Gierrate'])] * CV.DEG_TO_RAD
 
+    # Verify EPS readiness to accept steering commands
+    hca_status = self.hca_status_values.get(pt_cp.vl["LH_EPS_03"]["EPS_HCA_Status"])
+    ret.steerError = hca_status in ["disabled", "fault"]
+    ret.steerWarning = hca_status in ["initializing", "rejected"]
+
     # Update gas, brakes, and gearshift.
     ret.gas = pt_cp.vl["Motor_20"]['MO_Fahrpedalrohwert_01'] / 100.0
     ret.gasPressed = ret.gas > 0
@@ -143,7 +148,6 @@ class CarState(CarStateBase):
     self.graMsgBusCounter = pt_cp.vl["GRA_ACC_01"]['COUNTER']
 
     # Additional safety checks performed in CarInterface.
-    self.hca_status = self.hca_status_values.get(pt_cp.vl["LH_EPS_03"]["EPS_HCA_Status"])
     self.parkingBrakeSet = bool(pt_cp.vl["Kombi_01"]['KBI_Handbremse'])  # FIXME: need to include an EPB check as well
     ret.espDisabled = pt_cp.vl["ESP_21"]['ESP_Tastung_passiv'] != 0
 
