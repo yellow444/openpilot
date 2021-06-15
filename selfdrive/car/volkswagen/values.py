@@ -65,6 +65,7 @@ class CAR:
   TOURAN_MK2 = "VOLKSWAGEN TOURAN 2ND GEN"    # Chassis 1T, Mk2 VW Touran and variants
   AUDI_A3_MK3 = "AUDI A3 3RD GEN"             # Chassis 8V/FF, Mk3 Audi A3 and variants
   AUDI_Q2_MK1 = "AUDI Q2 1ST GEN"             # Chassis GA, Mk1 Audi Q2 (RoW) and Q2L (China only)
+  AUDI_Q3_MK2 = "AUDI Q3 2ND GEN"             # Chassis 8U/F3/FS, Mk2 Audi Q3 and variants
   SEAT_ATECA_MK1 = "SEAT ATECA 1ST GEN"       # Chassis 5F, Mk1 SEAT Ateca and CUPRA Ateca
   SEAT_LEON_MK3 = "SEAT LEON 3RD GEN"         # Chassis 5F, Mk3 SEAT Leon and variants
   SKODA_KODIAQ_MK1 = "SKODA KODIAQ 1ST GEN"   # Chassis NS, Mk1 Skoda Kodiaq
@@ -103,6 +104,7 @@ FW_VERSIONS = {
       b'\xf1\x8704E906016AD\xf1\x895758',
       b'\xf1\x8704E906023AG\xf1\x891726',
       b'\xf1\x8704E906023BN\xf1\x894518',
+      b'\xf1\x8704E906024K \xf1\x896811',
       b'\xf1\x8704E906027GR\xf1\x892394',
       b'\xf1\x8704E906027MA\xf1\x894958',
       b'\xf1\x8704L906026NF\xf1\x899528',
@@ -127,6 +129,7 @@ FW_VERSIONS = {
     ],
     (Ecu.transmission, 0x7e1, None): [
       b'\xf1\x8709G927749AP\xf1\x892943',
+      b'\xf1\x8709S927158A \xf1\x893585',
       b'\xf1\x870CW300041H \xf1\x891010',
       b'\xf1\x870CW300042F \xf1\x891604',
       b'\xf1\x870CW300045  \xf1\x894531',
@@ -189,6 +192,7 @@ FW_VERSIONS = {
       b'\xf1\x875QM909144A \xf1\x891072\xf1\x82\x0521A20B03A1',
       b'\xf1\x875QN909144A \xf1\x895081\xf1\x82\00571A01A18A1',
       b'\xf1\x875QN909144A \xf1\x895081\xf1\x82\x0571A01A17A1',
+      b'\xf1\x875QM909144B \xf1\x891081\xf1\x82\00521A00442A1',
     ],
     (Ecu.fwdRadar, 0x757, None): [
       b'\xf1\x875Q0907572A \xf1\x890141\xf1\x82\00101',
@@ -360,6 +364,23 @@ FW_VERSIONS = {
       b'\xf1\x872Q0907572M \xf1\x890233',
     ],
   },
+  CAR.AUDI_Q3_MK2: {
+    (Ecu.engine, 0x7e0, None): [
+      b'\xf1\x8783A906259  \xf1\x890001',
+    ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'\xf1\x8709G927158CN\xf1\x893608',
+    ],
+    (Ecu.srs, 0x715, None): [
+      b'\xf1\x875Q0959655BF\xf1\x890403\xf1\x82\x1321211111211200311121232152219321422111',
+    ],
+    (Ecu.eps, 0x712, None): [
+      b'\xf1\x875Q0910143C \xf1\x892211\xf1\x82\x0567G6000800',
+    ],
+    (Ecu.fwdRadar, 0x757, None): [
+      b'\xf1\x872Q0907572R \xf1\x890372',
+    ],
+  },
   CAR.SEAT_ATECA_MK1: {
     (Ecu.engine, 0x7e0, None): [
       b'\xf1\x8704E906027KA\xf1\x893749',
@@ -504,6 +525,7 @@ DBC = {
   CAR.TOURAN_MK2: dbc_dict('vw_mqb_2010', None),
   CAR.AUDI_A3_MK3: dbc_dict('vw_mqb_2010', None),
   CAR.AUDI_Q2_MK1: dbc_dict('vw_mqb_2010', None),
+  CAR.AUDI_Q3_MK2: dbc_dict('vw_mqb_2010', None),
   CAR.SEAT_ATECA_MK1: dbc_dict('vw_mqb_2010', None),
   CAR.SEAT_LEON_MK3: dbc_dict('vw_mqb_2010', None),
   CAR.SKODA_KODIAQ_MK1: dbc_dict('vw_mqb_2010', None),
