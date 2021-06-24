@@ -25,7 +25,6 @@ PREBUILT = os.path.exists(os.path.join(BASEDIR, 'prebuilt'))
 def build(spinner, dirty=False):
   env = os.environ.copy()
   env['SCONS_PROGRESS'] = "1"
-  env['SCONS_CACHE'] = "1"
   nproc = os.cpu_count()
   j_flag = "" if nproc is None else f"-j{nproc - 1}"
 
@@ -77,9 +76,10 @@ def build(spinner, dirty=False):
 
         # Show TextWindow
         spinner.close()
-        error_s = "\n \n".join(["\n".join(textwrap.wrap(e, 65)) for e in errors])
-        with TextWindow("openpilot failed to build\n \n" + error_s) as t:
-          t.wait_for_exit()
+        if not os.getenv("CI"):
+          error_s = "\n \n".join(["\n".join(textwrap.wrap(e, 65)) for e in errors])
+          with TextWindow("openpilot failed to build\n \n" + error_s) as t:
+            t.wait_for_exit()
         exit(1)
     else:
       break

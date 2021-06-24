@@ -170,6 +170,13 @@ selfdrive/car/mazda/radar_interface.py
 selfdrive/car/mazda/values.py
 selfdrive/car/mazda/carcontroller.py
 selfdrive/car/mazda/mazdacan.py
+selfdrive/car/tesla/__init__.py
+selfdrive/car/tesla/teslacan.py
+selfdrive/car/tesla/carcontroller.py
+selfdrive/car/tesla/radar_interface.py
+selfdrive/car/tesla/values.py
+selfdrive/car/tesla/carstate.py
+selfdrive/car/tesla/interface.py
 selfdrive/car/mock/*.py
 
 selfdrive/clocksd/.gitignore
@@ -433,8 +440,12 @@ selfdrive/modeld/runners/run.h
 selfdrive/monitoring/dmonitoringd.py
 selfdrive/monitoring/driver_monitor.py
 
-selfdrive/assets
+selfdrive/assets/*.png
 selfdrive/assets/fonts/*.ttf
+selfdrive/assets/images/*
+selfdrive/assets/offroad/*
+selfdrive/assets/sounds/*
+selfdrive/assets/training/*
 
 phonelibs/SConscript
 
@@ -553,8 +564,7 @@ opendbc/gm_global_a_chassis.dbc
 opendbc/ford_fusion_2018_pt.dbc
 opendbc/ford_fusion_2018_adas.dbc
 
-opendbc/honda_accord_s2t_2018_can_generated.dbc
-opendbc/honda_accord_lx15t_2018_can_generated.dbc
+opendbc/honda_accord_2018_can_generated.dbc
 opendbc/acura_ilx_2016_can_generated.dbc
 opendbc/acura_rdx_2018_can_generated.dbc
 opendbc/acura_rdx_2020_can_generated.dbc
@@ -608,3 +618,5 @@ opendbc/toyota_adas.dbc
 opendbc/toyota_tss2_adas.dbc
 
 opendbc/vw_mqb_2010.dbc
+
+opendbc/tesla_can.dbc

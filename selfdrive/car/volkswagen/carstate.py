@@ -4,26 +4,26 @@ from selfdrive.config import Conversions as CV
 from selfdrive.car.interfaces import CarStateBase
 from opendbc.can.parser import CANParser
 from opendbc.can.can_define import CANDefine
-from selfdrive.car.volkswagen.values import DBC, CANBUS, NetworkLocation, TransmissionType, GearShifter, BUTTON_STATES, CarControllerParams
+from selfdrive.car.volkswagen.values import DBC_FILES, CANBUS, NetworkLocation, TransmissionType, GearShifter, BUTTON_STATES, CarControllerParams
 
 class CarState(CarStateBase):
   def __init__(self, CP):
     super().__init__(CP)
-    can_define = CANDefine(DBC[CP.carFingerprint]['pt'])
+    can_define = CANDefine(DBC_FILES.mqb)
     if CP.transmissionType == TransmissionType.automatic:
-      self.shifter_values = can_define.dv["Getriebe_11"]['GE_Fahrstufe']
+      self.shifter_values = can_define.dv["Getriebe_11"]["GE_Fahrstufe"]
     elif CP.transmissionType == TransmissionType.direct:
-      self.shifter_values = can_define.dv["EV_Gearshift"]['GearPosition']
+      self.shifter_values = can_define.dv["EV_Gearshift"]["GearPosition"]
     self.hca_status_values = can_define.dv["LH_EPS_03"]["EPS_HCA_Status"]
     self.buttonStates = BUTTON_STATES.copy()
 
   def update(self, pt_cp, cam_cp, ext_cp, trans_type):
     ret = car.CarState.new_message()
     # Update vehicle speed and acceleration from ABS wheel speeds.
-    ret.wheelSpeeds.fl = pt_cp.vl["ESP_19"]['ESP_VL_Radgeschw_02'] * CV.KPH_TO_MS
-    ret.wheelSpeeds.fr = pt_cp.vl["ESP_19"]['ESP_VR_Radgeschw_02'] * CV.KPH_TO_MS
-    ret.wheelSpeeds.rl = pt_cp.vl["ESP_19"]['ESP_HL_Radgeschw_02'] * CV.KPH_TO_MS
-    ret.wheelSpeeds.rr = pt_cp.vl["ESP_19"]['ESP_HR_Radgeschw_02'] * CV.KPH_TO_MS
+    ret.wheelSpeeds.fl = pt_cp.vl["ESP_19"]["ESP_VL_Radgeschw_02"] * CV.KPH_TO_MS
+    ret.wheelSpeeds.fr = pt_cp.vl["ESP_19"]["ESP_VR_Radgeschw_02"] * CV.KPH_TO_MS
+    ret.wheelSpeeds.rl = pt_cp.vl["ESP_19"]["ESP_HL_Radgeschw_02"] * CV.KPH_TO_MS
+    ret.wheelSpeeds.rr = pt_cp.vl["ESP_19"]["ESP_HR_Radgeschw_02"] * CV.KPH_TO_MS
 
     ret.vEgoRaw = float(np.mean([ret.wheelSpeeds.fl, ret.wheelSpeeds.fr, ret.wheelSpeeds.rl, ret.wheelSpeeds.rr]))
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
@@ -32,11 +32,16 @@ class CarState(CarStateBase):
 
     # Update steering angle, rate, yaw rate, and driver input torque. VW send
     # the sign/direction in a separate signal so they must be recombined.
-    ret.steeringAngleDeg = pt_cp.vl["LH_EPS_03"]['EPS_Berechneter_LW'] * (1, -1)[int(pt_cp.vl["LH_EPS_03"]['EPS_VZ_BLW'])]
-    ret.steeringRateDeg = pt_cp.vl["LWI_01"]['LWI_Lenkradw_Geschw'] * (1, -1)[int(pt_cp.vl["LWI_01"]['LWI_VZ_Lenkradw_Geschw'])]
-    ret.steeringTorque = pt_cp.vl["LH_EPS_03"]['EPS_Lenkmoment'] * (1, -1)[int(pt_cp.vl["LH_EPS_03"]['EPS_VZ_Lenkmoment'])]
+    ret.steeringAngleDeg = pt_cp.vl["LH_EPS_03"]["EPS_Berechneter_LW"] * (1, -1)[int(pt_cp.vl["LH_EPS_03"]["EPS_VZ_BLW"])]
+    ret.steeringRateDeg = pt_cp.vl["LWI_01"]["LWI_Lenkradw_Geschw"] * (1, -1)[int(pt_cp.vl["LWI_01"]["LWI_VZ_Lenkradw_Geschw"])]
+    ret.steeringTorque = pt_cp.vl["LH_EPS_03"]["EPS_Lenkmoment"] * (1, -1)[int(pt_cp.vl["LH_EPS_03"]["EPS_VZ_Lenkmoment"])]
     ret.steeringPressed = abs(ret.steeringTorque) > CarControllerParams.STEER_DRIVER_ALLOWANCE
-    ret.yawRate = pt_cp.vl["ESP_02"]['ESP_Gierrate'] * (1, -1)[int(pt_cp.vl["ESP_02"]['ESP_VZ_Gierrate'])] * CV.DEG_TO_RAD
+    ret.yawRate = pt_cp.vl["ESP_02"]["ESP_Gierrate"] * (1, -1)[int(pt_cp.vl["ESP_02"]["ESP_VZ_Gierrate"])] * CV.DEG_TO_RAD
+
+    # Verify EPS readiness to accept steering commands
+    hca_status = self.hca_status_values.get(pt_cp.vl["LH_EPS_03"]["EPS_HCA_Status"])
+    ret.steerError = hca_status in ["DISABLED", "FAULT"]
+    ret.steerWarning = hca_status in ["INITIALIZING", "REJECTED"]
 
     # Verify EPS readiness to accept steering commands
     hca_status = self.hca_status_values.get(pt_cp.vl["LH_EPS_03"]["EPS_HCA_Status"])
@@ -44,29 +49,29 @@ class CarState(CarStateBase):
     ret.steerWarning = hca_status in ["INITIALIZING", "REJECTED"]
 
     # Update gas, brakes, and gearshift.
-    ret.gas = pt_cp.vl["Motor_20"]['MO_Fahrpedalrohwert_01'] / 100.0
+    ret.gas = pt_cp.vl["Motor_20"]["MO_Fahrpedalrohwert_01"] / 100.0
     ret.gasPressed = ret.gas > 0
-    ret.brake = pt_cp.vl["ESP_05"]['ESP_Bremsdruck'] / 250.0  # FIXME: this is pressure in Bar, not sure what OP expects
-    ret.brakePressed = bool(pt_cp.vl["ESP_05"]['ESP_Fahrer_bremst'])
+    ret.brake = pt_cp.vl["ESP_05"]["ESP_Bremsdruck"] / 250.0  # FIXME: this is pressure in Bar, not sure what OP expects
+    ret.brakePressed = bool(pt_cp.vl["ESP_05"]["ESP_Fahrer_bremst"])
 
     # Update gear and/or clutch position data.
     if trans_type == TransmissionType.automatic:
-      ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(pt_cp.vl["Getriebe_11"]['GE_Fahrstufe'], None))
+      ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(pt_cp.vl["Getriebe_11"]["GE_Fahrstufe"], None))
     elif trans_type == TransmissionType.direct:
-      ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(pt_cp.vl["EV_Gearshift"]['GearPosition'], None))
+      ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(pt_cp.vl["EV_Gearshift"]["GearPosition"], None))
     elif trans_type == TransmissionType.manual:
-      ret.clutchPressed = not pt_cp.vl["Motor_14"]['MO_Kuppl_schalter']
-      if bool(pt_cp.vl["Gateway_72"]['BCM1_Rueckfahrlicht_Schalter']):
+      ret.clutchPressed = not pt_cp.vl["Motor_14"]["MO_Kuppl_schalter"]
+      if bool(pt_cp.vl["Gateway_72"]["BCM1_Rueckfahrlicht_Schalter"]):
         ret.gearShifter = GearShifter.reverse
       else:
         ret.gearShifter = GearShifter.drive
 
     # Update door and trunk/hatch lid open status.
-    ret.doorOpen = any([pt_cp.vl["Gateway_72"]['ZV_FT_offen'],
-                        pt_cp.vl["Gateway_72"]['ZV_BT_offen'],
-                        pt_cp.vl["Gateway_72"]['ZV_HFS_offen'],
-                        pt_cp.vl["Gateway_72"]['ZV_HBFS_offen'],
-                        pt_cp.vl["Gateway_72"]['ZV_HD_offen']])
+    ret.doorOpen = any([pt_cp.vl["Gateway_72"]["ZV_FT_offen"],
+                        pt_cp.vl["Gateway_72"]["ZV_BT_offen"],
+                        pt_cp.vl["Gateway_72"]["ZV_HFS_offen"],
+                        pt_cp.vl["Gateway_72"]["ZV_HBFS_offen"],
+                        pt_cp.vl["Gateway_72"]["ZV_HD_offen"]])
 
     # Update seatbelt fastened status.
     ret.seatbeltUnlatched = pt_cp.vl["Airbag_02"]["AB_Gurtschloss_FA"] != 3
@@ -106,7 +111,7 @@ class CarState(CarStateBase):
     ret.stockAeb = bool(ext_cp.vl["ACC_10"]["ANB_Teilbremsung_Freigabe"]) or bool(ext_cp.vl["ACC_10"]["ANB_Zielbremsung_Freigabe"])
 
     # Update ACC radar status.
-    accStatus = pt_cp.vl["TSK_06"]['TSK_Status']
+    accStatus = pt_cp.vl["TSK_06"]["TSK_Status"]
     if accStatus == 2:
       # ACC okay and enabled, but not currently engaged
       ret.cruiseState.available = True
@@ -122,34 +127,34 @@ class CarState(CarStateBase):
 
     # Update ACC setpoint. When the setpoint is zero or there's an error, the
     # radar sends a set-speed of ~90.69 m/s / 203mph.
-    ret.cruiseState.speed = ext_cp.vl["ACC_02"]['ACC_Wunschgeschw'] * CV.KPH_TO_MS
+    ret.cruiseState.speed = ext_cp.vl["ACC_02"]["ACC_Wunschgeschw"] * CV.KPH_TO_MS
     if ret.cruiseState.speed > 90:
       ret.cruiseState.speed = 0
 
     # Update control button states for turn signals and ACC controls.
-    self.buttonStates["accelCruise"] = bool(pt_cp.vl["GRA_ACC_01"]['GRA_Tip_Hoch'])
-    self.buttonStates["decelCruise"] = bool(pt_cp.vl["GRA_ACC_01"]['GRA_Tip_Runter'])
-    self.buttonStates["cancel"] = bool(pt_cp.vl["GRA_ACC_01"]['GRA_Abbrechen'])
-    self.buttonStates["setCruise"] = bool(pt_cp.vl["GRA_ACC_01"]['GRA_Tip_Setzen'])
-    self.buttonStates["resumeCruise"] = bool(pt_cp.vl["GRA_ACC_01"]['GRA_Tip_Wiederaufnahme'])
-    self.buttonStates["gapAdjustCruise"] = bool(pt_cp.vl["GRA_ACC_01"]['GRA_Verstellung_Zeitluecke'])
-    ret.leftBlinker = bool(pt_cp.vl["Gateway_72"]['BH_Blinker_li'])
-    ret.rightBlinker = bool(pt_cp.vl["Gateway_72"]['BH_Blinker_re'])
+    self.buttonStates["accelCruise"] = bool(pt_cp.vl["GRA_ACC_01"]["GRA_Tip_Hoch"])
+    self.buttonStates["decelCruise"] = bool(pt_cp.vl["GRA_ACC_01"]["GRA_Tip_Runter"])
+    self.buttonStates["cancel"] = bool(pt_cp.vl["GRA_ACC_01"]["GRA_Abbrechen"])
+    self.buttonStates["setCruise"] = bool(pt_cp.vl["GRA_ACC_01"]["GRA_Tip_Setzen"])
+    self.buttonStates["resumeCruise"] = bool(pt_cp.vl["GRA_ACC_01"]["GRA_Tip_Wiederaufnahme"])
+    self.buttonStates["gapAdjustCruise"] = bool(pt_cp.vl["GRA_ACC_01"]["GRA_Verstellung_Zeitluecke"])
+    ret.leftBlinker = bool(pt_cp.vl["Blinkmodi_02"]["Comfort_Signal_Left"])
+    ret.rightBlinker = bool(pt_cp.vl["Blinkmodi_02"]["Comfort_Signal_Right"])
 
     # Read ACC hardware button type configuration info that has to pass thru
     # to the radar. Ends up being different for steering wheel buttons vs
     # third stalk type controls.
-    self.graHauptschalter = pt_cp.vl["GRA_ACC_01"]['GRA_Hauptschalter']
-    self.graTypHauptschalter = pt_cp.vl["GRA_ACC_01"]['GRA_Typ_Hauptschalter']
-    self.graButtonTypeInfo = pt_cp.vl["GRA_ACC_01"]['GRA_ButtonTypeInfo']
-    self.graTipStufe2 = pt_cp.vl["GRA_ACC_01"]['GRA_Tip_Stufe_2']
+    self.graHauptschalter = pt_cp.vl["GRA_ACC_01"]["GRA_Hauptschalter"]
+    self.graTypHauptschalter = pt_cp.vl["GRA_ACC_01"]["GRA_Typ_Hauptschalter"]
+    self.graButtonTypeInfo = pt_cp.vl["GRA_ACC_01"]["GRA_ButtonTypeInfo"]
+    self.graTipStufe2 = pt_cp.vl["GRA_ACC_01"]["GRA_Tip_Stufe_2"]
     # Pick up the GRA_ACC_01 CAN message counter so we can sync to it for
     # later cruise-control button spamming.
-    self.graMsgBusCounter = pt_cp.vl["GRA_ACC_01"]['COUNTER']
+    self.graMsgBusCounter = pt_cp.vl["GRA_ACC_01"]["COUNTER"]
 
     # Additional safety checks performed in CarInterface.
-    self.parkingBrakeSet = bool(pt_cp.vl["Kombi_01"]['KBI_Handbremse'])  # FIXME: need to include an EPB check as well
-    ret.espDisabled = pt_cp.vl["ESP_21"]['ESP_Tastung_passiv'] != 0
+    self.parkingBrakeSet = bool(pt_cp.vl["Kombi_01"]["KBI_Handbremse"])  # FIXME: need to include an EPB check as well
+    ret.espDisabled = pt_cp.vl["ESP_21"]["ESP_Tastung_passiv"] != 0
 
     return ret
 
@@ -173,8 +178,8 @@ class CarState(CarStateBase):
       ("ZV_HFS_offen", "Gateway_72", 0),            # Door open, rear left
       ("ZV_HBFS_offen", "Gateway_72", 0),           # Door open, rear right
       ("ZV_HD_offen", "Gateway_72", 0),             # Trunk or hatch open
-      ("BH_Blinker_li", "Gateway_72", 0),           # Left turn signal on
-      ("BH_Blinker_re", "Gateway_72", 0),           # Right turn signal on
+      ("Comfort_Signal_Left", "Blinkmodi_02", 0),   # Left turn signal including comfort blink interval
+      ("Comfort_Signal_Right", "Blinkmodi_02", 0),  # Right turn signal including comfort blink interval
       ("AB_Gurtschloss_FA", "Airbag_02", 0),        # Seatbelt status, driver
       ("AB_Gurtschloss_BF", "Airbag_02", 0),        # Seatbelt status, passenger
       ("ESP_Fahrer_bremst", "ESP_05", 0),           # Brake pedal pressed
@@ -216,6 +221,7 @@ class CarState(CarStateBase):
       ("Motor_14", 10),     # From J623 Engine control module
       ("Airbag_02", 5),     # From J234 Airbag control module
       ("Kombi_01", 2),      # From J285 Instrument cluster
+      ("Blinkmodi_02", 1),  # From J519 BCM (sent at 1Hz when no lights active, 50Hz when active)
       ("Einheiten_01", 1),  # From J??? not known if gateway, cluster, or BCM
     ]
 
@@ -238,7 +244,7 @@ class CarState(CarStateBase):
         signals += MqbExtraSignals.bsm_radar_signals
         checks += MqbExtraSignals.bsm_radar_checks
 
-    return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.pt)
+    return CANParser(DBC_FILES.mqb, signals, checks, CANBUS.pt)
 
   @staticmethod
   def get_cam_can_parser(CP):
@@ -266,7 +272,7 @@ class CarState(CarStateBase):
         checks += MqbExtraSignals.bsm_radar_checks
 
     # TODO: Re-enable checks enforcement with CP.enableStockCamera
-    return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.cam, enforce_checks=False)
+    return CANParser(DBC_FILES.mqb, signals, checks, CANBUS.cam, enforce_checks=False)
 
 class MqbExtraSignals:
   # Additional signal and message lists for optional or bus-portable controllers

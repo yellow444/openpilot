@@ -98,8 +98,8 @@ if arch == "aarch64" or arch == "larch64":
       "#phonelibs/libyuv/lib",
       "/system/vendor/lib64"
     ]
-    cflags = ["-DQCOM", "-mcpu=cortex-a57"]
-    cxxflags = ["-DQCOM", "-mcpu=cortex-a57"]
+    cflags = ["-DQCOM", "-D_USING_LIBCXX", "-mcpu=cortex-a57"]
+    cxxflags = ["-DQCOM", "-D_USING_LIBCXX", "-mcpu=cortex-a57"]
     rpath = []
 else:
   cflags = []
@@ -195,8 +195,6 @@ env = Environment(
     "#phonelibs/qrcode",
     "#phonelibs",
     "#cereal",
-    "#cereal/messaging",
-    "#cereal/visionipc",
     "#opendbc/can",
   ],
 
@@ -223,13 +221,10 @@ env = Environment(
 if GetOption('compile_db'):
   env.CompilationDatabase('compile_commands.json')
 
-if os.environ.get('SCONS_CACHE'):
-  cache_dir = '/tmp/scons_cache'
-  if TICI:
-    cache_dir = '/data/scons_cache'
-
-  CacheDir(cache_dir)
-  Clean(["."], cache_dir)
+# Setup cache dir
+cache_dir = '/data/scons_cache' if TICI else '/tmp/scons_cache'
+CacheDir(cache_dir)
+Clean(["."], cache_dir)
 
 node_interval = 5
 node_count = 0
@@ -414,6 +409,9 @@ SConscript(['selfdrive/loggerd/SConscript'])
 SConscript(['selfdrive/locationd/SConscript'])
 SConscript(['selfdrive/sensord/SConscript'])
 SConscript(['selfdrive/ui/SConscript'])
+
+if arch == "aarch64":
+  SConscript(['selfdrive/hardware/eon/SConscript'])
 
 if arch != "Darwin":
   SConscript(['selfdrive/logcatd/SConscript'])
