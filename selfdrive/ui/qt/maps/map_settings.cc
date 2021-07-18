@@ -2,10 +2,11 @@
 
 #include <QDebug>
 
+#include "selfdrive/common/util.h"
+#include "selfdrive/ui/qt/util.h"
 #include "selfdrive/ui/qt/request_repeater.h"
 #include "selfdrive/ui/qt/widgets/controls.h"
-#include "selfdrive/ui/qt/util.h"
-#include "selfdrive/common/util.h"
+#include "selfdrive/ui/qt/widgets/scrollview.h"
 
 static QString shorten(const QString &str, int max_len) {
   return str.size() > max_len ? str.left(max_len).trimmed() + "…" : str;
@@ -13,12 +14,12 @@ static QString shorten(const QString &str, int max_len) {
 
 MapPanel::MapPanel(QWidget* parent) : QWidget(parent) {
   QVBoxLayout *main_layout = new QVBoxLayout(this);
-  Params params = Params();
+  const int icon_size = 200;
 
   // Home
   QHBoxLayout *home_layout = new QHBoxLayout;
   home_button = new QPushButton;
-  home_button->setIconSize(QSize(200, 200));
+  home_button->setIconSize(QSize(icon_size, icon_size));
   home_layout->addWidget(home_button);
 
   home_address = new QLabel;
@@ -30,7 +31,7 @@ MapPanel::MapPanel(QWidget* parent) : QWidget(parent) {
   // Work
   QHBoxLayout *work_layout = new QHBoxLayout;
   work_button = new QPushButton;
-  work_button->setIconSize(QSize(200, 200));
+  work_button->setIconSize(QSize(icon_size, icon_size));
   work_layout->addWidget(work_button);
 
   work_address = new QLabel;
@@ -46,33 +47,19 @@ MapPanel::MapPanel(QWidget* parent) : QWidget(parent) {
   home_work_layout->addLayout(work_layout, 1);
 
   main_layout->addLayout(home_work_layout);
-  main_layout->addSpacing(50);
+  main_layout->addSpacing(20);
   main_layout->addWidget(horizontal_line());
-  main_layout->addSpacing(50);
-
-  // Recents
-  QLabel *recent = new QLabel("Recent");
-  recent->setStyleSheet(R"(font-size: 55px;)");
-  main_layout->addWidget(recent);
-
   main_layout->addSpacing(20);
 
+  // Recents
   recent_layout = new QVBoxLayout;
-  main_layout->addLayout(recent_layout);
-
-  // Settings
-  main_layout->addSpacing(50);
-  main_layout->addWidget(horizontal_line());
-  main_layout->addWidget(new ParamControl("NavSettingTime24h",
-                                    "Show ETA in 24h format",
-                                    "Use 24h format instead of am/pm",
-                                    "",
-                                    this));
-  main_layout->addStretch();
+  QWidget *recent_widget = new LayoutWidget(recent_layout, this);
+  ScrollView *recent_scroller = new ScrollView(recent_widget, this);
+  main_layout->addWidget(recent_scroller, 1);
 
   clear();
 
-  std::string dongle_id = Params().get("DongleId");
+  std::string dongle_id = params.get("DongleId");
   if (util::is_valid_dongle_id(dongle_id)) {
     // Fetch favorite and recent locations
     {
@@ -84,17 +71,21 @@ MapPanel::MapPanel(QWidget* parent) : QWidget(parent) {
     // Destination set while offline
     {
       std::string url = "https://api.commadotai.com/v1/navigation/" + dongle_id + "/next";
-      RequestRepeater* repeater = new RequestRepeater(this, QString::fromStdString(url), "", 10);
+      RequestRepeater* repeater = new RequestRepeater(this, QString::fromStdString(url), "", 10, true);
 
       QObject::connect(repeater, &RequestRepeater::receivedResponse, [](QString resp) {
         auto params = Params();
-        if (resp != "null" && params.get("NavDestination").empty()) {
-          params.put("NavDestination", resp.toStdString());
+        if (resp != "null") {
+          if (params.get("NavDestination").empty()) {
+            qWarning() << "Setting NavDestination from /next" << resp;
+            params.put("NavDestination", resp.toStdString());
+          } else {
+            qWarning() << "Got location from /next, but NavDestination already set";
+          }
         }
       });
     }
   }
-
 }
 
 void MapPanel::clear() {
@@ -122,76 +113,95 @@ void MapPanel::parseResponse(const QString &response) {
   clear();
 
   bool has_recents = false;
-  for (auto location : doc.array()) {
-    auto obj = location.toObject();
+  for (auto &save_type: {"favorite", "recent"}) {
+    for (auto location : doc.array()) {
+      auto obj = location.toObject();
 
-    auto type = obj["save_type"].toString();
-    auto label = obj["label"].toString();
-    auto name = obj["place_name"].toString();
-    auto details = shorten(obj["place_details"].toString(), 30);
+      auto type = obj["save_type"].toString();
+      auto label = obj["label"].toString();
+      auto name = obj["place_name"].toString();
+      auto details = obj["place_details"].toString();
 
-    if (type == "favorite" && label == "home") {
-      home_address->setText(name);
-      home_address->setStyleSheet(R"(font-size: 50px; color: white;)");
-      home_button->setIcon(QPixmap("../assets/navigation/home.png"));
-      QObject::connect(home_button, &QPushButton::clicked, [=]() {
-        navigateTo(obj);
-        emit closeSettings();
-      });
-    } else if (type == "favorite" && label == "work") {
-      work_address->setText(name);
-      work_address->setStyleSheet(R"(font-size: 50px; color: white;)");
-      work_button->setIcon(QPixmap("../assets/navigation/work.png"));
-      QObject::connect(work_button, &QPushButton::clicked, [=]() {
-        navigateTo(obj);
-        emit closeSettings();
-      });
-    } else {
-      ClickableWidget *widget = new ClickableWidget;
-      QHBoxLayout *layout = new QHBoxLayout(widget);
-      layout->setContentsMargins(40, 10, 40, 10);
+      if (type != save_type) continue;
 
-      QLabel *recent_label = new QLabel(name + " " + details);
-      recent_label->setStyleSheet(R"(font-size: 50px; color: #9c9c9c)");
+      if (type == "favorite" && label == "home") {
+        home_address->setText(name);
+        home_address->setStyleSheet(R"(font-size: 50px; color: white;)");
+        home_button->setIcon(QPixmap("../assets/navigation/home.png"));
+        QObject::connect(home_button, &QPushButton::clicked, [=]() {
+          navigateTo(obj);
+          emit closeSettings();
+        });
+      } else if (type == "favorite" && label == "work") {
+        work_address->setText(name);
+        work_address->setStyleSheet(R"(font-size: 50px; color: white;)");
+        work_button->setIcon(QPixmap("../assets/navigation/work.png"));
+        QObject::connect(work_button, &QPushButton::clicked, [=]() {
+          navigateTo(obj);
+          emit closeSettings();
+        });
+      } else {
+        ClickableWidget *widget = new ClickableWidget;
+        QHBoxLayout *layout = new QHBoxLayout(widget);
+        layout->setContentsMargins(15, 14, 40, 14);
 
-      layout->addWidget(recent_label);
-      layout->addStretch();
+        QLabel *star = new QLabel("★");
+        auto sp = star->sizePolicy();
+        sp.setRetainSizeWhenHidden(true);
+        star->setSizePolicy(sp);
 
-      QLabel *arrow = new QLabel("→");
-      arrow->setStyleSheet(R"(font-size: 60px;)");
-      layout->addWidget(arrow);
+        star->setVisible(type == "favorite");
+        star->setStyleSheet(R"(font-size: 60px;)");
+        layout->addWidget(star);
+        layout->addSpacing(10);
 
-      widget->setStyleSheet(R"(
-        .ClickableWidget {
-          border-radius: 10px;
-          border-width: 1px;
-          border-style: solid;
-          border-color: gray;
-        }
-        QWidget {
-          background-color: #393939;
-        }
-      )");
 
-      QObject::connect(widget, &ClickableWidget::clicked, [=]() {
-        navigateTo(obj);
-        emit closeSettings();
-      });
+        QLabel *recent_label = new QLabel(shorten(name + " " + details, 45));
+        recent_label->setStyleSheet(R"(font-size: 50px;)");
 
-      recent_layout->addWidget(widget);
-      recent_layout->addSpacing(10);
-      has_recents = true;
+        layout->addWidget(recent_label);
+        layout->addStretch();
+
+        QLabel *arrow = new QLabel("→");
+        arrow->setStyleSheet(R"(font-size: 60px;)");
+        layout->addWidget(arrow);
+
+        widget->setStyleSheet(R"(
+          .ClickableWidget {
+            border-radius: 10px;
+            border-width: 1px;
+            border-style: solid;
+            border-color: gray;
+          }
+          QWidget {
+            background-color: #393939;
+            color: #9c9c9c;
+          }
+        )");
+
+        QObject::connect(widget, &ClickableWidget::clicked, [=]() {
+          navigateTo(obj);
+          emit closeSettings();
+        });
+
+        recent_layout->addWidget(widget);
+        recent_layout->addSpacing(10);
+        has_recents = true;
+      }
     }
+
   }
 
   if (!has_recents) {
-    QLabel *no_recents = new QLabel("  no recent destinations");
+    QLabel *no_recents = new QLabel("no recent destinations");
     no_recents->setStyleSheet(R"(font-size: 50px; color: #9c9c9c)");
     recent_layout->addWidget(no_recents);
   }
+
+  recent_layout->addStretch();
 }
 
 void MapPanel::navigateTo(const QJsonObject &place) {
   QJsonDocument doc(place);
-  Params().put("NavDestination", doc.toJson().toStdString());
+  params.put("NavDestination", doc.toJson().toStdString());
 }

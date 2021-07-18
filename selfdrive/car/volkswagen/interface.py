@@ -1,5 +1,4 @@
 from cereal import car
-from selfdrive.swaglog import cloudlog
 from selfdrive.car.volkswagen.values import CAR, BUTTON_STATES, NetworkLocation, TransmissionType, GearShifter
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
@@ -44,13 +43,11 @@ class CarInterface(CarInterfaceBase):
       else:
         # No trans message at all, must be a true stick-shift manual
         ret.transmissionType = TransmissionType.manual
-      cloudlog.info("Detected transmission type: %s", ret.transmissionType)
 
       if 0xfd in fingerprint[1]:  # ESP_21 present on bus 1, we're hooked up at the CAN gateway
         ret.networkLocation = NetworkLocation.gateway
       else:  # We're hooked up at the LKAS camera
         ret.networkLocation = NetworkLocation.fwdCamera
-      cloudlog.info("Detected network location: %s", ret.networkLocation)
 
     # Global tuning defaults, can be overridden per-vehicle
 
@@ -143,7 +140,6 @@ class CarInterface(CarInterfaceBase):
 
     ret.centerToFront = ret.wheelbase * 0.45
 
-    ret.enableCamera = True
     ret.enableBsm = 0x30F in fingerprint[0]
 
     # TODO: get actual value, for now starting with reasonable value for

@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 import datetime
-import json
 import os
-import subprocess
 import time
 from pathlib import Path
 from typing import Dict, Optional, Tuple
@@ -12,7 +10,6 @@ from smbus2 import SMBus
 
 import cereal.messaging as messaging
 from cereal import log
-from common.basedir import BASEDIR
 from common.filter_simple import FirstOrderFilter
 from common.numpy_fast import clip, interp
 from common.params import Params, ParamKeyType
@@ -159,6 +156,7 @@ def thermald_thread():
   network_type = NetworkType.none
   network_strength = NetworkStrength.unknown
   network_info = None
+  modem_version = None
   registered_count = 0
 
   current_filter = FirstOrderFilter(0., CURRENT_TAU, DT_TRML)
@@ -173,6 +171,7 @@ def thermald_thread():
   power_monitor = PowerMonitoring()
   no_panda_cnt = 0
 
+  HARDWARE.initialize_hardware()
   thermal_config = HARDWARE.get_thermal_config()
 
   if params.get_bool("IsOnroad"):
@@ -191,15 +190,6 @@ def thermald_thread():
         except Exception:
           pass
     cloudlog.event("CPR", data=cpr_data)
-
-    # modem logging
-    try:
-      binpath = os.path.join(BASEDIR, "selfdrive/hardware/eon/rat")
-      out = subprocess.check_output([binpath], encoding='utf8').strip()
-      dat = json.loads(out.splitlines()[1])
-      cloudlog.event("NV data", data=dat)
-    except Exception:
-      pass
 
   while 1:
     pandaState = messaging.recv_sock(pandaState_sock, wait=True)
@@ -249,6 +239,12 @@ def thermald_thread():
         network_strength = HARDWARE.get_network_strength(network_type)
         network_info = HARDWARE.get_network_info()  # pylint: disable=assignment-from-none
 
+        # Log modem version once
+        if modem_version is None:
+          modem_version = HARDWARE.get_modem_version()  # pylint: disable=assignment-from-none
+          if modem_version is not None:
+            cloudlog.warning(f"Modem version: {modem_version}")
+
         if TICI and (network_info.get('state', None) == "REGISTERED"):
           registered_count += 1
         else:
@@ -265,6 +261,7 @@ def thermald_thread():
     msg.deviceState.freeSpacePercent = get_available_percent(default=100.0)
     msg.deviceState.memoryUsagePercent = int(round(psutil.virtual_memory().percent))
     msg.deviceState.cpuUsagePercent = int(round(psutil.cpu_percent()))
+    msg.deviceState.gpuUsagePercent = int(round(HARDWARE.get_gpu_usage_percent()))
     msg.deviceState.networkType = network_type
     msg.deviceState.networkStrength = network_strength
     if network_info is not None:
