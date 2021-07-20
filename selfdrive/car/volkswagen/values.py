@@ -12,7 +12,8 @@ GearShifter = car.CarState.GearShifter
 
 class CarControllerParams:
   HCA_STEP = 2                   # HCA_01 message frequency 50Hz
-  LDW_STEP = 10                  # LDW_02 message frequency 10Hz
+  MQB_LDW_STEP = 10              # LDW_02 message frequency 10Hz on MQB
+  PQ_LDW_STEP = 5                # LDW_1 message frequency 20Hz on PQ35/PQ46/NMS
   GRA_ACC_STEP = 3               # GRA_ACC_01 message frequency 33Hz
 
   GRA_VBP_STEP = 100             # Send ACC virtual button presses once a second
@@ -33,6 +34,7 @@ class CANBUS:
   cam = 2
 
 class DBC_FILES:
+  pq = "vw_golf_mk4"  # Used for all cars with PQ25/PQ35/PQ46/NMS-style CAN messaging
   mqb = "vw_mqb_2010"  # Used for all cars with MQB-style CAN messaging
 
 DBC = defaultdict(lambda: dbc_dict(DBC_FILES.mqb, None))  # type: Dict[str, Dict[str, str]]
@@ -65,9 +67,11 @@ MQB_LDW_MESSAGES = {
 
 class CAR:
   ATLAS_MK1 = "VOLKSWAGEN ATLAS 1ST GEN"      # Chassis CA, Mk1 VW Atlas and Atlas Cross Sport
+  GOLF_MK6 = "VOLKSWAGEN GOLF 6TH GEN"        # Chassis 1K/5K/AJ, includes Mk6 Golf and variants
   GOLF_MK7 = "VOLKSWAGEN GOLF 7TH GEN"        # Chassis 5G/AU/BA/BE, Mk7 VW Golf and variants
   JETTA_MK7 = "VOLKSWAGEN JETTA 7TH GEN"      # Chassis BU, Mk7 Jetta
   PASSAT_MK8 = "VOLKSWAGEN PASSAT 8TH GEN"    # Chassis 3G, Mk8 Passat and variants
+  PASSAT_NMS = "VOLKSWAGEN PASSAT NMS"        # Chassis A3, North America/China/Mideast NMS Passat, incl. facelift
   TIGUAN_MK2 = "VOLKSWAGEN TIGUAN 2ND GEN"    # Chassis AD/BW, Mk2 VW Tiguan and variants
   TOURAN_MK2 = "VOLKSWAGEN TOURAN 2ND GEN"    # Chassis 1T, Mk2 VW Touran and variants
   AUDI_A3_MK3 = "AUDI A3 3RD GEN"             # Chassis 8V/FF, Mk3 Audi A3 and variants
@@ -79,6 +83,16 @@ class CAR:
   SKODA_SCALA_MK1 = "SKODA SCALA 1ST GEN"     # Chassis NW, Mk1 Skoda Scala and Skoda Kamiq
   SKODA_SUPERB_MK3 = "SKODA SUPERB 3RD GEN"   # Chassis 3V/NP, Mk3 Skoda Superb and variants
   SKODA_OCTAVIA_MK3 = "SKODA OCTAVIA 3RD GEN" # Chassis NE, Mk3 Skoda Octavia and variants
+
+# All PQ35/PQ46/NMS platform CARs should be on this list
+
+PQ_CARS = [CAR.GOLF_MK6, CAR.PASSAT_NMS]
+
+FINGERPRINTS = {
+  CAR.GOLF_MK6: [{
+    80: 4, 194: 8, 208: 6, 416: 8, 640: 8, 644: 6, 648: 8, 672: 8, 800: 8, 896: 8, 906: 4, 912: 8, 914: 8, 919: 8, 928: 8, 976: 6, 978: 7, 1056: 8, 1152: 8, 1160: 8, 1164: 8, 1184: 8, 1192: 8, 1306: 8, 1312: 8, 1344: 8, 1360: 8, 1386: 8, 1392: 5, 1394: 1, 1408: 8, 1416: 8, 1420: 8, 1423: 8, 1440: 8, 1488: 8, 1490: 8, 1500: 8, 1504: 8, 1654: 2, 1824: 7, 1827: 7, 2000: 8
+  }],
+}
 
 # All supported cars should return FW from the engine, srs, eps, and fwdRadar. Cars
 # with a manual trans won't return transmission firmware, but all other cars will.
@@ -293,6 +307,20 @@ FW_VERSIONS = {
       b'\xf1\x873Q0907572B \xf1\x890192',
       b'\xf1\x873Q0907572C \xf1\x890195',
       b'\xf1\x875Q0907572R \xf1\x890771',
+    ],
+  },
+  CAR.PASSAT_NMS: {
+    (Ecu.engine, 0x7e0, None): [
+      b'\xf1\x8706K906071BJ\xf1\x894891',
+    ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'\xf1\x8709G927158BD\xf1\x893121',
+    ],
+    (Ecu.srs, 0x715, None): [
+      b'\xf1\x87561959655  \xf1\x890210\xf1\x82\02212121111113000102011--121012--101312',
+    ],
+    (Ecu.fwdRadar, 0x757, None): [
+      b'\xf1\x877N0907572C \xf1\x890211\xf1\x82\00152',
     ],
   },
   CAR.TIGUAN_MK2: {

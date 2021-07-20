@@ -1,5 +1,6 @@
 from cereal import car
-from selfdrive.car.volkswagen.values import CAR, BUTTON_STATES, NetworkLocation, TransmissionType, GearShifter
+from selfdrive.config import Conversions as CV
+from selfdrive.car.volkswagen.values import CAR, PQ_CARS, BUTTON_STATES, NetworkLocation, TransmissionType, GearShifter
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
 
@@ -23,25 +24,33 @@ class CarInterface(CarInterfaceBase):
   @staticmethod
   def get_params(candidate, fingerprint=gen_empty_fingerprint(), car_fw=None):
     ret = CarInterfaceBase.get_std_params(candidate, fingerprint)
+    ret.carName = "volkswagen"
+    ret.communityFeature = True  # technically unsupported, the best kind of unsupported
+    ret.radarOffCan = True
 
-    # VW port is a community feature, since we don't own one to test
-    ret.communityFeature = True
+    if candidate in PQ_CARS:
+      # Set global PQ35/PQ46/NMS parameters
+      ret.safetyModel = car.CarParams.SafetyModel.volkswagenPq
+      ret.enableBsm = 0x5BE in fingerprint[0]
 
-    if True:  # pylint: disable=using-constant-test
-      # Set common MQB parameters that will apply globally
-      ret.carName = "volkswagen"
-      ret.radarOffCan = True
-      ret.safetyModel = car.CarParams.SafetyModel.volkswagen
-      ret.steerActuatorDelay = 0.05
-
-      if 0xAD in fingerprint[0]:
-        # Getriebe_11 detected: traditional automatic or DSG gearbox
+      if 0x440 in fingerprint[0]:  # Getriebe_1 detected: traditional automatic or DSG gearbox
         ret.transmissionType = TransmissionType.automatic
-      elif 0x187 in fingerprint[0]:
-        # EV_Gearshift detected: e-Golf or similar direct-drive electric
+      else:  # No trans message at all, must be a true stick-shift manual
+        ret.transmissionType = TransmissionType.manual
+
+      # FIXME: need a powertrain message ID to detect gateway installations
+      ret.networkLocation = NetworkLocation.fwdCamera
+
+    else:
+      # Set global MQB parameters
+      ret.safetyModel = car.CarParams.SafetyModel.volkswagen
+      ret.enableBsm = False  # TODO: Lookup and map PQ BSM message
+
+      if 0xAD in fingerprint[0]:  # Getriebe_11 detected: traditional automatic or DSG gearbox
+        ret.transmissionType = TransmissionType.automatic
+      elif 0x187 in fingerprint[0]:  # EV_Gearshift detected: e-Golf or similar direct-drive electric
         ret.transmissionType = TransmissionType.direct
-      else:
-        # No trans message at all, must be a true stick-shift manual
+      else:  # No trans message at all, must be a true stick-shift manual
         ret.transmissionType = TransmissionType.manual
 
       if 0xfd in fingerprint[1]:  # ESP_21 present on bus 1, we're hooked up at the CAN gateway
@@ -50,7 +59,7 @@ class CarInterface(CarInterfaceBase):
         ret.networkLocation = NetworkLocation.fwdCamera
 
     # Global tuning defaults, can be overridden per-vehicle
-
+    ret.steerActuatorDelay = 0.05
     ret.steerRateCost = 1.0
     ret.steerLimitTimer = 0.4
     ret.steerRatio = 15.6  # Let the params learner figure this out
@@ -68,6 +77,12 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 2011 + STD_CARGO_KG
       ret.wheelbase = 2.98
 
+    elif candidate == CAR.GOLF_MK6:
+      # Averages of all 1K/5K/AJ Golf variants
+      ret.mass = 1379 + STD_CARGO_KG
+      ret.wheelbase = 2.58
+      ret.minSteerSpeed = 50 * CV.KPH_TO_MS  # May be lower depending on model-year/EPS FW
+
     elif candidate == CAR.GOLF_MK7:
       # Averages of all AU Golf variants
       ret.mass = 1397 + STD_CARGO_KG
@@ -82,6 +97,12 @@ class CarInterface(CarInterfaceBase):
       # Averages of all 3C Passat variants
       ret.mass = 1551 + STD_CARGO_KG
       ret.wheelbase = 2.79
+
+    elif candidate == CAR.PASSAT_NMS:
+      # Averages of all A3 Passat NMS
+      ret.mass = 1503 + STD_CARGO_KG
+      ret.wheelbase = 2.80
+      ret.minSteerSpeed = 50 * CV.KPH_TO_MS  # May be lower depending on model-year/EPS FW
 
     elif candidate == CAR.TIGUAN_MK2:
       # Average of SWB and LWB variants
@@ -140,8 +161,6 @@ class CarInterface(CarInterfaceBase):
 
     ret.centerToFront = ret.wheelbase * 0.45
 
-    ret.enableBsm = 0x30F in fingerprint[0]
-
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase
     ret.rotationalInertia = scale_rot_inertia(ret.mass, ret.wheelbase)
@@ -187,6 +206,8 @@ class CarInterface(CarInterfaceBase):
     # Vehicle health and operation safety checks
     if self.CS.parkingBrakeSet:
       events.add(EventName.parkBrake)
+    if ret.vEgo < self.CP.minSteerSpeed:
+      events.add(car.CarEvent.EventName.belowSteerSpeed)
 
     ret.events = events.to_msg()
     ret.buttonEvents = buttonEvents
