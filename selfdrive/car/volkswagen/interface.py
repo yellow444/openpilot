@@ -31,7 +31,7 @@ class CarInterface(CarInterfaceBase):
     if candidate in PQ_CARS:
       # Set global PQ35/PQ46/NMS parameters
       ret.safetyModel = car.CarParams.SafetyModel.volkswagenPq
-      ret.enableBsm = 0x5BE in fingerprint[0]
+      ret.enableBsm = False  # TODO: Lookup and map PQ BSM message
 
       if 0x440 in fingerprint[0]:  # Getriebe_1 detected: traditional automatic or DSG gearbox
         ret.transmissionType = TransmissionType.automatic
@@ -44,7 +44,7 @@ class CarInterface(CarInterfaceBase):
     else:
       # Set global MQB parameters
       ret.safetyModel = car.CarParams.SafetyModel.volkswagen
-      ret.enableBsm = False  # TODO: Lookup and map PQ BSM message
+      ret.enableBsm = 0x30F in fingerprint[0]
 
       if 0xAD in fingerprint[0]:  # Getriebe_11 detected: traditional automatic or DSG gearbox
         ret.transmissionType = TransmissionType.automatic
