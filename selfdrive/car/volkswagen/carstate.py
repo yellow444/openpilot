@@ -227,7 +227,19 @@ class CarState(CarStateBase):
     # TODO: read PQ Einheiten here
     self.displayMetricUnits = False
 
-    # TODO: Consume blind spot data from factory radar, if present
+    # Consume blind-spot monitoring info/warning LED states, if available. The
+    # info signal (LED on) is enabled whenever a vehicle is detected in the
+    # driver's blind spot. The warning signal (LED flashing) is enabled if the
+    # driver shows possibly hazardous intent toward a BSM detected vehicle, by
+    # setting the turn signal in that direction, or (for cars with factory Lane
+    # Assist) approaches the lane boundary in that direction. Size of the BSM
+    # detection box is dynamic based on speed and road curvature.
+    # Refer to VW Self Study Program 890253: Volkswagen Driver Assist Systems,
+    # pages 32-35.
+    if self.CP.enableBsm:
+      ret.leftBlindspot = bool(ext_cp.vl["SWA_1"]["SWA_Infostufe_SWA_li"]) or bool(ext_cp.vl["SWA_1"]["SWA_Warnung_SWA_li"])
+      ret.rightBlindspot = bool(ext_cp.vl["SWA_1"]["SWA_Infostufe_SWA_re"]) or bool(ext_cp.vl["SWA_1"]["SWA_Warnung_SWA_re"])
+
     # TODO: Consume lane departure data from factory camera, if present
     self.ldw_lane_warning_left = False
     self.ldw_lane_warning_right = False
@@ -450,9 +462,9 @@ class CarState(CarStateBase):
       # Extended CAN devices other than the camera are here on CANBUS.pt
       signals += PqExtraSignals.fwd_radar_signals
       checks += PqExtraSignals.fwd_radar_checks
-      #if CP.enableBsm:
-      #  signals += PqExtraSignals.bsm_radar_signals
-      #  checks += PqExtraSignals.bsm_radar_checks
+      if CP.enableBsm:
+        signals += PqExtraSignals.bsm_radar_signals
+        checks += PqExtraSignals.bsm_radar_checks
 
     return CANParser(DBC_FILES.pq, signals, checks, CANBUS.pt)
 
@@ -501,9 +513,9 @@ class CarState(CarStateBase):
       # Extended CAN devices other than the camera are here on CANBUS.cam
       signals += PqExtraSignals.fwd_radar_signals
       checks += PqExtraSignals.fwd_radar_checks
-      #if CP.enableBsm:
-      #  signals += PqExtraSignals.bsm_radar_signals
-      #  checks += PqExtraSignals.bsm_radar_checks
+      if CP.enableBsm:
+        signals += PqExtraSignals.bsm_radar_signals
+        checks += PqExtraSignals.bsm_radar_checks
 
     return CANParser(DBC_FILES.pq, signals, checks, CANBUS.cam, enforce_checks=False)
 
@@ -529,12 +541,6 @@ class MqbExtraSignals:
     ("SWA_01", 20),                                 # From J1086 Lane Change Assist
   ]
 
-
-# FIXME: ignoring ACC signals until we detect its presence and bus location
-#   signals += [("ACA_V_Wunsch", "ACC_GRA_Anziege", 0)]  # ACC set speed
-#   checks += [("ACC_GRA_Anziege", 25)]  # From J428 ACC radar control module
-
-
 class PqExtraSignals:
   # Additional signal and message lists for optional or bus-portable controllers
   fwd_radar_signals = [
@@ -543,4 +549,13 @@ class PqExtraSignals:
   ]
   fwd_radar_checks = [
     ("ACC_GRA_Anziege", 25),                        # From J428 ACC radar control module
+  ]
+  bsm_radar_signals = [
+    ("SWA_Infostufe_SWA_li", "SWA_1", 0),           # Blind spot object info, left
+    ("SWA_Warnung_SWA_li", "SWA_1", 0),             # Blind spot object warning, left
+    ("SWA_Infostufe_SWA_re", "SWA_1", 0),           # Blind spot object info, right
+    ("SWA_Warnung_SWA_re", "SWA_1", 0),             # Blind spot object warning, right
+  ]
+  bsm_radar_checks = [
+    ("SWA_1", 20),                                  # From J1086 Lane Change Assist
   ]
