@@ -506,7 +506,7 @@ class CarState(CarStateBase):
 
     checks = [
       # sig_address, frequency
-      ("LDW_1", 20)        # From R242 Driver assistance camera
+      #("LDW_1", 20)        # From R242 Driver assistance camera
     ]
 
     if CP.networkLocation == NetworkLocation.gateway:
