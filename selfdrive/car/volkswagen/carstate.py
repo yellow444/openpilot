@@ -56,11 +56,6 @@ class CarState(CarStateBase):
     ret.steerError = hca_status in ["DISABLED", "FAULT"]
     ret.steerWarning = hca_status in ["INITIALIZING", "REJECTED"]
 
-    # Verify EPS readiness to accept steering commands
-    hca_status = self.hca_status_values.get(pt_cp.vl["LH_EPS_03"]["EPS_HCA_Status"])
-    ret.steerError = hca_status in ["DISABLED", "FAULT"]
-    ret.steerWarning = hca_status in ["INITIALIZING", "REJECTED"]
-
     # Update gas, brakes, and gearshift.
     ret.gas = pt_cp.vl["Motor_20"]["MO_Fahrpedalrohwert_01"] / 100.0
     ret.gasPressed = ret.gas > 0
