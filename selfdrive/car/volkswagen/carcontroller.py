@@ -4,6 +4,7 @@ from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.volkswagen import volkswagencan
 from selfdrive.car.volkswagen.values import DBC, CANBUS, NWL, MQB_LDW_MESSAGES, BUTTON_STATES, CarControllerParams
 from opendbc.can.packer import CANPacker
+from common.numpy_fast import interp
 
 
 class CarController():
@@ -128,7 +129,9 @@ class CarController():
       mobEnabled = self.mobEnabled
       mobPreEnable = self.mobPreEnable
       # TODO make sure we use the full 8190 when calculating braking.
-      apply_brake = actuators.brake * 1400
+      brake_limit = int(interp(CS.v_ego, [0., 5.6, 10.], [400, 800, 1400]))
+      apply_brake = actuators.brake * brake_limit
+
       stopping_wish = False
 
       if enabled:
