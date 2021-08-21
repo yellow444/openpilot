@@ -169,7 +169,7 @@ class CarController():
         green_led = 1 if enabled else 0
         orange_led = 1 if self.mobPreEnable and self.mobEnabled else 0
         if enabled:
-          braking_working = 0 if (CS.ABSWorking == 0) else 5
+          braking_working = 0 if (CS.ABSWorking == 1) else 5
         else:
           braking_working = 0
 
