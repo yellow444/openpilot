@@ -491,8 +491,8 @@ class CarState(CarStateBase):
 
     if CP.networkLocation == NetworkLocation.gateway:
       # Extended CAN devices other than the camera are here on CANBUS.cam
-      signals += PqExtraSignals.fwd_radar_signals
-      checks += PqExtraSignals.fwd_radar_checks
+      #signals += PqExtraSignals.fwd_radar_signals
+      #checks += PqExtraSignals.fwd_radar_checks
       if CP.enableBsm:
         signals += PqExtraSignals.bsm_radar_signals
         checks += PqExtraSignals.bsm_radar_checks
