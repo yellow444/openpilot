@@ -391,7 +391,7 @@ class CarState(CarStateBase):
       ("Gurtschalter_Beifahrer", "Airbag_1", 0),    # Seatbelt status, passenger
       ("Bremstestschalter", "Motor_2", 0),          # Brake pedal pressed (brake light test switch)
       ("Bremslichtschalter", "Motor_2", 0),         # Brakes applied (brake light switch)
-      ("Soll_Geschwindigkeit_bei_GRA_Be", "Motor_2", 0) #CruiseControl Setspeed
+      ("Soll_Geschwindigkeit_bei_GRA_Be", "Motor_2", 0), #CruiseControl Setspeed
       ("Bremsdruck", "Bremse_5", 0),                # Brake pressure applied
       ("Vorzeichen_Bremsdruck", "Bremse_5", 0),     # Brake pressure applied sign (???)
       ("Fahrpedal_Rohsignal", "Motor_3", 0),        # Accelerator pedal value
