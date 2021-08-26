@@ -277,7 +277,7 @@ class CarState(CarStateBase):
     self.graMsgBusCounter = pt_cp.vl["GRA_Neu"]["GRA_Neu_Zaehler"]
 
     # Additional safety checks performed in CarInterface.
-    self.parkingBrakeSet = bool(pt_cp.vl["Kombi_1"]["Bremsinfo"])  # FIXME: need to include an EPB check as well
+    self.parkingBrakeSet = False #bool(pt_cp.vl["Kombi_1"]["Bremsinfo"])  # FIXME: need to include an EPB check as well
     ret.espDisabled = bool(pt_cp.vl["Bremse_1"]["ESP_Passiv_getastet"])
 
     return ret
