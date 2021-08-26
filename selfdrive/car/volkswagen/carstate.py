@@ -249,7 +249,7 @@ class CarState(CarStateBase):
 
     # Update ACC setpoint. When the setpoint reads as 255, the driver has not
     # yet established an ACC setpoint, so treat it as zero.
-    ret.cruiseState.speed = ext_cp.vl["ACC_GRA_Anziege"]["ACA_V_Wunsch"] * CV.KPH_TO_MS
+    ret.cruiseState.speed = pt_cp.vl["Motor_2"]['Soll_Geschwindigkeit_bei_GRA_Be'] * CV.KPH_TO_MS
     if ret.cruiseState.speed > 70:  # 255 kph in m/s == no current setpoint
       ret.cruiseState.speed = 0
 
@@ -391,6 +391,7 @@ class CarState(CarStateBase):
       ("Gurtschalter_Beifahrer", "Airbag_1", 0),    # Seatbelt status, passenger
       ("Bremstestschalter", "Motor_2", 0),          # Brake pedal pressed (brake light test switch)
       ("Bremslichtschalter", "Motor_2", 0),         # Brakes applied (brake light switch)
+      ("Soll_Geschwindigkeit_bei_GRA_Be", "Motor_2", 0) #CruiseControl Setspeed
       ("Bremsdruck", "Bremse_5", 0),                # Brake pressure applied
       ("Vorzeichen_Bremsdruck", "Bremse_5", 0),     # Brake pressure applied sign (???)
       ("Fahrpedal_Rohsignal", "Motor_3", 0),        # Accelerator pedal value
