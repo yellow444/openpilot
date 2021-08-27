@@ -49,9 +49,6 @@ class Controls:
 
     # Setup sockets
     self.pm = pm
-    if self.pm is None:
-      self.pm = messaging.PubMaster(['sendcan', 'controlsState', 'carState',
-                                     'carControl', 'carEvents', 'carParams'])
 
     self.camera_packets = ["roadCameraState", "driverCameraState"]
     if TICI:
@@ -81,7 +78,7 @@ class Controls:
     print("Waiting for CAN messages...")
     get_one_can(self.can_sock)
 
-    self.CI, self.CP = get_car(self.can_sock, self.pm.sock['sendcan'])
+    self.CI, self.CP = get_car(self.can_sock)
 
     # read params
     self.is_metric = params.get_bool("IsMetric")
@@ -325,6 +322,9 @@ class Controls:
 
     all_valid = CS.canValid and self.sm.all_alive_and_valid()
     if not self.initialized and (all_valid or self.sm.frame * DT_CTRL > 2.0):
+      if self.pm is None:
+        self.pm = messaging.PubMaster(['sendcan', 'controlsState', 'carState',
+                                      'carControl', 'carEvents', 'carParams'])
       self.CI.init(self.CP, self.can_sock, self.pm.sock['sendcan'])
       self.initialized = True
       Params().put_bool("ControlsReady", True)
@@ -653,14 +653,14 @@ class Controls:
       self.state_transition(CS)
       self.prof.checkpoint("State transition")
 
-    # Compute actuators (runs PID loops and lateral MPC)
-    actuators, lac_log = self.state_control(CS)
+      # Compute actuators (runs PID loops and lateral MPC)
+      actuators, lac_log = self.state_control(CS)
 
-    self.prof.checkpoint("State Control")
+      self.prof.checkpoint("State Control")
 
-    # Publish data
-    self.publish_logs(CS, start_time, actuators, lac_log)
-    self.prof.checkpoint("Sent")
+      # Publish data
+      self.publish_logs(CS, start_time, actuators, lac_log)
+      self.prof.checkpoint("Sent")
 
   def controlsd_thread(self):
     while True:
