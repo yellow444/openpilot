@@ -1,4 +1,5 @@
 from cereal import car
+from common.numpy_fast import clip
 from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.volkswagen import volkswagencan
 from selfdrive.car.volkswagen.values import PQ_CARS, DBC_FILES, CANBUS, NetworkLocation, MQB_LDW_MESSAGES, BUTTON_STATES, CarControllerParams as P
@@ -22,6 +23,8 @@ class CarController():
       self.create_steering_control = volkswagencan.create_pq_steering_control
       self.create_acc_buttons_control = volkswagencan.create_pq_acc_buttons_control
       self.create_hud_control = volkswagencan.create_pq_hud_control
+      self.create_gas_control = volkswagencan.create_pq_pedal_control
+      self.create_braking_control = volkswagencan.create_pq_braking_control
       self.ldw_step = P.PQ_LDW_STEP
     else:
       self.packer_pt = CANPacker(DBC_FILES.mqb)
@@ -84,6 +87,52 @@ class CarController():
       idx = (frame / P.HCA_STEP) % 16
       can_sends.append(self.create_steering_control(self.packer_pt, CANBUS.pt, apply_steer,
                                                                  idx, hcaEnabled))
+
+    # **** Braking Controls ************************************************ #
+
+    if(frame % P.MOB_STEP == 0) and CS.CP.enableGasInterceptor:
+      mobEnabled = self.mobEnabled
+      mobPreEnable = self.mobPreEnable
+      # TODO make sure we use the full 8190 when calculating braking.
+      apply_brake = actuators.brake * 8190
+      stopping_wish = False
+
+      if enabled:
+        if (apply_brake < 40):
+          apply_brake = 0
+        if apply_brake > 0:
+          if not mobEnabled:
+            mobEnabled = True
+            apply_brake = 0
+          elif not mobPreEnable:
+            mobPreEnable = True
+            apply_brake = 0
+          elif apply_brake > 1199:
+            apply_brake = 1200
+            CS.brake_warning = True
+          if CS.currentSpeed < 5.6:
+            stopping_wish = True
+        else:
+          mobPreEnable = False
+          mobEnabled = False
+      else:
+        apply_brake = 0
+        mobPreEnable = False
+        mobEnabled = False
+
+      idx = (frame / P.MOB_STEP) % 16
+      self.mobPreEnable = mobPreEnable
+      self.mobEnabled = mobEnabled
+      can_sends.append(
+        self.create_braking_control(self.packer_pt, CANBUS.br, apply_brake, idx, mobEnabled, mobPreEnable, stopping_wish))
+
+    # **** GAS Controls ***************************************************** #
+    if (frame % P.GAS_STEP == 0) and CS.CP.enableGasInterceptor:
+      apply_gas = 0
+      if enabled:
+        apply_gas = clip(actuators.gas, 0., 1.) * 3
+
+      can_sends.append(self.create_gas_control(self.packer_pt, CANBUS.cam, apply_gas, frame // 2))
 
     # **** HUD Controls ***************************************************** #
 

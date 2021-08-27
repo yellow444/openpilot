@@ -19,6 +19,8 @@ class CarState(CarStateBase):
       self.hca_status_values = can_define.dv["Lenkhilfe_2"]["LH2_Sta_HCA"]
       if CP.transmissionType == TransmissionType.automatic:
         self.shifter_values = can_define.dv["Getriebe_1"]["Waehlhebelposition__Getriebe_1_"]
+      if CP.enableGasInterceptor:
+        self.openpilot_enabled = False
     else:
       can_define = CANDefine(DBC_FILES.mqb)
       self.get_can_parser = self.get_mqb_can_parser
@@ -192,9 +194,14 @@ class CarState(CarStateBase):
     ret.steerError = hca_status in ["DISABLED", "FAULT"]
     ret.steerWarning = hca_status in ["INITIALIZING", "REJECTED"]
 
-    # Update gas, brakes, and gearshift.
-    ret.gas = pt_cp.vl["Motor_3"]["Fahrpedal_Rohsignal"] / 100.0
-    ret.gasPressed = ret.gas > 0
+    # Update gas, brakes, and gearshift
+    if not self.CP.enableGasInterceptor:
+      ret.gas = pt_cp.vl["Motor_3"]['Fahrpedal_Rohsignal'] / 100.0
+      ret.gasPressed = ret.gas > 0
+    else:
+      ret.gas = (cam_cp.vl["GAS_SENSOR"]['INTERCEPTOR_GAS'] + cam_cp.vl["GAS_SENSOR"]['INTERCEPTOR_GAS2']) / 2.
+      ret.gasPressed = ret.gas > 468
+
     ret.brake = pt_cp.vl["Bremse_5"]["Bremsdruck"] / 250.0  # FIXME: this is pressure in Bar, not sure what OP expects
     ret.brakePressed = bool(pt_cp.vl["Motor_2"]["Bremstestschalter"])
 
@@ -246,6 +253,18 @@ class CarState(CarStateBase):
     # Update ACC radar status.
     ret.cruiseState.available = bool(pt_cp.vl["GRA_Neu"]['GRA_Hauptschalt'])
     ret.cruiseState.enabled = True if pt_cp.vl["Motor_2"]['GRA_Status'] in [1, 2] else False
+
+    # Set override flag for openpilot enabled state.
+    if self.CP.enableGasInterceptor and pt_cp.vl["Motor_2"]['GRA_Status'] in [1, 2]:
+      self.openpilot_enabled = True
+
+    # Check if Gas or Brake pressed and cancel override
+    if self.CP.enableGasInterceptor and (ret.gasPressed or ret.brakePressed):
+      self.openpilot_enabled = False
+
+    # Override openpilot enabled if gas interceptor installed
+    if self.CP.enableGasInterceptor and self.openpilot_enabled:
+      ret.cruiseState.enabled = True
 
     # Update ACC setpoint. When the setpoint reads as 255, the driver has not
     # yet established an ACC setpoint, so treat it as zero.
@@ -489,6 +508,10 @@ class CarState(CarStateBase):
       # sig_address, frequency
       #("LDW_1", 20)        # From R242 Driver assistance camera
     ]
+
+    if CP.enableGasInterceptor:
+      signals += [("INTERCEPTOR_GAS", "GAS_SENSOR", 0), ("INTERCEPTOR_GAS2", "GAS_SENSOR", 0)]
+      checks += [("GAS_SENSOR", 50)]
 
     if CP.networkLocation == NetworkLocation.gateway:
       # Extended CAN devices other than the camera are here on CANBUS.cam

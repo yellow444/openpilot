@@ -1,6 +1,8 @@
 # CAN controls for MQB platform Volkswagen, Audi, Skoda and SEAT.
 # PQ35/PQ46/NMS, and any future MLB, to come later.
 
+from selfdrive.car import crc8_pedal
+
 def create_mqb_steering_control(packer, bus, apply_steer, idx, lkas_enabled):
   values = {
     "SET_ME_0X3": 0x3,
@@ -66,6 +68,68 @@ def create_pq_steering_control(packer, bus, apply_steer, idx, lkas_enabled):
   dat = packer.make_can_msg("HCA_1", bus, values)[2]
   values["HCA_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4]
   return packer.make_can_msg("HCA_1", bus, values)
+
+def create_pq_dsr_control(packer, bus, apply_steer, idx, lkas_enabled):
+  values = {
+    "Zaehler": idx,
+    "BR9_LMOffset": abs(apply_steer),
+    "BR9_LMOffSign": 1 if apply_steer < 0 else 0,
+    "BR9_Sta_DSR": 5 if (lkas_enabled and apply_steer != 0) else 3,
+  }
+
+  dat = packer.make_can_msg("mBremse_9", bus, values)[2]
+  values["BR9_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5] ^ dat[6] ^ dat[7]
+  return packer.make_can_msg("mBremse_9", bus, values)
+
+def create_pq_braking_control(packer, bus, apply_brake, idx, brake_enabled, brake_pre_enable, stopping_wish):
+  values = {
+    "MOB_COUNTER": idx,
+    "MOB_Bremsmom": abs(apply_brake),
+    "MOB_Bremsstgr": abs(apply_brake),
+    "MOB_Standby": 1 if (brake_enabled) else 0,
+    "MOB_Freigabe": 1 if (brake_enabled and brake_pre_enable) else 0,
+    "MOB_Anhaltewunsch": 1,
+  }
+
+  dat = packer.make_can_msg("mMotor_Bremse", bus, values)[2]
+  values["MOB_CHECKSUM"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5]
+  return packer.make_can_msg("mMotor_Bremse", bus, values)
+
+def create_pq_awv_control(packer, bus, idx, led_orange, led_green, abs_working):
+  values = {
+    "AWV_2_Fehler" : 1 if led_orange else 0,
+    "AWV_2_Status" : 1 if led_green else 0,
+    "AWV_Zaehler": idx,
+    "AWV_Text": abs_working,
+    "AWV_Infoton": 1 if (abs_working == 5) else 0,
+  }
+
+  dat = packer.make_can_msg("mAWV", bus, values)[2]
+  values["AWV_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4]
+  return packer.make_can_msg("mAWV", bus, values)
+
+def create_pq_pedal_control(packer, bus, apply_gas, idx):
+  # Common gas pedal msg generator
+  enable = apply_gas > 0.001
+
+  values = {
+    "ENABLE": enable,
+    "COUNTER_PEDAL": idx & 0xF,
+  }
+
+  if enable:
+    apply_gas = apply_gas * 1125.
+    if (apply_gas < 227):
+      apply_gas = 227
+    values["GAS_COMMAND"] = apply_gas
+    values["GAS_COMMAND2"] = apply_gas
+
+  dat = packer.make_can_msg("GAS_COMMAND", bus, values)[2]
+
+  checksum = crc8_pedal(dat[:-1])
+  values["CHECKSUM_PEDAL"] = checksum
+
+  return packer.make_can_msg("GAS_COMMAND", bus, values)
 
 def create_pq_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert, left_lane_visible, right_lane_visible,
                           ldw_lane_warning_left, ldw_lane_warning_right, ldw_side_dlc_tlc, ldw_dlc, ldw_tlc,

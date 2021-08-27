@@ -27,6 +27,8 @@ class CarInterface(CarInterfaceBase):
     ret.carName = "volkswagen"
     ret.communityFeature = True  # technically unsupported, the best kind of unsupported
     ret.radarOffCan = True
+    # Check for Comma Pedal
+    ret.enableGasInterceptor = False
 
     if candidate in PQ_CARS:
       # Set global PQ35/PQ46/NMS parameters
@@ -84,6 +86,20 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1379 + STD_CARGO_KG
       ret.wheelbase = 2.58
       ret.minSteerSpeed = 50 * CV.KPH_TO_MS  # May be lower depending on model-year/EPS FW
+      ret.enableGasInterceptor = True
+
+      # OP LONG parameters
+      ret.gasMaxBP = [0., 1.]  # m/s
+      ret.gasMaxV = [0.3, 1.0]  # max gas allowed
+      ret.brakeMaxBP = [0.]  # m/s
+      ret.brakeMaxV = [1.]  # max brake allowed
+      ret.openpilotLongitudinalControl = True
+      ret.longitudinalTuning.deadzoneBP = [0.]
+      ret.longitudinalTuning.deadzoneV = [0.]
+      ret.longitudinalTuning.kpBP = [0., 1.7, 8.3]
+      ret.longitudinalTuning.kpV = [0.07, 0.1, 0.2]
+      ret.longitudinalTuning.kiBP = [0., 1.7, 8.3]
+      ret.longitudinalTuning.kiV = [0.05, 0.035, 0.03]
 
     elif candidate == CAR.GOLF_MK7:
       # Averages of all AU Golf variants

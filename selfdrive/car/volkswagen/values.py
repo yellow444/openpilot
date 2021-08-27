@@ -15,6 +15,9 @@ class CarControllerParams:
   MQB_LDW_STEP = 10              # LDW_02 message frequency 10Hz on MQB
   PQ_LDW_STEP = 5                # LDW_1 message frequency 20Hz on PQ35/PQ46/NMS
   GRA_ACC_STEP = 3               # GRA_ACC_01 message frequency 33Hz
+  MOB_STEP = 2                   # PQ_MOB message frequency 50Hz
+  GAS_STEP = 2                   # GAS_COMMAND message frequency 50Hz
+  AWV_STEP = 2                   # ACC LED Control
 
   GRA_VBP_STEP = 100             # Send ACC virtual button presses once a second
   GRA_VBP_COUNT = 16             # Send VBP messages for ~0.5s (GRA_ACC_STEP * 16)
@@ -31,6 +34,7 @@ class CarControllerParams:
 
 class CANBUS:
   pt = 0
+  br = 1
   cam = 2
 
 class DBC_FILES:
