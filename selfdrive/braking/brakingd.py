@@ -7,13 +7,16 @@ from selfdrive.boardd.boardd import can_list_to_can_capnp
 from selfdrive.car.volkswagen.values import DBC_FILES, CANBUS
 from opendbc.can.packer import CANPacker
 
+import time
+
 class BrakingPq:
   def __init__(self):
     self.frame = 0
-    config_realtime_process(2, Priority.CTRL_HIGH)
+    config_realtime_process(2, 20)
 
     # Setup sockets
     self.pm = messaging.PubMaster(['sendcan'])
+    time.sleep(0.2)
 
     self.rk = Ratekeeper(100, print_delay_threshold=0.01) #10 ms, about controlsd time
 
