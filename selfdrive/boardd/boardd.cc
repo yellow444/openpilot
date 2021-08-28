@@ -279,7 +279,7 @@ void panda_state_thread(bool spoofing_started) {
 
     // Make sure CAN buses are live: safety_setter_thread does not work if Panda CAN are silent and there is only one other CAN node
     if (pandaState.safety_model == (uint8_t)(cereal::CarParams::SafetyModel::SILENT)) {
-      panda->set_safety_model(cereal::CarParams::SafetyModel::NO_OUTPUT);
+      panda->set_safety_model(cereal::CarParams::SafetyModel::VOLKSWAGEN_PQ);
     }
 
     ignition = ((pandaState.ignition_line != 0) || (pandaState.ignition_can != 0));
@@ -298,7 +298,7 @@ void panda_state_thread(bool spoofing_started) {
 
     // set safety mode to NO_OUTPUT when car is off. ELM327 is an alternative if we want to leverage athenad/connect
     if (!ignition && (pandaState.safety_model != (uint8_t)(cereal::CarParams::SafetyModel::NO_OUTPUT))) {
-      panda->set_safety_model(cereal::CarParams::SafetyModel::NO_OUTPUT);
+      panda->set_safety_model(cereal::CarParams::SafetyModel::VOLKSWAGEN_PQ);
     }
 #endif
 
