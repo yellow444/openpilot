@@ -37,5 +37,8 @@ class BrakingPq:
       self.rk.keep_time()
 
 if __name__ == "__main__":
+  main()
+
+def main():
   braking = BrakingPq()
   braking.thread()
