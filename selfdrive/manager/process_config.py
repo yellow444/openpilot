@@ -22,7 +22,7 @@ procs = [
   NativeProcess("locationd", "selfdrive/locationd", ["./locationd"]),
   PythonProcess("brakingd", "selfdrive.braking.brakingd"),
   PythonProcess("calibrationd", "selfdrive.locationd.calibrationd"),
-  PythonProcess("controlsd", "selfdrive.controls.controlsd"),
+  #PythonProcess("controlsd", "selfdrive.controls.controlsd"),
   PythonProcess("deleter", "selfdrive.loggerd.deleter", persistent=True),
   PythonProcess("dmonitoringd", "selfdrive.monitoring.dmonitoringd", enabled=(not PC or WEBCAM), driverview=True),
   PythonProcess("logmessaged", "selfdrive.logmessaged", persistent=True),

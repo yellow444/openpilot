@@ -25,7 +25,7 @@ class BrakingPq:
     can_sends = []
     if self.frame%2 == 0:
       idx = (self.frame / 2) % 16
-      can_sends.append(self.create_braking_control(self.packer_pt, CANBUS.br, 0, idx, False, False, False))
+      can_sends.append(self.create_braking_control(self.packer_pt, CANBUS.br, 0, idx, False, False, True))
 
     self.frame = self.frame + 1
 
