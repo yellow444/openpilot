@@ -45,7 +45,7 @@ ExitHandler do_exit;
 void safety_setter_thread() {
   LOGD("Starting safety setter thread");
   // diagnostic only is the default, needed for VIN query
-  panda->set_safety_model(cereal::CarParams::SafetyModel::volkswagenPq);
+  panda->set_safety_model(cereal::CarParams::SafetyModel::VOLKSWAGEN_PQ);
 
   Params p = Params();
 
@@ -67,7 +67,7 @@ void safety_setter_thread() {
   }
 
   // VIN query done, stop listening to OBDII
-  panda->set_safety_model(cereal::CarParams::SafetyModel::volkswagenPq, 1);
+  panda->set_safety_model(cereal::CarParams::SafetyModel::VOLKSWAGEN_PQ);
 
   std::string params;
   LOGW("waiting for params to set safety model");
