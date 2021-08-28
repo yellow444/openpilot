@@ -47,55 +47,7 @@ void safety_setter_thread() {
   // diagnostic only is the default, needed for VIN query
   panda->set_safety_model(cereal::CarParams::SafetyModel::VOLKSWAGEN_PQ);
 
-  Params p = Params();
-
-  // switch to SILENT when CarVin param is read
-  while (true) {
-    if (do_exit || !panda->connected) {
-      safety_setter_thread_running = false;
-      return;
-    };
-
-    std::string value_vin = p.get("CarVin");
-    if (value_vin.size() > 0) {
-      // sanity check VIN format
-      assert(value_vin.size() == 17);
-      LOGW("got CarVin %s", value_vin.c_str());
-      break;
-    }
-    util::sleep_for(100);
-  }
-
-  // VIN query done, stop listening to OBDII
-  panda->set_safety_model(cereal::CarParams::SafetyModel::VOLKSWAGEN_PQ);
-
-  std::string params;
-  LOGW("waiting for params to set safety model");
-  while (true) {
-    if (do_exit || !panda->connected) {
-      safety_setter_thread_running = false;
-      return;
-    };
-
-    if (p.getBool("ControlsReady")) {
-      params = p.get("CarParams");
-      if (params.size() > 0) break;
-    }
-    util::sleep_for(100);
-  }
-  LOGW("got %d bytes CarParams", params.size());
-
-  AlignedBuffer aligned_buf;
-  capnp::FlatArrayMessageReader cmsg(aligned_buf.align(params.data(), params.size()));
-  cereal::CarParams::Reader car_params = cmsg.getRoot<cereal::CarParams>();
-  cereal::CarParams::SafetyModel safety_model = car_params.getSafetyModel();
-
   panda->set_unsafe_mode(0);  // see safety_declarations.h for allowed values
-
-  auto safety_param = car_params.getSafetyParam();
-  LOGW("setting safety model: %d with param %d", (int)safety_model, safety_param);
-
-  panda->set_safety_model(safety_model, safety_param);
 
   safety_setter_thread_running = false;
 }
@@ -269,7 +221,7 @@ void panda_state_thread(bool spoofing_started) {
     util::sleep_for(500);
   }
 
-  // run at 2hz
+  // run at 10hz
   while (!do_exit && panda->connected) {
     health_t pandaState = panda->get_state();
 
@@ -289,18 +241,6 @@ void panda_state_thread(bool spoofing_started) {
     } else {
       no_ignition_cnt += 1;
     }
-
-#ifndef __x86_64__
-    bool power_save_desired = !ignition;
-    if (pandaState.power_save_enabled != power_save_desired) {
-      panda->set_power_saving(power_save_desired);
-    }
-
-    // set safety mode to NO_OUTPUT when car is off. ELM327 is an alternative if we want to leverage athenad/connect
-    if (!ignition && (pandaState.safety_model != (uint8_t)(cereal::CarParams::SafetyModel::NO_OUTPUT))) {
-      panda->set_safety_model(cereal::CarParams::SafetyModel::VOLKSWAGEN_PQ);
-    }
-#endif
 
     // clear VIN, CarParams, and set new safety on car start
     if (ignition && !ignition_last) {
@@ -396,7 +336,7 @@ void panda_state_thread(bool spoofing_started) {
     }
     pm.send("pandaState", msg);
     panda->send_heartbeat();
-    util::sleep_for(500);
+    util::sleep_for(100);
   }
 }
 
