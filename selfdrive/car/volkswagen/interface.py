@@ -106,9 +106,9 @@ class CarInterface(CarInterfaceBase):
       ret.longitudinalTuning.kiV = [0.05, 0.035, 0.03]
 
       # PQ lateral tuning HCA_Status 7
-      ret.lateralTuning.pid.kpBP = [0., 14., 35.]
-      ret.lateralTuning.pid.kiBP = [0., 14., 35.]
-      ret.lateralTuning.pid.kpV = [0.12, 0.145, 0.147]
+      ret.lateralTuning.pid.kpBP = [0., 14., 20.]
+      ret.lateralTuning.pid.kiBP = [0., 14., 20.]
+      ret.lateralTuning.pid.kpV = [0.12, 0.135, 0.147]
       ret.lateralTuning.pid.kiV = [0.09, 0.10, 0.11]
 
     elif candidate == CAR.GOLF_MK7:
