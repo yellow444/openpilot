@@ -89,7 +89,7 @@ class CarInterface(CarInterfaceBase):
       # Averages of all 1K/5K/AJ Golf variants
       ret.mass = 1379 + STD_CARGO_KG
       ret.wheelbase = 2.58
-      ret.minSteerSpeed = 50 * CV.KPH_TO_MS  # May be lower depending on model-year/EPS FW
+      ret.minSteerSpeed = 20 * CV.KPH_TO_MS  # May be lower depending on model-year/EPS FW
       ret.enableGasInterceptor = True
 
       # OP LONG parameters
@@ -108,7 +108,7 @@ class CarInterface(CarInterfaceBase):
       # PQ lateral tuning HCA_Status 7
       ret.lateralTuning.pid.kpBP = [0., 14., 35.]
       ret.lateralTuning.pid.kiBP = [0., 14., 35.]
-      ret.lateralTuning.pid.kpV = [0.12, 0.165, 0.185]
+      ret.lateralTuning.pid.kpV = [0.12, 0.145, 0.147]
       ret.lateralTuning.pid.kiV = [0.09, 0.10, 0.11]
 
     elif candidate == CAR.GOLF_MK7:
