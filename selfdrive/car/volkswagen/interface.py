@@ -1,6 +1,6 @@
 from cereal import car
 from selfdrive.config import Conversions as CV
-from selfdrive.car.volkswagen.values import CAR, PQ_CARS, BUTTON_STATES, NetworkLocation, TransmissionType, GearShifter
+from selfdrive.car.volkswagen.values import CAR, PQ_CARS, BUTTON_STATES, NetworkLocation, TransmissionType, GearShifter, CANBUS
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
 
@@ -17,6 +17,13 @@ class CarInterface(CarInterfaceBase):
     # Alias Extended CAN parser to PT/CAM parser, based on detected network location
     self.cp_ext = self.cp if CP.networkLocation == NetworkLocation.fwdCamera else self.cp_cam
 
+    if CP.networkLocation == NetworkLocation.fwdCamera:
+      self.ext_bus = CANBUS.pt
+      self.cp_ext = self.cp
+    else:
+      self.ext_bus = CANBUS.cam
+      self.cp_ext = self.cp_cam
+
     self.pqCounter = 0
     self.wheelGrabbed = False
     self.pqBypassCounter = 0
@@ -24,6 +31,7 @@ class CarInterface(CarInterfaceBase):
   @staticmethod
   def compute_gb(accel, speed):
     return float(accel) / 4.0
+
 
   @staticmethod
   def get_params(candidate, fingerprint=gen_empty_fingerprint(), car_fw=None):
@@ -67,6 +75,13 @@ class CarInterface(CarInterfaceBase):
         ret.networkLocation = NetworkLocation.fwdCamera
 
     # Global tuning defaults, can be overridden per-vehicle
+      if 0x86 in fingerprint[1]:  # LWI_01 seen on bus 1, we're wired to the CAN gateway
+        ret.networkLocation = NetworkLocation.gateway
+      else:  # We're wired to the LKAS camera
+        ret.networkLocation = NetworkLocation.fwdCamera
+
+    # Global tuning defaults, can be overridden per-vehicle
+
     ret.steerActuatorDelay = 0.05
     ret.steerRateCost = 1.0
     ret.steerLimitTimer = 0.4
@@ -81,7 +96,6 @@ class CarInterface(CarInterfaceBase):
     # Per-chassis tuning values, override tuning defaults here if desired
 
     if candidate == CAR.ATLAS_MK1:
-      # Averages of all CA Atlas variants
       ret.mass = 2011 + STD_CARGO_KG
       ret.wheelbase = 2.98
 
@@ -112,17 +126,14 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kiV = [0.09, 0.10, 0.11]
 
     elif candidate == CAR.GOLF_MK7:
-      # Averages of all AU Golf variants
       ret.mass = 1397 + STD_CARGO_KG
       ret.wheelbase = 2.62
 
     elif candidate == CAR.JETTA_MK7:
-      # Averages of all BU Jetta variants
       ret.mass = 1328 + STD_CARGO_KG
       ret.wheelbase = 2.71
 
     elif candidate == CAR.PASSAT_MK8:
-      # Averages of all 3C Passat variants
       ret.mass = 1551 + STD_CARGO_KG
       ret.wheelbase = 2.79
 
@@ -132,23 +143,23 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.80
       ret.minSteerSpeed = 50 * CV.KPH_TO_MS  # May be lower depending on model-year/EPS FW
 
+    elif candidate == CAR.TCROSS_MK1:
+      ret.mass = 1150 + STD_CARGO_KG
+      ret.wheelbase = 2.60
+
     elif candidate == CAR.TIGUAN_MK2:
-      # Average of SWB and LWB variants
       ret.mass = 1715 + STD_CARGO_KG
       ret.wheelbase = 2.74
 
     elif candidate == CAR.TOURAN_MK2:
-      # Average of SWB and LWB variants
       ret.mass = 1516 + STD_CARGO_KG
       ret.wheelbase = 2.79
 
     elif candidate == CAR.AUDI_A3_MK3:
-      # Averages of all 8V A3 variants
       ret.mass = 1335 + STD_CARGO_KG
       ret.wheelbase = 2.61
 
     elif candidate == CAR.AUDI_Q2_MK1:
-      # Averages of all GA Q2 variants
       ret.mass = 1205 + STD_CARGO_KG
       ret.wheelbase = 2.61
 
@@ -158,32 +169,26 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.68
 
     elif candidate == CAR.SEAT_ATECA_MK1:
-      # Averages of all 5F Ateca variants
       ret.mass = 1900 + STD_CARGO_KG
       ret.wheelbase = 2.64
 
     elif candidate == CAR.SEAT_LEON_MK3:
-      # Averages of all 5F Leon variants
       ret.mass = 1227 + STD_CARGO_KG
       ret.wheelbase = 2.64
 
     elif candidate == CAR.SKODA_KODIAQ_MK1:
-      # Averages of all 5N Kodiaq variants
       ret.mass = 1569 + STD_CARGO_KG
       ret.wheelbase = 2.79
 
     elif candidate == CAR.SKODA_OCTAVIA_MK3:
-      # Averages of all 5E/NE Octavia variants
       ret.mass = 1388 + STD_CARGO_KG
       ret.wheelbase = 2.68
 
     elif candidate == CAR.SKODA_SCALA_MK1:
-      # Averages of all NW Scala variants
       ret.mass = 1192 + STD_CARGO_KG
       ret.wheelbase = 2.65
 
     elif candidate == CAR.SKODA_SUPERB_MK3:
-      # Averages of all 3V/NP Scala variants
       ret.mass = 1505 + STD_CARGO_KG
       ret.wheelbase = 2.84
 
@@ -195,6 +200,7 @@ class CarInterface(CarInterfaceBase):
 
     # TODO: start from empirically derived lateral slip stiffness for the civic and scale by
     # mass and CG position, so all cars will have approximately similar dyn behaviors
+    ret.centerToFront = ret.wheelbase * 0.45
     ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,
                                                                          tire_stiffness_factor=tire_stiffness_factor)
 
@@ -277,7 +283,7 @@ class CarInterface(CarInterfaceBase):
     return self.CS.out
 
   def apply(self, c):
-    can_sends = self.CC.update(c.enabled, self.CS, self.frame, c.actuators,
+    can_sends = self.CC.update(c.enabled, self.CS, self.frame, self.ext_bus, c.actuators,
                    c.hudControl.visualAlert,
                    c.hudControl.leftLaneVisible,
                    c.hudControl.rightLaneVisible,
