@@ -352,8 +352,8 @@ void panda_state_thread(bool spoofing_started) {
 
     if (Hardware::TICI()) {
       double read_time = millis_since_boot();
-      ps.setVoltage(std::stoi(util::read_file("/sys/class/hwmon/hwmon1/in1_input")));
-      ps.setCurrent(std::stoi(util::read_file("/sys/class/hwmon/hwmon1/curr1_input")));
+      ps.setVoltage(std::atoi(util::read_file("/sys/class/hwmon/hwmon1/in1_input").c_str()));
+      ps.setCurrent(std::atoi(util::read_file("/sys/class/hwmon/hwmon1/curr1_input").c_str()));
       read_time = millis_since_boot() - read_time;
       if (read_time > 50) {
         LOGW("reading hwmon took %lfms", read_time);
@@ -411,6 +411,8 @@ void hardware_control_thread() {
   bool prev_charging_disabled = false;
   unsigned int cnt = 0;
 
+  FirstOrderFilter integ_lines_filter(0, 30.0, 0.05);
+
   while (!do_exit && panda->connected) {
     cnt++;
     sm.update(1000); // TODO: what happens if EINTR is sent while in sm.update?
@@ -443,6 +445,11 @@ void hardware_control_thread() {
     if (sm.updated("driverCameraState")) {
       auto event = sm["driverCameraState"];
       int cur_integ_lines = event.getDriverCameraState().getIntegLines();
+      float cur_gain = event.getDriverCameraState().getGain();
+
+      if (Hardware::TICI()) {
+        cur_integ_lines = integ_lines_filter.update(cur_integ_lines * cur_gain);
+      }
       last_front_frame_t = event.getLogMonoTime();
 
       if (cur_integ_lines <= CUTOFF_IL) {
