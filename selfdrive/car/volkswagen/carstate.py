@@ -296,6 +296,7 @@ class CarState(CarStateBase):
 
     if self.CP.enableGasInterceptor:
       self.currentSpeed = ret.vEgo
+      self.ABSWorking = pt_cp.vl["Bremse_8"]["BR8_Sta_ADR_BR"]
 
     return ret
 
@@ -429,6 +430,7 @@ class CarState(CarStateBase):
       ("GRA_Zeitluecke", "GRA_Neu", 0),             # ACC button, time gap adj
       ("GRA_Neu_Zaehler", "GRA_Neu", 0),            # ACC button, time gap adj
       ("GRA_Sender", "GRA_Neu", 0),                 # GRA Sender Coding
+      ("BR8_Sta_ADR_BR", "Bremse_8", 0),            # ABS Pump actively braking for ACC
     ]
 
     checks = [
@@ -440,6 +442,7 @@ class CarState(CarStateBase):
       ("Motor_3", 100),           # From J623 Engine control module
       ("Airbag_1", 50),           # From J234 Airbag control module
       ("Bremse_5", 50),           # From J104 ABS/ESP controller
+      ("Bremse_8", 50),           # From J??? ABS/ACC controller
       ("GRA_Neu", 50),            # From J??? steering wheel control buttons
       ("Kombi_1", 50),            # From J285 Instrument cluster
       ("Motor_2", 50),            # From J623 Engine control module
