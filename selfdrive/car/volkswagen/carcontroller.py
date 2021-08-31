@@ -20,6 +20,7 @@ class CarController():
     self.graMsgStartFramePrev = 0
     self.graMsgBusCounterPrev = 0
 
+
     if CP.carFingerprint in PQ_CARS:
       self.packer_pt = CANPacker(DBC_FILES.pq)
       self.create_steering_control = volkswagencan.create_pq_steering_control
@@ -28,6 +29,7 @@ class CarController():
       self.create_gas_control = volkswagencan.create_pq_pedal_control
       self.create_braking_control = volkswagencan.create_pq_braking_control
       self.ldw_step = P.PQ_LDW_STEP
+
     else:
       self.packer_pt = CANPacker(DBC_FILES.mqb)
       self.create_steering_control = volkswagencan.create_mqb_steering_control
@@ -46,7 +48,6 @@ class CarController():
     """ Controls thread """
 
     can_sends = []
-    P = self.params
 
     # **** Steering Controls ************************************************ #
 
