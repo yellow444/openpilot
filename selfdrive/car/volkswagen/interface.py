@@ -107,10 +107,6 @@ class CarInterface(CarInterfaceBase):
       ret.enableGasInterceptor = True
 
       # OP LONG parameters
-      ret.gasMaxBP = [0., 1.]  # m/s
-      ret.gasMaxV = [0.3, 1.0]  # max gas allowed
-      ret.brakeMaxBP = [0.]  # m/s
-      ret.brakeMaxV = [1.]  # max brake allowed
       ret.openpilotLongitudinalControl = True
       ret.longitudinalTuning.deadzoneBP = [0.]
       ret.longitudinalTuning.deadzoneV = [0.]
