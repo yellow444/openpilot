@@ -33,6 +33,16 @@ class CarControllerParams:
   STEER_DRIVER_MULTIPLIER = 3    # weight driver torque heavily
   STEER_DRIVER_FACTOR = 1        # from dbc
 
+  def __init__(self):
+    # pedal lookups, only for Volt
+    MAX_GAS = 1125  # Only a safety limit
+    ZERO_GAS = 227
+    MAX_BRAKE = 1200  # Should be around 3.5m/s^2, including regen
+    self.GAS_LOOKUP_BP = [0., 2.0]
+    self.GAS_LOOKUP_V = [ZERO_GAS, MAX_GAS]
+    self.BRAKE_LOOKUP_BP = [-4., 0.]
+    self.BRAKE_LOOKUP_V = [MAX_BRAKE, 0]
+
 class CANBUS:
   pt = 0
   br = 1
