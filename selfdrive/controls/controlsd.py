@@ -330,10 +330,11 @@ class Controls:
     CS = self.CI.update(self.CC, can_strs)
 
     self.sm.update(0)
-
-    self.CI.init(self.CP, self.can_sock, self.pm.sock['sendcan'])
-    self.initialized = True
-    Params().put_bool("ControlsReady", True)
+    
+    if not self.initialized:
+      self.CI.init(self.CP, self.can_sock, self.pm.sock['sendcan'])
+      self.initialized = True
+      Params().put_bool("ControlsReady", True)
 
     # Check for CAN timeout
     if not can_strs:
