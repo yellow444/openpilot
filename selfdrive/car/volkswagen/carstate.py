@@ -187,7 +187,7 @@ class CarState(CarStateBase):
     # Verify EPS readiness to accept steering commands
     hca_status = self.hca_status_values.get(pt_cp.vl["Lenkhilfe_2"]["LH2_Sta_HCA"])
     ret.steerError = hca_status in ["DISABLED", "FAULT"]
-    ret.steerWarning = hca_status in ["INITIALIZING", "REJECTED"]
+    ret.steerWarning = hca_status in ["REJECTED"]
 
     # Update gas, brakes, and gearshift
     if not self.CP.enableGasInterceptor:
