@@ -108,8 +108,6 @@ class CarController():
       stopping_wish = False
 
       if enabled:
-        if (apply_brake < 40):
-          apply_brake = 0
         if apply_brake > 0:
           if not mobEnabled:
             mobEnabled = True
