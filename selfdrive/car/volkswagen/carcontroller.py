@@ -29,6 +29,7 @@ class CarController():
       self.create_gas_control = volkswagencan.create_pq_pedal_control
       self.create_braking_control = volkswagencan.create_pq_braking_control
       self.create_awv_control = volkswagencan.create_pq_awv_control
+      self.create_bremse8_control = volkswagencan.create_pq_bremse8_control
       self.ldw_step = P.PQ_LDW_STEP
 
     else:
@@ -97,6 +98,7 @@ class CarController():
       idx = (frame / P.HCA_STEP) % 16
       can_sends.append(self.create_steering_control(self.packer_pt, CANBUS.pt, apply_steer,
                                                                  idx, hcaEnabled))
+      can_sends.append(self.create_bremse8_control(self.packer_pt, CANBUS.cam, CS.bremse8))
 
     # **** Braking Controls ************************************************ #
 

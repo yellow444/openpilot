@@ -171,6 +171,10 @@ class CarState(CarStateBase):
     ret.wheelSpeeds.rl = pt_cp.vl["Bremse_3"]["Radgeschw__HL_4_1"] * CV.KPH_TO_MS
     ret.wheelSpeeds.rr = pt_cp.vl["Bremse_3"]["Radgeschw__HR_4_1"] * CV.KPH_TO_MS
 
+    self.bremse8  = pt_cp.vl["Bremse_8"]
+    self.bremse8['BR8_Sta_ADR_BR'] = 0
+    self.bremse8['ESP_MKB_ausloesbar'] = 1
+
     ret.vEgoRaw = float(np.mean([ret.wheelSpeeds.fl, ret.wheelSpeeds.fr, ret.wheelSpeeds.rl, ret.wheelSpeeds.rr]))
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
 
@@ -430,6 +434,30 @@ class CarState(CarStateBase):
       ("GRA_Zeitluecke", "GRA_Neu", 0),             # ACC button, time gap adj
       ("GRA_Neu_Zaehler", "GRA_Neu", 0),            # ACC button, time gap adj
       ("GRA_Sender", "GRA_Neu", 0),                 # GRA Sender Coding
+      ("BR8_Sta_ACC_Anf", "Bremse_8", 0),
+      ("BR8_Verz_EPB_akt", "Bremse_8", 0),
+      ("BR8_Sta_Br_temp", "Bremse_8", 0),
+      ("BR8_Sta_Br_Druck", "Bremse_8", 0),
+      ("BR8_Istbeschl", "Bremse_8", 0),
+      ("BR8_Sta_HW_BLS", "Bremse_8", 0),
+      ("BR8_QB_LBeschl", "Bremse_8", 0),
+      ("BR8_ESC_Mode", "Bremse_8", 0),
+      ("BR8_aktBrSyst", "Bremse_8", 0),
+      ("BR8_Fa_bremst", "Bremse_8", 0),
+      ("BR8_StaBrSyst", "Bremse_8", 0),
+      ("BR8_Laengsbeschl", "Bremse_8", 0),
+      ("BR8_Quattro", "Bremse_8", 0),
+      ("BR8_Sta_VerzReg", "Bremse_8", 0),
+      ("BR8_Sta_BLS", "Bremse_8", 0),
+      ("BR8_Verz_EPB", "Bremse_8", 0),
+      ("BR8_Check_EPB", "Bremse_8", 0),
+
+      ("BR8_HHC_Haltebestaetigung", "Bremse_8", 0),
+      ("BR8_HHC_Signal_QBit", "Bremse_8", 0),
+      ("ESP_Haltebestaetigung", "Bremse_8", 0),
+      ("ESC_Motorstartverzoegerung", "Bremse_8", 0),
+
+      ("ESP_MKB_ausloesbar", "Bremse_8", 0),
       ("BR8_Sta_ADR_BR", "Bremse_8", 0),            # ABS Pump actively braking for ACC
     ]
 

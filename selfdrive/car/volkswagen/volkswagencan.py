@@ -130,6 +130,10 @@ def create_pq_pedal_control(packer, bus, apply_gas, idx):
 
   return packer.make_can_msg("GAS_COMMAND", bus, values)
 
+def create_pq_bremse8_control(packer, bus, bremse8):
+
+  return packer.make_can_msg("Bremse_8", bus, bremse8)
+
 def create_pq_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert, left_lane_visible, right_lane_visible,
                           ldw_lane_warning_left, ldw_lane_warning_right, ldw_side_dlc_tlc, ldw_dlc, ldw_tlc,
                           standstill, left_lane_depart, right_lane_depart):
