@@ -98,7 +98,7 @@ class CarController():
       idx = (frame / P.HCA_STEP) % 16
       can_sends.append(self.create_steering_control(self.packer_pt, CANBUS.pt, apply_steer,
                                                                  idx, hcaEnabled))
-      can_sends.append(self.create_bremse8_control(self.packer_pt, CANBUS.cam, CS.bremse8))
+      can_sends.append(self.create_bremse8_control(self.packer_pt, CANBUS.cam, idx, CS.bremse8))
 
     # **** Braking Controls ************************************************ #
 

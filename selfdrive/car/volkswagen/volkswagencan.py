@@ -130,7 +130,11 @@ def create_pq_pedal_control(packer, bus, apply_gas, idx):
 
   return packer.make_can_msg("GAS_COMMAND", bus, values)
 
-def create_pq_bremse8_control(packer, bus, bremse8):
+def create_pq_bremse8_control(packer, bus, idx, bremse8):
+
+  bremse8["BR8_Zaehler"] = idx
+  dat = packer.make_can_msg("Bremse_8", bus, bremse8)[2]
+  bremse8["BR8_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5] ^ dat[6] ^ dat[7]
 
   return packer.make_can_msg("Bremse_8", bus, bremse8)
 
