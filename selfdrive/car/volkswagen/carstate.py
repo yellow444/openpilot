@@ -174,6 +174,10 @@ class CarState(CarStateBase):
     self.bremse8  = pt_cp.vl["Bremse_8"]
     self.bremse8['BR8_Sta_ADR_BR'] = 0
     self.bremse8['ESP_MKB_ausloesbar'] = 1
+    self.bremse8['BR8_Sta_VerzReg'] = 0
+
+    self.bremse5 = pt_cp.vl["Bremse_5"]
+    self.bremse5['BR5_Fahrer_tritt_ZBR_Schw'] = 1
 
     ret.vEgoRaw = float(np.mean([ret.wheelSpeeds.fl, ret.wheelSpeeds.fr, ret.wheelSpeeds.rl, ret.wheelSpeeds.rr]))
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
@@ -186,7 +190,7 @@ class CarState(CarStateBase):
     ret.steeringRateDeg = pt_cp.vl["Lenkwinkel_1"]["Lenkradwinkel_Geschwindigkeit"] * (1, -1)[int(pt_cp.vl["Lenkwinkel_1"]["Lenkradwinkel_Geschwindigkeit_S"])]
     ret.steeringTorque = pt_cp.vl["Lenkhilfe_3"]["LH3_LM"] * (1, -1)[int(pt_cp.vl["Lenkhilfe_3"]["LH3_LMSign"])]
     ret.steeringPressed = abs(ret.steeringTorque) > CarControllerParams.STEER_DRIVER_ALLOWANCE
-    ret.yawRate = pt_cp.vl["Bremse_5"]["Giergeschwindigkeit"] * (1, -1)[int(pt_cp.vl["Bremse_5"]["Vorzeichen_der_Giergeschwindigk"])] * CV.DEG_TO_RAD
+    ret.yawRate = pt_cp.vl["Bremse_5"]["BR5_Giergeschw"] * (1, -1)[int(pt_cp.vl["Bremse_5"]["BR5_Vorzeichen"])] * CV.DEG_TO_RAD
 
     # Verify EPS readiness to accept steering commands
     hca_status = self.hca_status_values.get(pt_cp.vl["Lenkhilfe_2"]["LH2_Sta_HCA"])
@@ -201,7 +205,7 @@ class CarState(CarStateBase):
       ret.gas = (cam_cp.vl["GAS_SENSOR"]['INTERCEPTOR_GAS'] + cam_cp.vl["GAS_SENSOR"]['INTERCEPTOR_GAS2']) / 2.
       ret.gasPressed = ret.gas > 468
 
-    ret.brake = pt_cp.vl["Bremse_5"]["Bremsdruck"] / 250.0  # FIXME: this is pressure in Bar, not sure what OP expects
+    ret.brake = pt_cp.vl["Bremse_5"]["BR5_Bremsdruck"] / 250.0  # FIXME: this is pressure in Bar, not sure what OP expects
     ret.brakePressed = bool(pt_cp.vl["Motor_2"]["Bremstestschalter"])
 
     # Update gear and/or clutch position data.
@@ -406,15 +410,11 @@ class CarState(CarStateBase):
       ("Radgeschw__VR_4_1", "Bremse_3", 0),         # ABS wheel speed, front right
       ("Radgeschw__HL_4_1", "Bremse_3", 0),         # ABS wheel speed, rear left
       ("Radgeschw__HR_4_1", "Bremse_3", 0),         # ABS wheel speed, rear right
-      ("Giergeschwindigkeit", "Bremse_5", 0),       # Absolute yaw rate
-      ("Vorzeichen_der_Giergeschwindigk", "Bremse_5", 0),  # Yaw rate sign
       ("Gurtschalter_Fahrer", "Airbag_1", 0),       # Seatbelt status, driver
       ("Gurtschalter_Beifahrer", "Airbag_1", 0),    # Seatbelt status, passenger
       ("Bremstestschalter", "Motor_2", 0),          # Brake pedal pressed (brake light test switch)
       ("Bremslichtschalter", "Motor_2", 0),         # Brakes applied (brake light switch)
       ("Soll_Geschwindigkeit_bei_GRA_Be", "Motor_2", 0), #CruiseControl Setspeed
-      ("Bremsdruck", "Bremse_5", 0),                # Brake pressure applied
-      ("Vorzeichen_Bremsdruck", "Bremse_5", 0),     # Brake pressure applied sign (???)
       ("Fahrpedal_Rohsignal", "Motor_3", 0),        # Accelerator pedal value
       ("ESP_Passiv_getastet", "Bremse_1", 0),       # Stability control disabled
       ("GRA_Status", "Motor_2", 0),                 # ACC engagement status
@@ -434,6 +434,7 @@ class CarState(CarStateBase):
       ("GRA_Zeitluecke", "GRA_Neu", 0),             # ACC button, time gap adj
       ("GRA_Neu_Zaehler", "GRA_Neu", 0),            # ACC button, time gap adj
       ("GRA_Sender", "GRA_Neu", 0),                 # GRA Sender Coding
+
       ("BR8_Sta_ACC_Anf", "Bremse_8", 0),
       ("BR8_Verz_EPB_akt", "Bremse_8", 0),
       ("BR8_Sta_Br_temp", "Bremse_8", 0),
@@ -451,14 +452,38 @@ class CarState(CarStateBase):
       ("BR8_Sta_BLS", "Bremse_8", 0),
       ("BR8_Verz_EPB", "Bremse_8", 0),
       ("BR8_Check_EPB", "Bremse_8", 0),
-
       ("BR8_HHC_Haltebestaetigung", "Bremse_8", 0),
       ("BR8_HHC_Signal_QBit", "Bremse_8", 0),
       ("ESP_Haltebestaetigung", "Bremse_8", 0),
       ("ESC_Motorstartverzoegerung", "Bremse_8", 0),
-
       ("ESP_MKB_ausloesbar", "Bremse_8", 0),
       ("BR8_Sta_ADR_BR", "Bremse_8", 0),            # ABS Pump actively braking for ACC
+
+      ("Bremsdruck", "Bremse_5", 0),  # Brake pressure applied
+      ("BR5_Sign_Druck", "Bremse_5", 0),  # Brake pressure applied sign (???)
+      ("BR5_Giergeschw", "Bremse_5", 0),  # Absolute yaw rate
+      ("BR5_Sta_Gierrate", "Bremse_5", 0),
+      ("BR5_Vorzeichen", "Bremse_5", 0),  # Yaw rate sign
+      ("BR5_Stillstand", "Bremse_5", 0),
+      ("BR5_Sta_Druck", "Bremse_5", 0),
+      ("ESP_Rollenmodus_Deaktivieren", "Bremse_5", 0),
+      ("ESP_Anforderung_EPB", "Bremse_5", 0),
+      ("ESP_Stat_FallBack_eBKV", "Bremse_5", 0),
+      ("ESP_Autohold_aktiv", "Bremse_5", 0),
+      ("ESP_Autohold_Standby", "Bremse_5", 0),
+      ("BR5_Anhi_Sta", "Bremse_5", 0),
+      ("BR5_Anhi_akt", "Bremse_5", 0),
+      ("BR5_v_Ueberw", "Bremse_5", 0),
+      ("BR5_Bremslicht", "Bremse_5", 0),
+      ("BR5_Notbremsung", "Bremse_5", 0),
+      ("BR5_Fahrer_tritt_ZBR_Schw", "Bremse_5", 0),
+      ("BR5_AWV2_Bremsruck", "Bremse_5", 0),
+      ("BR5_AWV2_Fehler", "Bremse_5", 0),
+      ("BR5_ZT_Rueckk_Umsetz", "Bremse_5", 0),
+      ("BR5_ANB_CM_Rueckk_Umsetz", "Bremse_5", 0),
+      ("BR5_HDC_bereit", "Bremse_5", 0),
+      ("BR5_ECD_Lampe", "Bremse_5", 0),
+      ("BR5_Druckgueltig", "Bremse_5", 0),
     ]
 
     checks = [
