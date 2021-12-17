@@ -100,7 +100,7 @@ class CarController():
       can_sends.append(self.create_steering_control(self.packer_pt, CANBUS.pt, apply_steer,
                                                                  idx, hcaEnabled))
       can_sends.append(self.create_bremse8_control(self.packer_pt, CANBUS.cam, idx, CS.bremse8))
-      can_sends.append(self.create_bremse5_control(self.packer_pt, CANBUS.cam, idx, CS.bremse5))
+      #can_sends.append(self.create_bremse5_control(self.packer_pt, CANBUS.cam, idx, CS.bremse5))
 
     # **** Braking Controls ************************************************ #
 
