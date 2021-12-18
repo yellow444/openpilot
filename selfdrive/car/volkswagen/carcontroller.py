@@ -31,7 +31,6 @@ class CarController():
       self.create_braking_control = volkswagencan.create_pq_braking_control
       self.create_awv_control = volkswagencan.create_pq_awv_control
       self.create_bremse8_control = volkswagencan.create_pq_bremse8_control
-      self.create_bremse5_control = volkswagencan.create_pq_bremse5_control
       self.ldw_step = P.PQ_LDW_STEP
 
     else:
