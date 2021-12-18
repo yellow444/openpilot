@@ -95,18 +95,24 @@ def create_pq_braking_control(packer, bus, apply_brake, idx, brake_enabled, brak
   values["MOB_CHECKSUM"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5]
   return packer.make_can_msg("mMotor_Bremse", bus, values)
 
-def create_pq_awv_control(packer, bus, idx, led_orange, led_green, abs_working):
-  values = {
-    "AWV_2_Fehler" : 1 if led_orange else 0,
-    "AWV_2_Status" : 1 if led_green else 0,
-    "AWV_Zaehler": idx,
-    "AWV_Text": abs_working,
-    "AWV_Infoton": 1 if (abs_working == 5) else 0,
-  }
+def create_pq_awv_control(packer, bus, idx, led_orange, led_green, halten, mAWV):
+  Fehler = mAWV["AWV_2_Fehler"]
 
-  dat = packer.make_can_msg("mAWV", bus, values)[2]
-  values["AWV_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4]
-  return packer.make_can_msg("mAWV", bus, values)
+  mAWV["AWV_Zaehler"] = idx
+
+  mAWV["AWV_2_Status"] = 1 if led_green else 0
+  mAWV["AWV_2_Fehler"] = 1 if led_orange else 0
+
+  mAWV["AWV_Halten"] = 1 if halten else 0
+
+  mAWV["AWV_only"] = 0
+
+  if Fehler:
+    mAWV["AWV_2_Fehler"] = 1
+
+  dat = packer.make_can_msg("mAWV", bus, mAWV)[2]
+  mAWV["AWV_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5] ^ dat[6] ^ dat[7]
+  return packer.make_can_msg("mAWV", bus, mAWV)
 
 def create_pq_pedal_control(packer, bus, apply_gas, idx):
   # Common gas pedal msg generator
@@ -137,14 +143,6 @@ def create_pq_bremse8_control(packer, bus, idx, bremse8):
   bremse8["BR8_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5] ^ dat[6] ^ dat[7]
 
   return packer.make_can_msg("Bremse_8", bus, bremse8)
-
-def create_pq_bremse5_control(packer, bus, idx, bremse5):
-
-  bremse5["BR5_Zaehler"] = idx
-  dat = packer.make_can_msg("Bremse_5", bus, bremse5)[2]
-  bremse5["BR5_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5] ^ dat[6] ^ dat[7]
-
-  return packer.make_can_msg("Bremse_5", bus, bremse5)
 
 def create_pq_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert, left_lane_visible, right_lane_visible,
                           ldw_lane_warning_left, ldw_lane_warning_right, ldw_side_dlc_tlc, ldw_dlc, ldw_tlc,

@@ -12,6 +12,7 @@ class CarController():
     self.apply_steer_last = 0
     self.mobPreEnable = False
     self.mobEnabled = False
+    self.haltenCounter = 0
 
     self.hcaSameTorqueCount = 0
     self.hcaEnabledFrameCount = 0
@@ -100,7 +101,6 @@ class CarController():
       can_sends.append(self.create_steering_control(self.packer_pt, CANBUS.pt, apply_steer,
                                                                  idx, hcaEnabled))
       can_sends.append(self.create_bremse8_control(self.packer_pt, CANBUS.cam, idx, CS.bremse8))
-      #can_sends.append(self.create_bremse5_control(self.packer_pt, CANBUS.cam, idx, CS.bremse5))
 
     # **** Braking Controls ************************************************ #
 
@@ -127,6 +127,16 @@ class CarController():
         else:
           mobPreEnable = False
           mobEnabled = False
+
+        if CS.Stillstand:
+          self.haltenCounter + 1
+
+          if self.haltenCounter > 10:
+            apply_brake = 0
+            mobPreEnable = False
+            mobEnabled = False
+        else:
+          self.haltenCounter = 0
       else:
         apply_brake = 0
         mobPreEnable = False
@@ -169,14 +179,14 @@ class CarController():
     if (frame % P.AWV_STEP == 0) and CS.CP.enableGasInterceptor:
       green_led = 1 if enabled else 0
       orange_led = 1 if self.mobPreEnable and self.mobEnabled else 0
+      halten = False
       if enabled:
-        braking_working = 0 if (CS.ABSWorking == 1) else 5
-      else:
-        braking_working = 0
+        if CS.Stillstand:
+          halten = True
 
       idx = (frame / P.MOB_STEP) % 16
 
-      #can_sends.append(self.create_awv_control(self.packer_pt, CANBUS.pt, idx, orange_led, green_led, braking_working))
+      can_sends.append(self.create_awv_control(self.packer_pt, CANBUS.pt, idx, orange_led, green_led, halten, CS.mAWV))
 
     # **** ACC Button Controls ********************************************** #
 

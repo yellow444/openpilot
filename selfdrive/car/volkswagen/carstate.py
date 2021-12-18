@@ -176,8 +176,9 @@ class CarState(CarStateBase):
     self.bremse8['ESP_MKB_ausloesbar'] = 1
     self.bremse8['BR8_Sta_VerzReg'] = 0
 
-    self.bremse5 = pt_cp.vl["Bremse_5"]
-    self.bremse5['BR5_Fahrer_tritt_ZBR_Schw'] = 1
+    self.Stillstand = pt_cp.vl["Bremse_5"]["BR5_Stillstand"]
+
+    self.mAWV = cam_cp.vl["mAWV"]
 
     ret.vEgoRaw = float(np.mean([ret.wheelSpeeds.fl, ret.wheelSpeeds.fr, ret.wheelSpeeds.rl, ret.wheelSpeeds.rr]))
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
@@ -555,11 +556,42 @@ class CarState(CarStateBase):
     signals = [
       # sig_name, sig_address, default
       ("Kombi_Lamp_Green", "LDW_1", 0),               # Just to check camera for CAN bus validity
+
+      ("AWV_Text", "mAWV", 0),
+      ("AWV_1_Freigabe", "mAWV", 0),
+      ("AWV_1_Prefill", "mAWV", 0),
+      ("AWV_1_Parameter", "mAWV", 0),
+      ("AWV_only", "mAWV", 0),
+      ("AWV_CityANB_Auspraegung", "mAWV", 0),
+      ("AWV_Halten", "mAWV", 0),
+      ("ANB_Teilbremsung_Freigabe", "mAWV", 0),
+      ("AWV_2_Status", "mAWV", 0),
+      ("AWV_2_Fehler", "mAWV", 0),
+      ("AWV_2_SU_Warnzeit", "mAWV", 0),
+      ("AWV_2_SU_Bremsruck", "mAWV", 0),
+      ("AWV_2_SU_Gong", "mAWV", 0),
+      ("AWV_2_SU_Lampe", "mAWV", 0),
+      ("AWV_2_Umfeldwarn", "mAWV", 0),
+      ("AWV_2_Freigabe", "mAWV", 0),
+      ("AWV_2_Ruckprofil", "mAWV", 0),
+      ("AWV_2_Warnton", "mAWV", 0),
+      ("AWV_2_Warnsymbol", "mAWV", 0),
+      ("AWV_Infoton", "mAWV", 0),
+      ("AWV_2_Gurtstraffer", "mAWV", 0),
+      ("AWV_Konfiguration_Menueanf", "mAWV", 0),
+      ("AWV_Konfiguration_Vorw_Menueanf", "mAWV", 0),
+      ("AWV_Konfiguration_Status", "mAWV", 0),
+      ("AWV_Konfiguration_Vorw_Status", "mAWV", 0),
+      ("AWV_2_Abstandswarnung", "mAWV", 0),
+      ("ANB_Zielbremsung_Freigabe", "mAWV", 0),
+      ("ANB_CM_Anforderung", "mAWV", 0),
+      ("ANB_Ziel_Teilbrems_Verz_Anf", "mAWV", 0),
     ]
 
     checks = [
       # sig_address, frequency
       #("LDW_1", 20)        # From R242 Driver assistance camera
+      ("mAWV", 50)
     ]
 
     if CP.enableGasInterceptor:
