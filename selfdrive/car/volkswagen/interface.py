@@ -103,7 +103,7 @@ class CarInterface(CarInterfaceBase):
       # Averages of all 1K/5K/AJ Golf variants
       ret.mass = 1379 + STD_CARGO_KG
       ret.wheelbase = 2.58
-      ret.minSteerSpeed = 20 * CV.KPH_TO_MS  # May be lower depending on model-year/EPS FW
+      ret.minSteerSpeed = 0 * CV.KPH_TO_MS  # May be lower depending on model-year/EPS FW
       ret.enableGasInterceptor = True
 
       # OP LONG parameters
@@ -232,35 +232,6 @@ class CarInterface(CarInterfaceBase):
         buttonEvents.append(be)
 
     events = self.create_common_events(ret, extra_gears=[GearShifter.eco, GearShifter.sport, GearShifter.manumatic])
-
-    # PQTIMEBOMB STUFF START
-    # Warning alert for the 6min timebomb found on PQ's
-    ret.stopSteering = False
-    if True:  # (self.frame % 100) == 0: # Set this to false/False if you want to turn this feature OFF!
-      if ret.cruiseState.enabled:
-        self.pqCounter += 1
-      else:
-        self.pqCounter = 0
-      if self.pqCounter >= 330 * 100:  # time in seconds until counter threshold for pqTimebombWarn alert
-        if not self.wheelGrabbed:
-          events.add(EventName.pqTimebombWarn)
-          if self.pqCounter >= 345 * 100:  # time in seconds until pqTimebombTERMINAL
-            events.add(EventName.pqTimebombTERMINAL)
-            if self.pqCounter >= 359 * 100:  # time in seconds until auto bypass
-              self.wheelGrabbed = True
-        if self.wheelGrabbed or ret.steeringPressed:
-          self.wheelGrabbed = True
-          ret.stopSteering = True
-          self.pqBypassCounter += 1
-          if self.pqBypassCounter >= 1.05 * 100:  # time alloted for bypass
-            self.wheelGrabbed = False
-            self.pqCounter = 0
-            self.pqBypassCounter = 0
-            events.add(EventName.pqTimebombBypassed)
-          else:
-            events.add(EventName.pqTimebombBypassing)
-
-    # PQTIMEBOMB STUFF END
 
     # Vehicle health and operation safety checks
     if self.CS.parkingBrakeSet:
