@@ -124,7 +124,7 @@ class CarController():
           mobEnabled = False
 
         if CS.Stillstand:
-          self.haltenCounter = self.haltenCounter + 1
+          self.haltenCounter + 1
 
           if self.haltenCounter > 10:
             apply_brake = 0
