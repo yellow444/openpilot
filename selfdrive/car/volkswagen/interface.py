@@ -1,7 +1,7 @@
 from cereal import car
 from selfdrive.config import Conversions as CV
 from selfdrive.car.volkswagen.values import CAR, PQ_CARS, BUTTON_STATES, NetworkLocation, TransmissionType, GearShifter, CANBUS
-from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
+from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint, get_safety_config
 from selfdrive.car.interfaces import CarInterfaceBase
 
 EventName = car.CarEvent.EventName
@@ -59,28 +59,22 @@ class CarInterface(CarInterfaceBase):
 
     else:
       # Set global MQB parameters
-      ret.safetyModel = car.CarParams.SafetyModel.volkswagen
-      ret.enableBsm = 0x30F in fingerprint[0]
+      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.volkswagen)]
+      ret.enableBsm = 0x30F in fingerprint[0]  # SWA_01
 
       if 0xAD in fingerprint[0]:  # Getriebe_11 detected: traditional automatic or DSG gearbox
         ret.transmissionType = TransmissionType.automatic
       elif 0x187 in fingerprint[0]:  # EV_Gearshift detected: e-Golf or similar direct-drive electric
         ret.transmissionType = TransmissionType.direct
-      else:  # No trans message at all, must be a true stick-shift manual
+      else:
         ret.transmissionType = TransmissionType.manual
 
-      if 0xfd in fingerprint[1]:  # ESP_21 present on bus 1, we're hooked up at the CAN gateway
+      if any(msg in fingerprint[1] for msg in [0x40, 0x86, 0xB2, 0xFD]):  # Airbag_01, LWI_01, ESP_19, ESP_21
         ret.networkLocation = NetworkLocation.gateway
-      else:  # We're hooked up at the LKAS camera
+      else:
         ret.networkLocation = NetworkLocation.fwdCamera
 
-    # Global tuning defaults, can be overridden per-vehicle
-      if 0x86 in fingerprint[1]:  # LWI_01 seen on bus 1, we're wired to the CAN gateway
-        ret.networkLocation = NetworkLocation.gateway
-      else:  # We're wired to the LKAS camera
-        ret.networkLocation = NetworkLocation.fwdCamera
-
-    # Global tuning defaults, can be overridden per-vehicle
+    # Global lateral tuning defaults, can be overridden per-vehicle
 
     ret.steerActuatorDelay = 0.05
     ret.steerRateCost = 1.0
@@ -95,7 +89,11 @@ class CarInterface(CarInterfaceBase):
 
     # Per-chassis tuning values, override tuning defaults here if desired
 
-    if candidate == CAR.ATLAS_MK1:
+    if candidate == CAR.ARTEON_MK1:
+      ret.mass = 1733 + STD_CARGO_KG
+      ret.wheelbase = 2.84
+
+    elif candidate == CAR.ATLAS_MK1:
       ret.mass = 2011 + STD_CARGO_KG
       ret.wheelbase = 2.98
 
@@ -139,6 +137,14 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.80
       ret.minSteerSpeed = 50 * CV.KPH_TO_MS  # May be lower depending on model-year/EPS FW
 
+    elif candidate == CAR.POLO_MK6:
+      ret.mass = 1230 + STD_CARGO_KG
+      ret.wheelbase = 2.55
+
+    elif candidate == CAR.TAOS_MK1:
+      ret.mass = 1498 + STD_CARGO_KG
+      ret.wheelbase = 2.69
+
     elif candidate == CAR.TCROSS_MK1:
       ret.mass = 1150 + STD_CARGO_KG
       ret.wheelbase = 2.60
@@ -151,6 +157,15 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1516 + STD_CARGO_KG
       ret.wheelbase = 2.79
 
+    elif candidate == CAR.TRANSPORTER_T61:
+      ret.mass = 1926 + STD_CARGO_KG
+      ret.wheelbase = 3.00  # SWB, LWB is 3.40, TBD how to detect difference
+      ret.minSteerSpeed = 14.0
+
+    elif candidate == CAR.TROC_MK1:
+      ret.mass = 1413 + STD_CARGO_KG
+      ret.wheelbase = 2.63
+
     elif candidate == CAR.AUDI_A3_MK3:
       ret.mass = 1335 + STD_CARGO_KG
       ret.wheelbase = 2.61
@@ -160,7 +175,6 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.61
 
     elif candidate == CAR.AUDI_Q3_MK2:
-      # Averages of all 8U/F3/FS Q3 variants
       ret.mass = 1623 + STD_CARGO_KG
       ret.wheelbase = 2.68
 
@@ -171,6 +185,14 @@ class CarInterface(CarInterfaceBase):
     elif candidate == CAR.SEAT_LEON_MK3:
       ret.mass = 1227 + STD_CARGO_KG
       ret.wheelbase = 2.64
+
+    elif candidate == CAR.SKODA_KAMIQ_MK1:
+      ret.mass = 1265 + STD_CARGO_KG
+      ret.wheelbase = 2.66
+
+    elif candidate == CAR.SKODA_KAROQ_MK1:
+      ret.mass = 1278 + STD_CARGO_KG
+      ret.wheelbase = 2.66
 
     elif candidate == CAR.SKODA_KODIAQ_MK1:
       ret.mass = 1569 + STD_CARGO_KG
@@ -188,18 +210,14 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1505 + STD_CARGO_KG
       ret.wheelbase = 2.84
 
-    ret.centerToFront = ret.wheelbase * 0.45
+    else:
+      raise ValueError(f"unsupported car {candidate}")
 
-    # TODO: get actual value, for now starting with reasonable value for
-    # civic and scaling by mass and wheelbase
+
     ret.rotationalInertia = scale_rot_inertia(ret.mass, ret.wheelbase)
-
-    # TODO: start from empirically derived lateral slip stiffness for the civic and scale by
-    # mass and CG position, so all cars will have approximately similar dyn behaviors
     ret.centerToFront = ret.wheelbase * 0.45
     ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,
                                                                          tire_stiffness_factor=tire_stiffness_factor)
-
     return ret
 
   # returns a car.CarState
@@ -236,6 +254,7 @@ class CarInterface(CarInterfaceBase):
     # Vehicle health and operation safety checks
     if self.CS.parkingBrakeSet:
       events.add(EventName.parkBrake)
+
     if ret.vEgo < self.CP.minSteerSpeed:
       events.add(car.CarEvent.EventName.belowSteerSpeed)
 
@@ -250,11 +269,12 @@ class CarInterface(CarInterfaceBase):
     return self.CS.out
 
   def apply(self, c):
-    can_sends = self.CC.update(c.enabled, self.CS, self.frame, self.ext_bus, c.actuators,
-                   c.hudControl.visualAlert,
-                   c.hudControl.leftLaneVisible,
-                   c.hudControl.rightLaneVisible,
-                   c.hudControl.leftLaneDepart,
-                   c.hudControl.rightLaneDepart)
+    hud_control = c.hudControl
+    ret = self.CC.update(c.enabled, self.CS, self.frame, self.ext_bus, c.actuators,
+                         hud_control.visualAlert,
+                         hud_control.leftLaneVisible,
+                         hud_control.rightLaneVisible,
+                         hud_control.leftLaneDepart,
+                         hud_control.rightLaneDepart)
     self.frame += 1
-    return can_sends
+    return ret
