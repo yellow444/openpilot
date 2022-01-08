@@ -148,6 +148,7 @@ class CarController():
       apply_gas = 0
       if enabled:
         apply_gas = int(round(interp(actuators.accel, P.GAS_LOOKUP_BP, P.GAS_LOOKUP_V)))
+        apply_gas = apply_gas + 3 * CS.out.aEgo
 
       can_sends.append(self.create_gas_control(self.packer_pt, CANBUS.cam, apply_gas, frame // 2))
 
