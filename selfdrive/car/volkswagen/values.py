@@ -35,11 +35,9 @@ class CarControllerParams:
 
 
   # pedal lookups, only for Volt
-  MAX_GAS = 600  # Only a safety limit
+  MAX_GAS = 1250  
   ZERO_GAS = 227
   MAX_BRAKE = 350  # Should be around 3.5m/s^2, including regen
-  GAS_LOOKUP_BP = [0., 2.0]
-  GAS_LOOKUP_V = [ZERO_GAS, MAX_GAS]
   BRAKE_LOOKUP_BP = [-4., -0.5, 0.]
   BRAKE_LOOKUP_V = [MAX_BRAKE, 100, 0]
 
