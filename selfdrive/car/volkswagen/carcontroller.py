@@ -147,8 +147,23 @@ class CarController():
     if (frame % P.GAS_STEP == 0) and CS.CP.enableGasInterceptor:
       apply_gas = 0
       if enabled:
-        apply_gas = int(round(interp(actuators.accel, P.GAS_LOOKUP_BP, P.GAS_LOOKUP_V)))
-        apply_gas = apply_gas + 3 * CS.out.aEgo
+        speed = CS.out.vEgo
+        cd = 0.31
+        frontalArea = 2.3
+        drag = 0.5*cd*frontalArea*(speed**2)
+        
+        mass = 1250
+        g = 9.81
+        rollingFrictionCoefficient = 0.02
+        friction = mass*g*rollingFrictionCoefficient
+
+        desiredAcceleration = actuators.accel
+        acceleration = mass*desiredAcceleration
+
+        powerNeeded = (drag+friction+acceleration)*speed
+        POWER_LOOKUP_BP = [0, 75] #75 kw/100 hp to keep in efficient region
+        PEDAL_LOOKUP_BP = [P.ZERO_GAS, P.MAX_GAS*100/140] #Not max gas, max gas gives 140hp, we want at most 100 hp
+        apply_gas = int(round(interp(powerNeeded, POWER_LOOKUP_BP, PEDAL_LOOKUP_BP)))
 
       can_sends.append(self.create_gas_control(self.packer_pt, CANBUS.cam, apply_gas, frame // 2))
 
