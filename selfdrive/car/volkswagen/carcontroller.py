@@ -178,7 +178,7 @@ class CarController():
       orange_led = 1 if self.mobPreEnable and self.mobEnabled else 0
       halten = False
       if enabled:
-        if CS.Stillstand:
+        if CS.currentSpeed < 10:
           halten = True
 
       idx = (frame / P.MOB_STEP) % 16
