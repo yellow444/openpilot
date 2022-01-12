@@ -160,10 +160,11 @@ class CarController():
         desiredAcceleration = actuators.accel
         acceleration = mass*desiredAcceleration
 
-        powerNeeded = (drag+friction+acceleration)*speed
-        POWER_LOOKUP_BP = [0, 75000] #75 kw/100 hp to keep in efficient region
-        
-        PEDAL_LOOKUP_BP = [P.ZERO_GAS, P.MAX_GAS*100/140] #Not max gas, max gas gives 140hp, we want at most 100 hp
+        driveTrainLosses = 800 #600 for the engine, 200 for trans, low speed estimate
+        powerNeeded = (drag+friction+acceleration)*speed+driveTrainLosses
+        POWER_LOOKUP_BP = [0, 25000*1.6/2.6, 75000] #160NM@1500rpm=25kW but with boost, no boost means *1.6/2.6
+        PEDAL_LOOKUP_BP = [227, 1250*0.4, 1250*100/140] #Not max gas, max gas gives 140hp, we want at most 100 hp, also 40% throttle might prevent an upshift
+
         apply_gas = int(round(interp(powerNeeded, POWER_LOOKUP_BP, PEDAL_LOOKUP_BP)))
 
       can_sends.append(self.create_gas_control(self.packer_pt, CANBUS.cam, apply_gas, frame // 2))
