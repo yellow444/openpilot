@@ -117,7 +117,7 @@ class CarController():
           elif apply_brake > 1199:
             apply_brake = 1200
             CS.brake_warning = True
-          if CS.currentSpeed < 5.6:
+          if CS.currentSpeed < 2.1:
             stopping_wish = True
         else:
           mobPreEnable = False
@@ -151,7 +151,7 @@ class CarController():
         cd = 0.31
         frontalArea = 2.3
         drag = 0.5*cd*frontalArea*(speed**2)
-        
+
         mass = 1250
         g = 9.81
         rollingFrictionCoefficient = 0.02
