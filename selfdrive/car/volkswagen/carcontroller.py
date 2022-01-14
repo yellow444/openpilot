@@ -147,8 +147,25 @@ class CarController():
     if (frame % P.GAS_STEP == 0) and CS.CP.enableGasInterceptor:
       apply_gas = 0
       if enabled:
-        apply_gas = int(round(interp(actuators.accel, P.GAS_LOOKUP_BP, P.GAS_LOOKUP_V)))
-        apply_gas = apply_gas + 3 * CS.out.aEgo
+        speed = CS.out.vEgo
+        cd = 0.31
+        frontalArea = 2.3
+        drag = 0.5*cd*frontalArea*(speed**2)
+        
+        mass = 1250
+        g = 9.81
+        rollingFrictionCoefficient = 0.02
+        friction = mass*g*rollingFrictionCoefficient
+
+        desiredAcceleration = actuators.accel
+        acceleration = mass*desiredAcceleration
+
+        driveTrainLosses = 800 #600 for the engine, 200 for trans, low speed estimate
+        powerNeeded = (drag+friction+acceleration)*speed+driveTrainLosses
+        POWER_LOOKUP_BP = [0, 25000*1.6/2.6, 75000] #160NM@1500rpm=25kW but with boost, no boost means *1.6/2.6
+        PEDAL_LOOKUP_BP = [227, 1250*0.4, 1250*100/140] #Not max gas, max gas gives 140hp, we want at most 100 hp, also 40% throttle might prevent an upshift
+
+        apply_gas = int(round(interp(powerNeeded, POWER_LOOKUP_BP, PEDAL_LOOKUP_BP)))
 
       can_sends.append(self.create_gas_control(self.packer_pt, CANBUS.cam, apply_gas, frame // 2))
 
@@ -163,7 +180,7 @@ class CarController():
       orange_led = 1 if self.mobPreEnable and self.mobEnabled else 0
       halten = False
       if enabled:
-        if CS.Stillstand:
+        if CS.currentSpeed < 10:
           halten = True
 
       idx = (frame / P.MOB_STEP) % 16
