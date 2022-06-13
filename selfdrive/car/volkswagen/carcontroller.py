@@ -190,16 +190,24 @@ class CarController():
       # **** EPB Controls ***************************************************** #
 
     if (frame % P.AWV_STEP == 0) and CS.CP.enableGasInterceptor:
-
+      mobEnabled = self.mobEnabled
       apply_brake = 0
 
       if enabled:
-        apply_brake = int(round(interp(actuators.accel, P.BRAKE_LOOKUP_BP, P.BRAKE_LOOKUP_V)))
+        if apply_brake < 0:
+          if mobEnabled:
+            apply_brake = int(round(interp(actuators.accel, P.BRAKE_LOOKUP_BP, P.BRAKE_LOOKUP_V)))
+          else:
+            mobEnabled = True
+        else:
+          mobEnabled = False
+
+      self.mobEnabled = mobEnabled
 
       idx = (frame / P.MOB_STEP) % 16
 
       can_sends.append(
-        self.create_epb_control(self.packer_pt, CANBUS.br, apply_brake, idx))
+        self.create_epb_control(self.packer_pt, CANBUS.br, apply_brake, mobEnabled, idx))
 
 
     # **** ACC Button Controls ********************************************** #

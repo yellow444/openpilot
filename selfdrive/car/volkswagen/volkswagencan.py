@@ -168,7 +168,7 @@ def create_pq_acc_buttons_control(packer, bus, buttonStatesToSend, CS, idx):
   values["GRA_Checksum"] = dat[1] ^ dat[2] ^ dat[3]
   return packer.make_can_msg("GRA_Neu", bus, values)
 
-def create_pq_epb_control(packer, bus, brake_req, idx):
+def create_pq_epb_control(packer, bus, brake_req, enable, idx):
   values = {
     "EP1_Zaehler": idx,
     "EP1_Failure_Sta": 0,
@@ -176,7 +176,7 @@ def create_pq_epb_control(packer, bus, brake_req, idx):
     "EP1_Spannkraft": 0,
     "EP1_Schalterinfo": 0,
     "EP1_Verzoegerung": brake_req,
-    "EP1_Freigabe_Ver": 1,
+    "EP1_Freigabe_Ver": 1 if enable else 0,
     "EP1_Fkt_Lampe": 0
   }
 
