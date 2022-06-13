@@ -150,7 +150,7 @@ class CarController():
 
     if (frame % P.AWV_STEP == 0) and CS.CP.enableGasInterceptor:
       mobEnabled = self.mobEnabled
-      apply_brake = int(round(interp(actuators.accel, P.BRAKE_LOOKUP_BP, P.BRAKE_LOOKUP_V)))
+      apply_brake = interp(actuators.accel, P.BRAKE_LOOKUP_BP, P.BRAKE_LOOKUP_V)
 
       if enabled:
         if apply_brake < 0:
