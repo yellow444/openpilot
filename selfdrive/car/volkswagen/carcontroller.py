@@ -162,6 +162,7 @@ class CarController():
           apply_brake = 0
       else:
         mobEnabled = False
+        apply_brake = 0
       self.mobEnabled = mobEnabled
 
       idx = (frame / P.MOB_STEP) % 16
