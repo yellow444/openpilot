@@ -100,48 +100,7 @@ class CarController():
 
     # **** Braking Controls ************************************************ #
 
-    if(frame % P.MOB_STEP == 0) and CS.CP.enableGasInterceptor:
-      mobEnabled = self.mobEnabled
-      mobPreEnable = self.mobPreEnable
-      # TODO make sure we use the full 8190 when calculating braking.
-      apply_brake = int(round(interp(actuators.accel, P.BRAKE_LOOKUP_BP, P.BRAKE_LOOKUP_V)))
-      stopping_wish = False
-
-      if enabled:
-        if apply_brake > 0:
-          if not mobEnabled:
-            mobEnabled = True
-            apply_brake = 0
-          elif not mobPreEnable:
-            mobPreEnable = True
-            apply_brake = 0
-          elif apply_brake > 1199:
-            apply_brake = 1200
-            CS.brake_warning = True
-          if CS.currentSpeed < 2.1:
-            stopping_wish = True
-        else:
-          mobPreEnable = False
-          mobEnabled = False
-
-        if CS.Stillstand:
-          self.haltenCounter = self.haltenCounter + 1
-
-          if self.haltenCounter > 10:
-            apply_brake = 0
-            mobPreEnable = False
-            mobEnabled = False
-        else:
-          self.haltenCounter = 0
-      else:
-        apply_brake = 0
-        mobPreEnable = False
-        mobEnabled = False
-
-      idx = (frame / P.MOB_STEP) % 16
-      self.mobPreEnable = mobPreEnable
-      self.mobEnabled = mobEnabled
-      #can_sends.append(self.create_braking_control(self.packer_pt, CANBUS.br, apply_brake, idx, mobEnabled, mobPreEnable, stopping_wish))
+  
 
     # **** GAS Controls ***************************************************** #
     if (frame % P.GAS_STEP == 0) and CS.CP.enableGasInterceptor:
