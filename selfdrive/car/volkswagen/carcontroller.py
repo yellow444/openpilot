@@ -100,7 +100,7 @@ class CarController():
 
     # **** Braking Controls ************************************************ #
 
-  
+
 
     # **** GAS Controls ***************************************************** #
     if (frame % P.GAS_STEP == 0) and CS.CP.enableGasInterceptor:
@@ -150,17 +150,18 @@ class CarController():
 
     if (frame % P.AWV_STEP == 0) and CS.CP.enableGasInterceptor:
       mobEnabled = self.mobEnabled
-      apply_brake = 0
+      apply_brake = int(round(interp(actuators.accel, P.BRAKE_LOOKUP_BP, P.BRAKE_LOOKUP_V)))
 
       if enabled:
         if apply_brake < 0:
-          if mobEnabled:
-            apply_brake = int(round(interp(actuators.accel, P.BRAKE_LOOKUP_BP, P.BRAKE_LOOKUP_V)))
-          else:
+          if not mobEnabled:
             mobEnabled = True
+            apply_brake = 0
         else:
           mobEnabled = False
-
+          apply_brake = 0
+      else:
+        mobEnabled = False
       self.mobEnabled = mobEnabled
 
       idx = (frame / P.MOB_STEP) % 16
