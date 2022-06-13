@@ -31,6 +31,7 @@ class CarController():
       self.create_braking_control = volkswagencan.create_pq_braking_control
       self.create_awv_control = volkswagencan.create_pq_awv_control
       self.create_bremse8_control = volkswagencan.create_pq_bremse8_control
+      self.create_epb_control = volkswagencan.create_pq_epb_control
       self.ldw_step = P.PQ_LDW_STEP
 
     else:
@@ -140,8 +141,7 @@ class CarController():
       idx = (frame / P.MOB_STEP) % 16
       self.mobPreEnable = mobPreEnable
       self.mobEnabled = mobEnabled
-      can_sends.append(
-        self.create_braking_control(self.packer_pt, CANBUS.br, apply_brake, idx, mobEnabled, mobPreEnable, stopping_wish))
+      #can_sends.append(self.create_braking_control(self.packer_pt, CANBUS.br, apply_brake, idx, mobEnabled, mobPreEnable, stopping_wish))
 
     # **** GAS Controls ***************************************************** #
     if (frame % P.GAS_STEP == 0) and CS.CP.enableGasInterceptor:
@@ -186,6 +186,21 @@ class CarController():
       idx = (frame / P.MOB_STEP) % 16
 
       can_sends.append(self.create_awv_control(self.packer_pt, CANBUS.pt, idx, orange_led, green_led, halten, CS.mAWV))
+
+      # **** EPB Controls ***************************************************** #
+
+    if (frame % P.AWV_STEP == 0) and CS.CP.enableGasInterceptor:
+
+      apply_brake = 0
+
+      if enabled:
+        apply_brake = int(round(interp(actuators.accel, P.BRAKE_LOOKUP_BP, P.BRAKE_LOOKUP_V)))
+
+      idx = (frame / P.MOB_STEP) % 16
+
+      can_sends.append(
+        self.create_epb_control(self.packer_pt, CANBUS.br, apply_brake, idx))
+
 
     # **** ACC Button Controls ********************************************** #
 
