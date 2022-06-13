@@ -176,7 +176,7 @@ def create_pq_epb_control(packer, bus, brake_req, idx):
     "EP1_Spannkraft": 0,
     "EP1_Schalterinfo": 0,
     "EP1_Verzoegerung": brake_req,
-    "EP1_Freigabe_Ver": 0,
+    "EP1_Freigabe_Ver": 1,
     "EP1_Fkt_Lampe": 0
   }
 
