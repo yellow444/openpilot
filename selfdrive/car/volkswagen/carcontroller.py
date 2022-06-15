@@ -124,9 +124,9 @@ class CarController():
         POWER_LOOKUP_BP = [0, 25000*1.6/2.6, 75000] #160NM@1500rpm=25kW but with boost, no boost means *1.6/2.6
         PEDAL_LOOKUP_BP = [227, 1250*0.4, 1250*100/140] #Not max gas, max gas gives 140hp, we want at most 100 hp, also 40% throttle might prevent an upshift
 
-        apply_gas_mult = interp(speed, [20 / 3.6, 40 / 3.6], [2, 1])
+        powerNeeded_mult = interp(CS.out.vEgo, [20 / 3.6, 40 / 3.6], [1.4, 1])
+        powerNeeded = int(round(powerNeeded * powerNeeded_mult))
         apply_gas = int(round(interp(powerNeeded, POWER_LOOKUP_BP, PEDAL_LOOKUP_BP)))
-        apply_gas  = int(round(apply_gas * apply_gas_mult))
 
       can_sends.append(self.create_gas_control(self.packer_pt, CANBUS.cam, apply_gas, frame // 2))
 
