@@ -178,7 +178,7 @@ def create_pq_epb_control(packer, bus, brake_req, enable, idx):
     "EP1_Verzoegerung": brake_req,
     "EP1_Freigabe_Ver": 1 if enable else 0,
     "EP1_Fkt_Lampe": 0,
-    "EP1_Bremslicht": 1 if enable else 0,
+    "EP1_Bremslicht": 1 if enable else 0
   }
 
   dat = packer.make_can_msg("mEPB_1", bus, values)[2]
