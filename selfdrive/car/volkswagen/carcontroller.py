@@ -136,15 +136,11 @@ class CarController():
 
     if (frame % P.AWV_STEP == 0) and CS.CP.enableGasInterceptor:
       green_led = 1 if enabled else 0
-      orange_led = 1 if self.mobPreEnable and self.mobEnabled else 0
-      halten = False
-      if enabled:
-        if CS.currentSpeed < 10:
-          halten = True
+      orange_led = 1 if self.mobEnabled else 0
 
       idx = (frame / P.MOB_STEP) % 16
 
-      can_sends.append(self.create_awv_control(self.packer_pt, CANBUS.pt, idx, orange_led, green_led, halten, CS.mAWV))
+      can_sends.append(self.create_awv_control(self.packer_pt, CANBUS.pt, idx, orange_led, green_led, CS.mAWV))
 
       # **** EPB Controls ***************************************************** #
 

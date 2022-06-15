@@ -90,7 +90,7 @@ def create_pq_braking_control(packer, bus, apply_brake, idx, brake_enabled, brak
   values["MOB_CHECKSUM"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5]
   return packer.make_can_msg("mMotor_Bremse", bus, values)
 
-def create_pq_awv_control(packer, bus, idx, led_orange, led_green, halten, mAWV):
+def create_pq_awv_control(packer, bus, idx, led_orange, led_green, mAWV):
   Fehler = mAWV["AWV_2_Fehler"]
 
   mAWV["AWV_Zaehler"] = idx

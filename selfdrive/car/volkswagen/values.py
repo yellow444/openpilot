@@ -38,8 +38,8 @@ class CarControllerParams:
   MAX_GAS = 1250
   ZERO_GAS = 227
   MAX_BRAKE = 350  # Should be around 3.5m/s^2, including regen
-  BRAKE_LOOKUP_BP = [-4., 0.]
-  BRAKE_LOOKUP_V = [-4., 0]
+  BRAKE_LOOKUP_BP = [-3.5, 0.]
+  BRAKE_LOOKUP_V = [-3.5, 0.]
 
 class CANBUS:
   pt = 0
