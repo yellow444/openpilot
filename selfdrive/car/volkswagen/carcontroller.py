@@ -106,28 +106,31 @@ class CarController():
     if (frame % P.GAS_STEP == 0) and CS.CP.enableGasInterceptor:
       apply_gas = 0
       if enabled:
-        speed = CS.out.vEgo
-        cd = 0.31
-        frontalArea = 2.3
-        drag = 0.5*cd*frontalArea*(speed**2)
+        if actuators.accel > 0:
+          speed = CS.out.vEgo
+          cd = 0.31
+          frontalArea = 2.3
+          drag = 0.5*cd*frontalArea*(speed**2)
 
-        mass = 1250
-        g = 9.81
-        rollingFrictionCoefficient = 0.02
-        friction = mass*g*rollingFrictionCoefficient
+          mass = 1250
+          g = 9.81
+          rollingFrictionCoefficient = 0.02
+          friction = mass*g*rollingFrictionCoefficient
 
-        desiredAcceleration = actuators.accel
-        acceleration = mass*desiredAcceleration
+          desiredAcceleration = actuators.accel
+          acceleration = mass*desiredAcceleration
 
-        driveTrainLosses = 800 #600 for the engine, 200 for trans, low speed estimate
-        powerNeeded = (drag+friction+acceleration)*speed+driveTrainLosses
-        POWER_LOOKUP_BP = [0, 25000*1.6/2.6, 75000] #160NM@1500rpm=25kW but with boost, no boost means *1.6/2.6
-        PEDAL_LOOKUP_BP = [227, 1250*0.4, 1250*100/140] #Not max gas, max gas gives 140hp, we want at most 100 hp, also 40% throttle might prevent an upshift
+          driveTrainLosses = 800 #600 for the engine, 200 for trans, low speed estimate
+          powerNeeded = (drag+friction+acceleration)*speed+driveTrainLosses
+          POWER_LOOKUP_BP = [0, 25000*1.6/2.6, 75000] #160NM@1500rpm=25kW but with boost, no boost means *1.6/2.6
+          PEDAL_LOOKUP_BP = [227, 1250*0.4, 1250*100/140] #Not max gas, max gas gives 140hp, we want at most 100 hp, also 40% throttle might prevent an upshift
 
-        powerNeeded_mult = interp(CS.out.vEgo, [20 / 3.6, 40 / 3.6], [1.4, 1])
-        powerNeeded = int(round(powerNeeded * powerNeeded_mult))
-        apply_gas = int(round(interp(powerNeeded, POWER_LOOKUP_BP, PEDAL_LOOKUP_BP)))
-
+          powerNeeded_mult = interp(CS.out.vEgo, [20 / 3.6, 40 / 3.6], [1.4, 1])
+          powerNeeded = int(round(powerNeeded * powerNeeded_mult))
+          apply_gas = int(round(interp(powerNeeded, POWER_LOOKUP_BP, PEDAL_LOOKUP_BP)))
+        else:
+          apply_gas = 0
+          
       can_sends.append(self.create_gas_control(self.packer_pt, CANBUS.cam, apply_gas, frame // 2))
 
     # **** HUD Controls ***************************************************** #
