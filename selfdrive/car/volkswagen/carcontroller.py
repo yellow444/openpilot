@@ -106,7 +106,7 @@ class CarController():
     if (frame % P.GAS_STEP == 0) and CS.CP.enableGasInterceptor:
       apply_gas = 0
       if enabled:
-        if actuators.accel > 0:
+        if actuators.accel > -0.42735:
           speed = CS.out.vEgo
           cd = 0.31
           frontalArea = 2.3
