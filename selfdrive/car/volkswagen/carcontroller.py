@@ -103,7 +103,29 @@ class CarController():
       apply_gas = 0
       if enabled:
         if actuators.accel > -0.42734:
-          self.apply_gas = int(round(interp(actuators.accel, P.GAS_LOOKUP_BP, P.GAS_LOOKUP_V)))
+          speed = CS.out.vEgo
+          cd = 0.31
+          frontalArea = 2.3
+          drag = 0.5 * cd * frontalArea * (speed ** 2)
+
+          mass = 1250
+          g = 9.81
+          rollingFrictionCoefficient = 0.02
+          friction = mass * g * rollingFrictionCoefficient
+
+          desiredAcceleration = actuators.accel
+          acceleration = mass * desiredAcceleration
+
+          driveTrainLosses = 0  # 600 for the engine, 200 for trans, low speed estimate
+          powerNeeded = (drag + friction + acceleration) * speed + driveTrainLosses
+          POWER_LOOKUP_BP = [0, 25000 * 1.6 / 2.6,
+                               75000]  # 160NM@1500rpm=25kW but with boost, no boost means *1.6/2.6
+          PEDAL_LOOKUP_BP = [227, 1250 * 0.4,
+                               1250 * 100 / 140]  # Not max gas, max gas gives 140hp, we want at most 100 hp, also 40% throttle might prevent an upshift
+
+          powerNeeded_mult = interp(CS.out.vEgo, [20 / 3.6, 40 / 3.6], [2, 1])
+          powerNeeded = int(round(powerNeeded * powerNeeded_mult))
+          apply_gas = int(round(interp(powerNeeded, POWER_LOOKUP_BP, PEDAL_LOOKUP_BP)))
         else:
           apply_gas = 0
 
@@ -130,7 +152,7 @@ class CarController():
       apply_brake = interp(actuators.accel, P.BRAKE_LOOKUP_BP, P.BRAKE_LOOKUP_V)
 
       if enabled:
-        if apply_brake < -0.42734:
+        if apply_brake < -0.42735:
           if not mobEnabled:
             mobEnabled = True
             apply_brake = 0
