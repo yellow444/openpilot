@@ -36,10 +36,13 @@ class CarControllerParams:
 
   # pedal lookups, only for Volt
   MAX_GAS = 1250
+  BREAK_POINT = 530
   ZERO_GAS = 227
   MAX_BRAKE = 350  # Should be around 3.5m/s^2, including regen
-  BRAKE_LOOKUP_BP = [-3.5, 0.]
-  BRAKE_LOOKUP_V = [-3.5, 0.]
+  GAS_LOOKUP_BP = [-0.42735, 0., 2.]
+  GAS_LOOKUP_V = [ZERO_GAS, 530, MAX_GAS]
+  BRAKE_LOOKUP_BP = [-3.5, -0.42735]
+  BRAKE_LOOKUP_V = [-3.5, -0.42735]
 
 class CANBUS:
   pt = 0
