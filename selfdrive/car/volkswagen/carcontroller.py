@@ -13,6 +13,7 @@ class CarController():
     self.mobPreEnable = False
     self.mobEnabled = False
     self.haltenCounter = 0
+    self.coastingAccel = -0.42735
 
     self.hcaSameTorqueCount = 0
     self.hcaEnabledFrameCount = 0
@@ -101,8 +102,9 @@ class CarController():
     # **** GAS Controls ***************************************************** #
     if (frame % P.GAS_STEP == 0) and CS.CP.enableGasInterceptor:
       apply_gas = 0
+      self.coastingAccel = interp(CS.out.vEgo, P.COASTING_LOOKUP_BP, P.COASTING_LOOKUP_V)
       if enabled:
-        if actuators.accel > -0.42734:
+        if actuators.accel > self.coastingAccel:
           speed = CS.out.vEgo
           cd = 0.31
           frontalArea = 2.3
@@ -145,14 +147,14 @@ class CarController():
 
       can_sends.append(self.create_awv_control(self.packer_pt, CANBUS.pt, idx, orange_led, green_led, CS.mAWV))
 
-      # **** EPB Controls ***************************************************** #
+    # **** EPB Controls ***************************************************** #
 
     if (frame % P.AWV_STEP == 0) and CS.CP.enableGasInterceptor:
       mobEnabled = self.mobEnabled
       apply_brake = interp(actuators.accel, P.BRAKE_LOOKUP_BP, P.BRAKE_LOOKUP_V)
 
       if enabled:
-        if apply_brake < -0.42735:
+        if apply_brake < self.coastingAccel:
           if not mobEnabled:
             mobEnabled = True
             apply_brake = 0
