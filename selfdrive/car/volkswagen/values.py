@@ -44,7 +44,7 @@ class CarControllerParams:
   BRAKE_LOOKUP_BP = [-3.5, -0.]
   BRAKE_LOOKUP_V = [-3.5, -0.]
 
-  COASTING_LOOKUP_BP = [2.7, 8.3]
+  COASTING_LOOKUP_BP = [0., 8.3]
   COASTING_LOOKUP_V = [0., -0.42735]
 
 class CANBUS:

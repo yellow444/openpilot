@@ -122,9 +122,13 @@ class CarController():
           PEDAL_LOOKUP_BP = [227, 1250 * 0.4,
                                1250 * 100 / 140]  # Not max gas, max gas gives 140hp, we want at most 100 hp, also 40% throttle might prevent an upshift
 
+          GAS_MULTIPLIER_BP = [0, 0.1, 0.2, 0.4, 8.3]
+          GAS_MULTIPLIER_V = [1.1, 1.4, 1.5, 1.6, 0.]
+
           powerNeeded_mult = interp(CS.out.vEgo, [20 / 3.6, 40 / 3.6], [2, 1])
           powerNeeded = int(round(powerNeeded * powerNeeded_mult))
           apply_gas = int(round(interp(powerNeeded, POWER_LOOKUP_BP, PEDAL_LOOKUP_BP)))
+          apply_gas = int(round(apply_gas * int(round(interp(speed), GAS_MULTIPLIER_BP, GAS_MULTIPLIER_V))))
         else:
           apply_gas = 0
 
