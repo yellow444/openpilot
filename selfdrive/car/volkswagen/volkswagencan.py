@@ -64,32 +64,6 @@ def create_pq_steering_control(packer, bus, apply_steer, idx, lkas_enabled):
   values["HCA_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4]
   return packer.make_can_msg("HCA_1", bus, values)
 
-def create_pq_dsr_control(packer, bus, apply_steer, idx, lkas_enabled):
-  values = {
-    "Zaehler": idx,
-    "BR9_LMOffset": abs(apply_steer),
-    "BR9_LMOffSign": 1 if apply_steer < 0 else 0,
-    "BR9_Sta_DSR": 5 if (lkas_enabled and apply_steer != 0) else 3,
-  }
-
-  dat = packer.make_can_msg("mBremse_9", bus, values)[2]
-  values["BR9_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5] ^ dat[6] ^ dat[7]
-  return packer.make_can_msg("mBremse_9", bus, values)
-
-def create_pq_braking_control(packer, bus, apply_brake, idx, brake_enabled, brake_pre_enable, stopping_wish):
-  values = {
-    "MOB_COUNTER": idx,
-    "MOB_Bremsmom": abs(apply_brake),
-    "MOB_Bremsstgr": abs(apply_brake),
-    "MOB_Standby": 1 if (brake_enabled) else 0,
-    "MOB_Freigabe": 1 if (brake_enabled and brake_pre_enable) else 0,
-    "MOB_Anhaltewunsch": 1 if (stopping_wish) else 0,
-  }
-
-  dat = packer.make_can_msg("mMotor_Bremse", bus, values)[2]
-  values["MOB_CHECKSUM"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5]
-  return packer.make_can_msg("mMotor_Bremse", bus, values)
-
 def create_pq_awv_control(packer, bus, idx, led_orange, led_green, mAWV):
   Fehler = mAWV["AWV_2_Fehler"]
 
@@ -107,7 +81,7 @@ def create_pq_awv_control(packer, bus, idx, led_orange, led_green, mAWV):
   mAWV["AWV_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5] ^ dat[6] ^ dat[7]
   return packer.make_can_msg("mAWV", bus, mAWV)
 
-def create_pq_pedal_control(packer, bus, apply_gas, idx):
+def create_pedal_control(packer, bus, apply_gas, idx):
   # Common gas pedal msg generator
   enable = apply_gas > 0.001
 

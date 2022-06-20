@@ -16,7 +16,7 @@ class CarControllerParams:
   MQB_LDW_STEP = 10              # LDW_02 message frequency 10Hz on MQB
   PQ_LDW_STEP = 5                # LDW_1 message frequency 20Hz on PQ35/PQ46/NMS
   GRA_ACC_STEP = 3               # GRA_ACC_01 message frequency 33Hz
-  MOB_STEP = 2                   # PQ_MOB message frequency 50Hz
+  EPB_STEP = 2                   # PQ_MOB message frequency 50Hz
   GAS_STEP = 2                   # GAS_COMMAND message frequency 50Hz
   AWV_STEP = 2                   # ACC LED Control
 
@@ -41,8 +41,8 @@ class CarControllerParams:
   MAX_BRAKE = 350  # Should be around 3.5m/s^2, including regen
   GAS_LOOKUP_BP = [-0.42735, 0., 2.]
   GAS_LOOKUP_V = [ZERO_GAS, 530, MAX_GAS]
-  BRAKE_LOOKUP_BP = [-3.5, -0.42735]
-  BRAKE_LOOKUP_V = [-3.5, -0.42735]
+  BRAKE_LOOKUP_BP = [-3.5, -0.]
+  BRAKE_LOOKUP_V = [-3.5, -0.]
 
   COASTING_LOOKUP_BP = [2.7, 8.3]
   COASTING_LOOKUP_V = [0., -0.42735]
