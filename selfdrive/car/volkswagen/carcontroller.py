@@ -128,7 +128,7 @@ class CarController():
           powerNeeded_mult = interp(CS.out.vEgo, [20 / 3.6, 40 / 3.6], [2, 1])
           powerNeeded = int(round(powerNeeded * powerNeeded_mult))
           apply_gas = int(round(interp(powerNeeded, POWER_LOOKUP_BP, PEDAL_LOOKUP_BP)))
-          apply_gas = int(round(apply_gas * int(round(interp(speed), GAS_MULTIPLIER_BP, GAS_MULTIPLIER_V))))
+          apply_gas = int(round(apply_gas * int(round(interp(speed, GAS_MULTIPLIER_BP, GAS_MULTIPLIER_V)))))
         else:
           apply_gas = 0
 
