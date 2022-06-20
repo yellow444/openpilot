@@ -149,12 +149,12 @@ def create_pq_epb_control(packer, bus, brake_req, enable, idx):
     "EP1_Sta_EPB": 0,
     "EP1_Spannkraft": 0,
     "EP1_Schalterinfo": 0,
-    "EP1_Verzoegerung": brake_req,
-    "EP1_Freigabe_Ver": 1 if enable else 0,
+    "EP1_Verzoegerung": brake_req,                    #Brake request in m/s2
+    "EP1_Freigabe_Ver": 1 if enable else 0,           #Allow braking pressure to build.
     "EP1_Fkt_Lampe": 0,
-    "EP1_Bremslicht": 1 if enable else 0,
-    "EP1_HydrHalten": 1 if enable else 0,
-    "EP1_AutoHold_aktiv": 1 if enable else 0
+    "EP1_Bremslicht": 1 if enable else 0,             #Enable brake lights
+    "EP1_HydrHalten": 1 if enable else 0,             #Disengage DSG
+    "EP1_AutoHold_aktiv": 1 if enable else 0          #Disengage DSG
   }
 
   dat = packer.make_can_msg("mEPB_1", bus, values)[2]

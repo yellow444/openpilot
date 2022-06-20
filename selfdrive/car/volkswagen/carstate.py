@@ -306,7 +306,6 @@ class CarState(CarStateBase):
 
     if self.CP.enableGasInterceptor:
       self.currentSpeed = ret.vEgo
-      self.ABSWorking = pt_cp.vl["Bremse_8"]["BR8_Sta_ADR_BR"]
 
     return ret
 

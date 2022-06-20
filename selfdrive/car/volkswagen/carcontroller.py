@@ -10,9 +10,7 @@ VisualAlert = car.CarControl.HUDControl.VisualAlert
 class CarController():
   def __init__(self, dbc_name, CP, VM):
     self.apply_steer_last = 0
-    self.mobPreEnable = False
-    self.mobEnabled = False
-    self.haltenCounter = 0
+    self.epbFreigabe = False
     self.coastingAccel = -0.42735
 
     self.hcaSameTorqueCount = 0
@@ -140,35 +138,35 @@ class CarController():
 
     if (frame % P.AWV_STEP == 0) and CS.CP.enableGasInterceptor:
       green_led = 1 if enabled else 0
-      orange_led = 1 if self.mobEnabled else 0
+      orange_led = 1 if self.epbFreigabe else 0
 
-      idx = (frame / P.MOB_STEP) % 16
+      idx = (frame / P.AWV_STEP) % 16
 
       can_sends.append(self.create_awv_control(self.packer_pt, CANBUS.pt, idx, orange_led, green_led, CS.mAWV))
 
     # **** EPB Controls ***************************************************** #
 
-    if (frame % P.AWV_STEP == 0) and CS.CP.enableGasInterceptor:
-      mobEnabled = self.mobEnabled
+    if (frame % P.EPB_STEP == 0) and CS.CP.enableGasInterceptor:
+      epbFreigabe = self.epbFreigabe
       apply_brake = interp(actuators.accel, P.BRAKE_LOOKUP_BP, P.BRAKE_LOOKUP_V)
 
       if enabled:
         if apply_brake < self.coastingAccel:
-          if not mobEnabled:
-            mobEnabled = True
+          if not epbFreigabe:
+            epbFreigabe = True
             apply_brake = 0
         else:
-          mobEnabled = False
+          epbFreigabe = False
           apply_brake = 0
       else:
-        mobEnabled = False
+        epbFreigabe = False
         apply_brake = 0
-      self.mobEnabled = mobEnabled
+      self.epbFreigabe = epbFreigabe
 
       idx = (frame / P.EPB_STEP) % 16
 
       can_sends.append(
-        self.create_epb_control(self.packer_pt, CANBUS.br, apply_brake, mobEnabled, idx))
+        self.create_epb_control(self.packer_pt, CANBUS.br, apply_brake, epbFreigabe, idx))
 
 
     # **** ACC Button Controls ********************************************** #
