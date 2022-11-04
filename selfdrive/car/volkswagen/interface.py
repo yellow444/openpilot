@@ -41,13 +41,10 @@ class CarInterface(CarInterfaceBase):
       else:
         ret.networkLocation = NetworkLocation.fwdCamera
 
-      # The PQ port is in dashcam-only mode due to a fixed six-minute maximum timer on HCA steering. An unsupported
-      # EPS flash update to work around this timer, and enable steering down to zero, is available from:
-      #   https://github.com/pd0wm/pq-flasher
-      # It is documented in a four-part blog series:
-      #   https://blog.willemmelching.nl/carhacking/2022/01/02/vw-part1/
+      # The PQ port is in dashcam-only mode upstream, but enabled on this C2 Final Edition branch
+      # The six-minute maximum steering timer is NOT worked around at this time
       # Panda ALLOW_DEBUG firmware required.
-      ret.dashcamOnly = True
+      # ret.dashcamOnly = True
 
     else:
       # Set global MQB parameters
