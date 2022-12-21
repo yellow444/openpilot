@@ -3,8 +3,10 @@ from common.numpy_fast import clip, interp
 from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.volkswagen import volkswagencan
 from selfdrive.car.volkswagen.values import PQ_CARS, DBC_FILES, CANBUS, NetworkLocation, MQB_LDW_MESSAGES, BUTTON_STATES, CarControllerParams as P
+from selfdrive.config import Conversions as CV
 from opendbc.can.packer import CANPacker
 
+LongCtrlState = car.CarControl.Actuators.LongControlState
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
 class CarController():
@@ -30,6 +32,8 @@ class CarController():
       self.create_awv_control = volkswagencan.create_pq_awv_control
       self.create_bremse8_control = volkswagencan.create_pq_bremse8_control
       self.create_epb_control = volkswagencan.create_pq_epb_control
+      self.create_acc_control = volkswagencan.create_pq_acc_control
+      self.create_aca_control = volkswagencan.create_pq_aca_control
       self.ldw_step = P.PQ_LDW_STEP
 
     else:
@@ -96,6 +100,23 @@ class CarController():
                                                                  idx, hcaEnabled))
       can_sends.append(self.create_bremse8_control(self.packer_pt, CANBUS.cam, idx, CS.bremse8))
 
+    # **** ACC Controls ***************************************************** #
+    if (frame % P.ACC_STEP == 0) and CS.CP.openpilotLongitudinalControl:
+      idx = (frame / P.EPB_STEP) % 16
+      acc_type = 0  # TODO: detect ACC type installed
+      stopping = (actuators.longControlState == LongCtrlState.stopping)
+
+      can_sends.append(self.create_acc_control(self.packer_pt, CANBUS.pt, idx, enabled, actuators.accel, stopping, acc_type))
+
+    # **** HUD Controls ***************************************************** #
+    if (frame % P.ACC_STEP == 0) and CS.CP.openpilotLongitudinalControl:
+      idx = (frame / P.EPB_STEP) % 16
+      set_speed = CS.out.cruiseState.speed * CV.MS_TO_KPH
+      acc_coding = CS.ACC_Coding
+      metric = True   # TODO: detect kp_h or mph from car
+
+      can_sends.append(self.create_aca_control(self.packer_pt, CANBUS.pt, idx, enabled, set_speed, metric, acc_coding))
+
     # **** GAS Controls ***************************************************** #
     if (frame % P.GAS_STEP == 0) and CS.CP.enableGasInterceptor:
       apply_gas = 0
@@ -133,10 +154,6 @@ class CarController():
           apply_gas = 0
 
       can_sends.append(self.create_gas_control(self.packer_pt, CANBUS.cam, apply_gas, frame // 2))
-
-    # **** HUD Controls ***************************************************** #
-
-
 
     # **** AWV Controls ***************************************************** #
 

@@ -179,6 +179,8 @@ class CarState(CarStateBase):
 
     self.mAWV = cam_cp.vl["mAWV"]
 
+    self.ACC_Coding = cam_cp.vl["ACA_Codierung"]
+
     ret.vEgoRaw = float(np.mean([ret.wheelSpeeds.fl, ret.wheelSpeeds.fr, ret.wheelSpeeds.rl, ret.wheelSpeeds.rr]))
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
 
@@ -273,7 +275,7 @@ class CarState(CarStateBase):
 
     # Update ACC setpoint. When the setpoint reads as 255, the driver has not
     # yet established an ACC setpoint, so treat it as zero.
-    ret.cruiseState.speed = pt_cp.vl["Motor_2"]['Soll_Geschwindigkeit_bei_GRA_Be'] * CV.KPH_TO_MS
+    ret.cruiseState.speed = ext_cp.vl["ACC_GRA_Anzeige"]["ACA_V_Wunsch"] * CV.KPH_TO_MS
     if ret.cruiseState.speed > 70:  # 255 kph in m/s == no current setpoint
       ret.cruiseState.speed = 0
 
@@ -635,11 +637,12 @@ class MqbExtraSignals:
 class PqExtraSignals:
   # Additional signal and message lists for optional or bus-portable controllers
   fwd_radar_signals = [
-    ("ACA_StaACC", "ACC_GRA_Anziege", 0),           # ACC drivetrain coordinator status
-    ("ACA_V_Wunsch", "ACC_GRA_Anziege", 0),         # ACC set speed
+    ("ACA_Codierung", "ACC_GRA_Anzeige", 0),
+    ("ACA_StaACC", "ACC_GRA_Anzeige", 0),           # ACC drivetrain coordinator status
+    ("ACA_V_Wunsch", "ACC_GRA_Anzeige", 0),         # ACC set speed
   ]
   fwd_radar_checks = [
-    ("ACC_GRA_Anziege", 25),                        # From J428 ACC radar control module
+    ("ACC_GRA_Anzeige", 25),                        # From J428 ACC radar control module
   ]
   bsm_radar_signals = [
     ("SWA_Infostufe_SWA_li", "SWA_1", 0),           # Blind spot object info, left
