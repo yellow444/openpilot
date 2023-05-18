@@ -103,14 +103,6 @@ def create_pedal_control(packer, bus, apply_gas, idx):
 
   return packer.make_can_msg("GAS_COMMAND", bus, values)
 
-def create_pq_bremse8_control(packer, bus, idx, bremse8):
-
-  bremse8["BR8_Zaehler"] = idx
-  dat = packer.make_can_msg("Bremse_8", bus, bremse8)[2]
-  bremse8["BR8_Checksumme"] = dat[1] ^ dat[2] ^ dat[3] ^ dat[4] ^ dat[5] ^ dat[6] ^ dat[7]
-
-  return packer.make_can_msg("Bremse_8", bus, bremse8)
-
 def create_pq_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert, left_lane_visible, right_lane_visible,
                           ldw_lane_warning_left, ldw_lane_warning_right, ldw_side_dlc_tlc, ldw_dlc, ldw_tlc,
                           standstill, left_lane_depart, right_lane_depart):
@@ -130,13 +122,12 @@ def create_pq_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert,
   }
   return packer.make_can_msg("LDW_1", bus, values)
 
-def create_pq_acc_buttons_control(packer, bus, buttonStatesToSend, CS, idx):
-  values = {
-    "GRA_Neu_Zaehler": idx,
-    "GRA_Sender": CS.graSenderCoding,
-    "GRA_Abbrechen": 1 if (buttonStatesToSend["cancel"] or CS.buttonStates["cancel"]) else 0,
-    "GRA_Hauptschalt": CS.graHauptschalter,
-  }
+def create_pq_acc_buttons_control(packer, bus, graNeu, idx):
+  graNeu["GRA_Kodierinfo"] = 1
+  graNeu["GRA_Sender"] = 1
+  graNeu["GRA_Fehler_Bed"] = 0
+  graNeu["GRA_Fehler_Tip"] = 0
+  graNeu["GRA_Neu_Zaehler"] = idx
 
   dat = packer.make_can_msg("GRA_Neu", bus, values)[2]
   values["GRA_Checksum"] = dat[1] ^ dat[2] ^ dat[3]

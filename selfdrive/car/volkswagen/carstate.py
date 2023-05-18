@@ -170,14 +170,11 @@ class CarState(CarStateBase):
     ret.wheelSpeeds.rl = pt_cp.vl["Bremse_3"]["Radgeschw__HL_4_1"] * CV.KPH_TO_MS
     ret.wheelSpeeds.rr = pt_cp.vl["Bremse_3"]["Radgeschw__HR_4_1"] * CV.KPH_TO_MS
 
-    self.bremse8  = pt_cp.vl["Bremse_8"]
-    self.bremse8['BR8_Sta_ADR_BR'] = 0
-    self.bremse8['ESP_MKB_ausloesbar'] = 1
-    self.bremse8['BR8_Sta_VerzReg'] = 0
-
     self.Stillstand = pt_cp.vl["Bremse_5"]["BR5_Stillstand"]
 
     self.mAWV = cam_cp.vl["mAWV"]
+
+    self.graNeu = pt_cp.vl["GRA_Neu"]
 
     ret.vEgoRaw = float(np.mean([ret.wheelSpeeds.fl, ret.wheelSpeeds.fr, ret.wheelSpeeds.rl, ret.wheelSpeeds.rr]))
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
@@ -427,15 +424,23 @@ class CarState(CarStateBase):
       ("Bremsinfo", "Kombi_1", 0),                  # Manual handbrake applied
       ("GRA_Hauptschalt", "GRA_Neu", 0),            # ACC button, on/off
       ("GRA_Abbrechen", "GRA_Neu", 0),              # ACC button, cancel
-      ("GRA_Neu_Setzen", "GRA_Neu", 0),             # ACC button, set
-      ("GRA_Up_lang", "GRA_Neu", 0),                # ACC button, increase or accel, long press
+      ("GRA_Down_kurz", "GRA_Neu", 0),             # ACC button, set
+      ("GRA_Up_kurz", "GRA_Neu", 0),                # ACC button, increase or accel, long press
       ("GRA_Down_lang", "GRA_Neu", 0),              # ACC button, decrease or decel, long press
-      ("GRA_Up_kurz", "GRA_Neu", 0),                # ACC button, increase or accel, short press
-      ("GRA_Down_kurz", "GRA_Neu", 0),              # ACC button, decrease or decel, short press
-      ("GRA_Recall", "GRA_Neu", 0),                 # ACC button, resume
-      ("GRA_Zeitluecke", "GRA_Neu", 0),             # ACC button, time gap adj
-      ("GRA_Neu_Zaehler", "GRA_Neu", 0),            # ACC button, time gap adj
+      ("GRA_Up_lang", "GRA_Neu", 0),                # ACC button, increase or accel, short press
+      ("GRA_Fehler_Bed", "GRA_Neu", 0),              # ACC button, decrease or decel, short press
+      ("GRA_Kodierinfo", "GRA_Neu", 0),                 # ACC button, resume
+      ("GRA_Neu_Setzen", "GRA_Neu", 0),             # ACC button, time gap adj
+      ("GRA_Recall", "GRA_Neu", 0),            # ACC button, time gap adj
       ("GRA_Sender", "GRA_Neu", 0),                 # GRA Sender Coding
+      ("GRA_Neu_Zaehler", "GRA_Neu", 0),  # ACC button, increase or accel, short press
+      ("GRA_Tip_Down", "GRA_Neu", 0),  # ACC button, decrease or decel, short press
+      ("GRA_Tip_Up", "GRA_Neu", 0),  # ACC button, resume
+      ("GRA_Zeitluecke", "GRA_Neu", 0),  # ACC button, time gap adj
+      ("GRA_Sta_Limiter", "GRA_Neu", 0),  # ACC button, time gap adj
+      ("GRA_Typ_Hauptschalt", "GRA_Neu", 0),  # GRA Sender Coding
+      ("GRA_Sportschalter", "GRA_Neu", 0),  # ACC button, time gap adj
+      ("GRA_Fehler_Tip", "GRA_Neu", 0),  # GRA Sender Coding
 
       ("BR8_Sta_ACC_Anf", "Bremse_8", 0),
       ("BR8_Verz_EPB_akt", "Bremse_8", 0),

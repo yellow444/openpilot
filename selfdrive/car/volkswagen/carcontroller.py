@@ -28,7 +28,6 @@ class CarController():
       self.create_hud_control = volkswagencan.create_pq_hud_control
       self.create_gas_control = volkswagencan.create_pedal_control
       self.create_awv_control = volkswagencan.create_pq_awv_control
-      self.create_bremse8_control = volkswagencan.create_pq_bremse8_control
       self.create_epb_control = volkswagencan.create_pq_epb_control
       self.ldw_step = P.PQ_LDW_STEP
 
@@ -94,7 +93,6 @@ class CarController():
       idx = (frame / P.HCA_STEP) % 16
       can_sends.append(self.create_steering_control(self.packer_pt, CANBUS.pt, apply_steer,
                                                                  idx, hcaEnabled))
-      can_sends.append(self.create_bremse8_control(self.packer_pt, CANBUS.cam, idx, CS.bremse8))
 
     # **** GAS Controls ***************************************************** #
     if (frame % P.GAS_STEP == 0) and CS.CP.enableGasInterceptor:
@@ -132,7 +130,7 @@ class CarController():
         else:
           apply_gas = 0
 
-      can_sends.append(self.create_gas_control(self.packer_pt, CANBUS.cam, apply_gas, frame // 2))
+      #can_sends.append(self.create_gas_control(self.packer_pt, CANBUS.cam, apply_gas, frame // 2))
 
     # **** HUD Controls ***************************************************** #
 
@@ -169,37 +167,14 @@ class CarController():
 
       idx = (frame / P.EPB_STEP) % 16
 
-      can_sends.append(
-        self.create_epb_control(self.packer_pt, CANBUS.br, apply_brake, epbFreigabe, idx))
+      #can_sends.append(self.create_epb_control(self.packer_pt, CANBUS.br, apply_brake, epbFreigabe, idx))
 
 
     # **** ACC Button Controls ********************************************** #
+    if frame % P.GRA_NEU_STEP == 0:
+      idx = (frame / P.GRA_NEU_STEP) % 16
+      can_sends.append(self.create_acc_buttons_control(self.packer_pt, CANBUS.cam, CS.graNeu, idx))
 
-    # FIXME: this entire section is in desperate need of refactoring
-
-    if frame > self.graMsgStartFramePrev + P.GRA_VBP_STEP:
-      if not enabled and CS.out.cruiseState.enabled:
-        # Cancel ACC if it's engaged with OP disengaged.
-        self.graButtonStatesToSend = BUTTON_STATES.copy()
-        self.graButtonStatesToSend["cancel"] = True
-      elif enabled and CS.out.standstill:
-        # Blip the Resume button if we're engaged at standstill.
-        # FIXME: This is a naive implementation, improve with visiond or radar input.
-        # A subset of MQBs like to "creep" too aggressively with this implementation.
-        self.graButtonStatesToSend = BUTTON_STATES.copy()
-        self.graButtonStatesToSend["resumeCruise"] = True
-
-    if CS.graMsgBusCounter != self.graMsgBusCounterPrev:
-      self.graMsgBusCounterPrev = CS.graMsgBusCounter
-      if self.graButtonStatesToSend is not None:
-        if self.graMsgSentCount == 0:
-          self.graMsgStartFramePrev = frame
-        idx = (CS.graMsgBusCounter + 1) % 16
-        # can_sends.append(self.create_acc_buttons_control(self.packer_pt, self.ext_can, self.graButtonStatesToSend, CS, idx))
-        self.graMsgSentCount += 1
-        if self.graMsgSentCount >= P.GRA_VBP_COUNT:
-          self.graButtonStatesToSend = None
-          self.graMsgSentCount = 0
 
     return can_sends
 

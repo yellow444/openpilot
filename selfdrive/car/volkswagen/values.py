@@ -19,6 +19,7 @@ class CarControllerParams:
   EPB_STEP = 2                   # PQ_MOB message frequency 50Hz
   GAS_STEP = 2                   # GAS_COMMAND message frequency 50Hz
   AWV_STEP = 2                   # ACC LED Control
+  GRA_NEU_STEP = 2               # GRA_NEU message frequency 50Hz
 
   GRA_VBP_STEP = 100             # Send ACC virtual button presses once a second
   GRA_VBP_COUNT = 16             # Send VBP messages for ~0.5s (GRA_ACC_STEP * 16)
