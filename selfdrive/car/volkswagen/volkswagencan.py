@@ -129,9 +129,9 @@ def create_pq_acc_buttons_control(packer, bus, graNeu, idx):
   graNeu["GRA_Fehler_Tip"] = 0
   graNeu["GRA_Neu_Zaehler"] = idx
 
-  dat = packer.make_can_msg("GRA_Neu", bus, values)[2]
-  values["GRA_Checksum"] = dat[1] ^ dat[2] ^ dat[3]
-  return packer.make_can_msg("GRA_Neu", bus, values)
+  dat = packer.make_can_msg("GRA_Neu", bus, graNeu)[2]
+  graNeu["GRA_Checksum"] = dat[1] ^ dat[2] ^ dat[3]
+  return packer.make_can_msg("GRA_Neu", bus, graNeu)
 
 def create_pq_epb_control(packer, bus, brake_req, enable, idx):
   values = {
