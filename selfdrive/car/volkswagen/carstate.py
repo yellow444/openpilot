@@ -218,7 +218,7 @@ class CarState(CarStateBase):
 
     # Update ACC radar status.
     self.acc_type = 0  # TODO: this is ACC "basic" with nonzero min speed, support FtS (1) later
-    ret.cruiseState.available = bool(pt_cp.vl["Motor_5"]["GRA_Hauptschalter"])
+    ret.cruiseState.available = bool(pt_cp.vl["GRA_Neu"]['GRA_Hauptschalt'])
     ret.cruiseState.enabled = bool(pt_cp.vl["Motor_2"]["GRA_Status"])
     if self.CP.pcmCruise:
       self.acc_faulted = ext_cp.vl["ACC_GRA_Anziege"]["ACA_StaACC"] in (6, 7)
@@ -386,7 +386,6 @@ class CarState(CarStateBase):
       ("Vorzeichen_Bremsdruck", "Bremse_5"),     # Brake pressure applied sign (???)
       ("Fahrpedal_Rohsignal", "Motor_3"),        # Accelerator pedal value
       ("ESP_Passiv_getastet", "Bremse_1"),       # Stability control disabled
-      ("GRA_Hauptschalter", "Motor_5"),          # ACC main switch
       ("GRA_Status", "Motor_2"),                 # ACC engagement status
       ("GK1_Fa_Tuerkont", "Gate_Komf_1"),        # Door open, driver
       ("BSK_BT_geoeffnet", "Gate_Komf_1"),       # Door open, passenger
@@ -423,7 +422,6 @@ class CarState(CarStateBase):
       ("GRA_Neu", 50),      # From J??? steering wheel control buttons
       ("Kombi_1", 50),      # From J285 Instrument cluster
       ("Motor_2", 50),      # From J623 Engine control module
-      ("Motor_5", 50),      # From J623 Engine control module
       ("Lenkhilfe_2", 20),  # From J500 Steering Assist with integrated sensors
       ("Gate_Komf_1", 10),  # From J533 CAN gateway
     ]
