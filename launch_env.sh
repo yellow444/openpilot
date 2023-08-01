@@ -19,3 +19,6 @@ if [ -z "$PASSIVE" ]; then
 fi
 
 export STAGING_ROOT="/data/safe_staging"
+
+# Hax for testing
+export FINGERPRINT="VOLKSWAGEN GOLF 6TH GEN"

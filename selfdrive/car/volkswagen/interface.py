@@ -86,6 +86,12 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 2011 + STD_CARGO_KG
       ret.wheelbase = 2.98
 
+    elif candidate == CAR.GOLF_MK6:
+      # Averages of all 1K/5K/AJ Golf variants
+      ret.mass = 1379 + STD_CARGO_KG
+      ret.wheelbase = 2.58
+      ret.minSteerSpeed = 0 * CV.KPH_TO_MS  # May be lower depending on model-year/EPS FW
+
     elif candidate == CAR.GOLF_MK7:
       ret.mass = 1397 + STD_CARGO_KG
       ret.wheelbase = 2.62
