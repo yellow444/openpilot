@@ -148,6 +148,8 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1379 + STD_CARGO_KG
       ret.wheelbase = 2.58
       ret.minSteerSpeed = 0 * CV.KPH_TO_MS  # May be lower depending on model-year/EPS FW
+      ret.steerActuatorDelay = 0.2
+      CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
 
     elif candidate == CAR.GOLF_MK7:
       ret.mass = 1397 + STD_CARGO_KG
