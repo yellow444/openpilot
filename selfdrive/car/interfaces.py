@@ -141,6 +141,7 @@ class CarInterfaceBase(ABC):
   def __init__(self, CP, CarController, CarState):
     self.CP = CP
     self.VM = VehicleModel(CP)
+    self.has_lateral_torque_nnff = self.initialize_lat_torque_nnff(CP.carFingerprint)
 
     self.frame = 0
     self.steering_unpressed = 0
