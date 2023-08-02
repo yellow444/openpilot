@@ -67,6 +67,11 @@ class LatControlTorque(LatControl):
       self.ff = 0.0
       self.nnff_log = []
 
+      # Only update nnff when planner updates
+      self.curvature_0_last = 0.0
+      self.ff = 0.0
+      self.nnff_log = []
+
   def update_live_torque_params(self, latAccelFactor, latAccelOffset, friction):
     self.torque_params.latAccelFactor = latAccelFactor
     self.torque_params.latAccelOffset = latAccelOffset
@@ -113,7 +118,6 @@ class LatControlTorque(LatControl):
         else:
           self.curvature_0_last = lat_plan.curvatures[0]
           # prepare input data for NNFF model
-
           # prepare past roll and error
           roll = params.roll
           self.roll_deque.append(roll)
@@ -122,13 +126,9 @@ class LatControlTorque(LatControl):
           past_lateral_accels_desired = [self.lateral_accel_desired_deque[min(len(self.lateral_accel_desired_deque)-1, i)] for i in self.history_frame_offsets]
 
           # prepare future roll, lat accel, and lat accel error
-          if model_planner_good:
-            adjusted_future_times = [t + 0.5*CS.aEgo*(t/max(CS.vEgo, 1.0)) for t in self.nnff_future_times]
-            future_planned_lateral_accels = [interp(t, T_IDXS[:CONTROL_N], lat_plan.curvatures) * CS.vEgo ** 2 for t in adjusted_future_times]
-            future_rolls = [interp(t, T_IDXS, model_data.orientation.x) + roll for t in adjusted_future_times]
-          else:
-            future_planned_lateral_accels = [desired_lateral_accel] * len(self.nnff_future_times)
-            future_rolls = [roll] * len(self.nnff_future_times)
+          adjusted_future_times = [t + 0.5*CS.aEgo*(t/max(CS.vEgo, 1.0)) for t in self.nnff_future_times]
+          future_planned_lateral_accels = [interp(t, T_IDXS[:CONTROL_N], lat_plan.curvatures) * CS.vEgo ** 2 for t in adjusted_future_times]
+          future_rolls = [interp(t, T_IDXS, model_data.orientation.x) + roll for t in adjusted_future_times]
 
           # compute NNFF error response
           nnff_setpoint_input = [CS.vEgo, setpoint, 0.05 * desired_lateral_jerk, roll] \
@@ -147,6 +147,7 @@ class LatControlTorque(LatControl):
                                 + past_lateral_accels_desired + future_planned_lateral_accels \
                                 + past_rolls + future_rolls
           ff = self.torque_from_nn(nnff_input)
+          self.ff = ff
 
           self.nnff_log = nnff_input + nnff_setpoint_input + nnff_measurement_input
       else:
