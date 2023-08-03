@@ -76,7 +76,7 @@ class CarInterface(CarInterfaceBase):
 
     # Global lateral tuning defaults, can be overridden per-vehicle
 
-    ret.steerActuatorDelay = 0.15
+    ret.steerActuatorDelay = 0.1
     ret.steerRateCost = 1.0
     ret.steerLimitTimer = 0.4
     ret.steerRatio = 15.6  # Let the params learner figure this out
@@ -106,24 +106,14 @@ class CarInterface(CarInterfaceBase):
 
       # OP LONG parameters
       ret.openpilotLongitudinalControl = True
-      ret.longitudinalActuatorDelayUpperBound = 0.5  # s
       ret.stoppingControl = True
+      ret.startingState = True
+      ret.startAccel = 1.0
+      ret.stopAccel = -0.55
+      ret.vEgoStarting = 1.0
       ret.vEgoStopping = 1.0
-      ret.stopAccel = -0.5
-      ret.stoppingDecelRate = 0.3
-
-      ret.longitudinalTuning.deadzoneBP = [0.]
-      ret.longitudinalTuning.deadzoneV = [0.]
-      ret.longitudinalTuning.kpBP = [0.]
       ret.longitudinalTuning.kpV = [0.1]
-      ret.longitudinalTuning.kiBP = [0.]
-      ret.longitudinalTuning.kiV = [0.03]
-
-      # PQ lateral tuning HCA_Status 7
-      ret.lateralTuning.pid.kpBP = [0., 14., 20.]
-      ret.lateralTuning.pid.kiBP = [0., 14., 20.]
-      ret.lateralTuning.pid.kpV = [0.116, 0.13, 0.14]
-      ret.lateralTuning.pid.kiV = [0.09, 0.10, 0.11]
+      ret.longitudinalTuning.kiV = [0.0]
 
     elif candidate == CAR.GOLF_MK7:
       ret.mass = 1397 + STD_CARGO_KG

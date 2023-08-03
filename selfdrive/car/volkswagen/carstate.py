@@ -170,16 +170,13 @@ class CarState(CarStateBase):
     ret.wheelSpeeds.rl = pt_cp.vl["Bremse_3"]["Radgeschw__HL_4_1"] * CV.KPH_TO_MS
     ret.wheelSpeeds.rr = pt_cp.vl["Bremse_3"]["Radgeschw__HR_4_1"] * CV.KPH_TO_MS
 
-    self.bremse8  = pt_cp.vl["Bremse_8"]
-    self.bremse8['BR8_Sta_ADR_BR'] = 0
-    self.bremse8['ESP_MKB_ausloesbar'] = 1
-    self.bremse8['BR8_Sta_VerzReg'] = 0
-
     self.Stillstand = pt_cp.vl["Bremse_5"]["BR5_Stillstand"]
 
     self.mAWV = cam_cp.vl["mAWV"]
 
     self.ACC_Coding = cam_cp.vl["ACA_Codierung"]
+
+    self.acc_type = ext_cp.vl['ACC_System']['ACS_Typ_ACC']
 
     ret.vEgoRaw = float(np.mean([ret.wheelSpeeds.fl, ret.wheelSpeeds.fr, ret.wheelSpeeds.rl, ret.wheelSpeeds.rr]))
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
@@ -203,9 +200,6 @@ class CarState(CarStateBase):
     if not self.CP.enableGasInterceptor:
       ret.gas = pt_cp.vl["Motor_3"]['Fahrpedal_Rohsignal'] / 100.0
       ret.gasPressed = ret.gas > 0
-    else:
-      ret.gas = (cam_cp.vl["GAS_SENSOR"]['INTERCEPTOR_GAS'] + cam_cp.vl["GAS_SENSOR"]['INTERCEPTOR_GAS2']) / 2.
-      ret.gasPressed = ret.gas > 468
 
     ret.brake = pt_cp.vl["Bremse_5"]["Bremsdruck"] / 250.0  # FIXME: this is pressure in Bar, not sure what OP expects
     ret.brakePressed = bool(pt_cp.vl["Motor_2"]["Bremstestschalter"])
@@ -258,8 +252,8 @@ class CarState(CarStateBase):
     # TODO: Consume FCW/AEB data from factory radar, if present
 
     # Update ACC radar status.
-    ret.cruiseState.available = bool(pt_cp.vl["GRA_Neu"]['GRA_Hauptschalt'])
-    ret.cruiseState.enabled = True if pt_cp.vl["Motor_2"]['GRA_Status'] in [1, 2] else False
+    ret.cruiseState.available = bool(pt_cp.vl["Motor_5"]["GRA_Hauptschalter"])
+    ret.cruiseState.enabled = pt_cp.vl["Motor_2"]["GRA_Status"] in (1, 2)
 
     # Set override flag for openpilot enabled state.
     if self.CP.enableGasInterceptor and pt_cp.vl["Motor_2"]['GRA_Status'] in [1, 2]:
@@ -421,6 +415,7 @@ class CarState(CarStateBase):
       ("Soll_Geschwindigkeit_bei_GRA_Be", "Motor_2", 0), #CruiseControl Setspeed
       ("Fahrpedal_Rohsignal", "Motor_3", 0),        # Accelerator pedal value
       ("ESP_Passiv_getastet", "Bremse_1", 0),       # Stability control disabled
+      ("GRA_Hauptschalter", "Motor_5", 0),             # ACC main switch
       ("GRA_Status", "Motor_2", 0),                 # ACC engagement status
       ("GK1_Fa_Tuerkont", "Gate_Komf_1", 0),        # Door open, driver
       # TODO: locate passenger and rear door states
@@ -438,30 +433,6 @@ class CarState(CarStateBase):
       ("GRA_Zeitluecke", "GRA_Neu", 0),             # ACC button, time gap adj
       ("GRA_Neu_Zaehler", "GRA_Neu", 0),            # ACC button, time gap adj
       ("GRA_Sender", "GRA_Neu", 0),                 # GRA Sender Coding
-
-      ("BR8_Sta_ACC_Anf", "Bremse_8", 0),
-      ("BR8_Verz_EPB_akt", "Bremse_8", 0),
-      ("BR8_Sta_Br_temp", "Bremse_8", 0),
-      ("BR8_Sta_Br_Druck", "Bremse_8", 0),
-      ("BR8_Istbeschl", "Bremse_8", 0),
-      ("BR8_Sta_HW_BLS", "Bremse_8", 0),
-      ("BR8_QB_LBeschl", "Bremse_8", 0),
-      ("BR8_ESC_Mode", "Bremse_8", 0),
-      ("BR8_aktBrSyst", "Bremse_8", 0),
-      ("BR8_Fa_bremst", "Bremse_8", 0),
-      ("BR8_StaBrSyst", "Bremse_8", 0),
-      ("BR8_Laengsbeschl", "Bremse_8", 0),
-      ("BR8_Quattro", "Bremse_8", 0),
-      ("BR8_Sta_VerzReg", "Bremse_8", 0),
-      ("BR8_Sta_BLS", "Bremse_8", 0),
-      ("BR8_Verz_EPB", "Bremse_8", 0),
-      ("BR8_Check_EPB", "Bremse_8", 0),
-      ("BR8_HHC_Haltebestaetigung", "Bremse_8", 0),
-      ("BR8_HHC_Signal_QBit", "Bremse_8", 0),
-      ("ESP_Haltebestaetigung", "Bremse_8", 0),
-      ("ESC_Motorstartverzoegerung", "Bremse_8", 0),
-      ("ESP_MKB_ausloesbar", "Bremse_8", 0),
-      ("BR8_Sta_ADR_BR", "Bremse_8", 0),            # ABS Pump actively braking for ACC
 
       ("Bremsdruck", "Bremse_5", 0),  # Brake pressure applied
       ("BR5_Sign_Druck", "Bremse_5", 0),  # Brake pressure applied sign (???)
@@ -499,10 +470,10 @@ class CarState(CarStateBase):
       ("Motor_3", 100),           # From J623 Engine control module
       ("Airbag_1", 50),           # From J234 Airbag control module
       ("Bremse_5", 50),           # From J104 ABS/ESP controller
-      ("Bremse_8", 50),           # From J??? ABS/ACC controller
       ("GRA_Neu", 50),            # From J??? steering wheel control buttons
       ("Kombi_1", 50),            # From J285 Instrument cluster
       ("Motor_2", 50),            # From J623 Engine control module
+      ("Motor_5", 50),            # From J623 Engine control module
       ("Lenkhilfe_2", 20),        # From J500 Steering Assist with integrated sensors
       ("Gate_Komf_1", 10),        # From J533 CAN gateway
     ]
@@ -590,12 +561,14 @@ class CarState(CarStateBase):
       ("ANB_Zielbremsung_Freigabe", "mAWV", 0),
       ("ANB_CM_Anforderung", "mAWV", 0),
       ("ANB_Ziel_Teilbrems_Verz_Anf", "mAWV", 0),
+      ("ACS_Typ_ACC", "ACC_System", 0)
     ]
 
     checks = [
       # sig_address, frequency
       #("LDW_1", 20)        # From R242 Driver assistance camera
-      ("mAWV", 50)
+      ("mAWV", 50),
+      ("ACC_System", 50)
     ]
 
     if CP.enableGasInterceptor:

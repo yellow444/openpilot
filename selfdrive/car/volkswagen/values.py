@@ -45,8 +45,8 @@ class CarControllerParams:
   BRAKE_LOOKUP_BP = [-3.5, -0.]
   BRAKE_LOOKUP_V = [-3.5, -0.]
 
-  COASTING_LOOKUP_BP = [0., 8.3]
-  COASTING_LOOKUP_V = [0., -0.42735]
+  ACCEL_MAX = 2.0                          # 2.0 m/s max acceleration
+  ACCEL_MIN = -3.5                         # 3.5 m/s max deceleration
 
 class CANBUS:
   pt = 0
