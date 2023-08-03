@@ -253,23 +253,12 @@ class CarState(CarStateBase):
     ret.cruiseState.available = bool(pt_cp.vl["Motor_5"]["GRA_Hauptschalter"])
     ret.cruiseState.enabled = pt_cp.vl["Motor_2"]["GRA_Status"] in (1, 2)
 
-    # Set override flag for openpilot enabled state.
-    if self.CP.enableGasInterceptor and pt_cp.vl["Motor_2"]['GRA_Status'] in [1, 2]:
-      self.openpilot_enabled = True
-
-    # Check if Gas or Brake pressed and cancel override
-    if self.CP.enableGasInterceptor and (ret.gasPressed or ret.brakePressed):
-      self.openpilot_enabled = False
-
-    # Override openpilot enabled if gas interceptor installed
-    if self.CP.enableGasInterceptor and self.openpilot_enabled:
-      ret.cruiseState.enabled = True
-
     # Update ACC setpoint. When the setpoint reads as 255, the driver has not
     # yet established an ACC setpoint, so treat it as zero.
-    ret.cruiseState.speed = ext_cp.vl["ACC_GRA_Anzeige"]["ACA_V_Wunsch"] * CV.KPH_TO_MS
-    if ret.cruiseState.speed > 70:  # 255 kph in m/s == no current setpoint
-      ret.cruiseState.speed = 0
+    if not self.CP.openpilotLongitudinalControl:
+        ret.cruiseState.speed = ext_cp.vl["ACC_GRA_Anzeige"]["ACA_V_Wunsch"] * CV.KPH_TO_MS
+        if ret.cruiseState.speed > 70:  # 255 kph in m/s == no current setpoint
+            ret.cruiseState.speed = 0
 
     # Update control button states for turn signals and ACC controls.
     self.buttonStates["accelCruise"] = bool(pt_cp.vl["GRA_Neu"]["GRA_Up_kurz"]) or bool(pt_cp.vl["GRA_Neu"]["GRA_Up_lang"])

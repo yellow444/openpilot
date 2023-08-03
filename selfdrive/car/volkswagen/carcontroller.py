@@ -124,7 +124,7 @@ class CarController():
             else:
                 hud_alert = 0
             
-            can_sends.append(self.create_hud_control(self.packer_pt, CANBUS.pt, hca_enabled,
+            can_sends.append(self.CCS.create_lka_hud_control(self.packer_pt, CANBUS.pt, hca_enabled,
                                                      CS.out.steeringPressed, hud_alert, left_lane_visible,
                                                      right_lane_visible, CS.ldw_lane_warning_left,
                                                      CS.ldw_lane_warning_right, CS.ldw_side_dlc_tlc,

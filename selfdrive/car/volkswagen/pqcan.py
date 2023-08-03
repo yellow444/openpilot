@@ -66,7 +66,7 @@ def create_lka_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert
     "LDW_Textbits": hud_alert,
   }
 
-  return packer.make_can_msg("LDW_1", bus, values)
+  return packer.make_can_msg("LDW_Status", bus, values)
 
 def create_acc_hud_control(packer, bus , idx, acc_hud_status, set_speed, metric, lead_distance):
   values = {
