@@ -583,7 +583,7 @@ class CarState(CarStateBase):
         signals += PqExtraSignals.bsm_radar_signals
         checks += PqExtraSignals.bsm_radar_checks
 
-    return CANParser(DBC_FILES.pq, signals, checks, CANBUS.cam, enforce_checks=False)
+    return CANParser(DBC_FILES.pq, signals, checks, CANBUS.cam)
 
 class MqbExtraSignals:
   # Additional signal and message lists for optional or bus-portable controllers
