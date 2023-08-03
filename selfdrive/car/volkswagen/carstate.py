@@ -174,8 +174,6 @@ class CarState(CarStateBase):
 
     self.mAWV = cam_cp.vl["mAWV"]
 
-    self.ACC_Coding = cam_cp.vl["ACA_Codierung"]
-
     self.acc_type = ext_cp.vl['ACC_System']['ACS_Typ_ACC']
 
     ret.vEgoRaw = float(np.mean([ret.wheelSpeeds.fl, ret.wheelSpeeds.fr, ret.wheelSpeeds.rl, ret.wheelSpeeds.rr]))
@@ -566,7 +564,7 @@ class CarState(CarStateBase):
 
     checks = [
       # sig_address, frequency
-      #("LDW_Status", 20)        # From R242 Driver assistance camera
+      ("LDW_Status", 20),        # From R242 Driver assistance camera
       ("mAWV", 50),
       ("ACC_System", 50)
     ]
@@ -577,8 +575,8 @@ class CarState(CarStateBase):
 
     if CP.networkLocation == NetworkLocation.gateway:
       # Extended CAN devices other than the camera are here on CANBUS.cam
-      #signals += PqExtraSignals.fwd_radar_signals
-      #checks += PqExtraSignals.fwd_radar_checks
+      signals += PqExtraSignals.fwd_radar_signals
+      checks += PqExtraSignals.fwd_radar_checks
       if CP.enableBsm:
         signals += PqExtraSignals.bsm_radar_signals
         checks += PqExtraSignals.bsm_radar_checks

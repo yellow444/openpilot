@@ -95,10 +95,10 @@ class CarController():
             idx = (frame / P.EPB_STEP) % 16
             acc_type = 0  # TODO: detect ACC type installed
             
-            acc_control = self.CCS.acc_control_value(CS.out.cruiseState.available, CS.out.accFaulted, enabled)
+            acc_control = self.CCS.acc_control_value(CS.out.cruiseState.available, False, enabled)
             accel = clip(actuators.accel, P.ACCEL_MIN, P.ACCEL_MAX) if enabled else 0
             stopping = actuators.longControlState == LongCtrlState.stopping
-            starting = actuators.longControlState == LongCtrlState.starting
+            starting = False
             
             can_sends.append(
                 self.CCS.create_acc_accel_control(self.packer_pt, CANBUS.pt, idx, CS.acc_type, enabled, accel,
@@ -110,7 +110,7 @@ class CarController():
             idx = (frame / P.EPB_STEP) % 16
             set_speed = CS.out.cruiseState.speed * CV.MS_TO_KPH
             metric = True  # TODO: detect kp_h or mph from car
-            acc_hud_status = self.CCS.acc_hud_status_value(CS.out.cruiseState.available, CS.out.accFaulted, enabled)
+            acc_hud_status = self.CCS.acc_hud_status_value(CS.out.cruiseState.available, False, enabled)
             
             can_sends.append(
                 self.CCS.create_acc_hud_control(self.packer_pt, CANBUS.pt, idx, acc_hud_status, set_speed, metric, 0))
