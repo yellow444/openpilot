@@ -59,12 +59,13 @@ def create_lka_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert
     right_lane_hud = 0
 
   values = {
-    "Right_Lane_Status": right_lane_hud,
-    "Left_Lane_Status": left_lane_hud,
-    "SET_ME_X1": 1,
-    "Kombi_Lamp_Orange": 1 if hca_enabled and steering_pressed else 0,
-    "Kombi_Lamp_Green": 1 if hca_enabled and not steering_pressed else 0,
+    "LDW_Lampe_gelb": 1 if hca_enabled and steering_pressed else 0,
+    "LDW_Lampe_gruen": 1 if hca_enabled and not steering_pressed else 0,
+    "LDW_Lernmodus_links": left_lane_hud,
+    "LDW_Lernmodus_rechts": right_lane_hud,
+    "LDW_Textbits": hud_alert,
   }
+
   return packer.make_can_msg("LDW_1", bus, values)
 
 def create_acc_hud_control(packer, bus , idx, acc_hud_status, set_speed, metric, lead_distance):

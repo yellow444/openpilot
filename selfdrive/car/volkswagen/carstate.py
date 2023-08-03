@@ -530,7 +530,7 @@ class CarState(CarStateBase):
 
     signals = [
       # sig_name, sig_address, default
-      ("Kombi_Lamp_Green", "LDW_1", 0),               # Just to check camera for CAN bus validity
+      ("LDW_Lampe_gruen", "LDW_Status", 0),               # Just to check camera for CAN bus validity
 
       ("AWV_Text", "mAWV", 0),
       ("AWV_1_Freigabe", "mAWV", 0),
@@ -566,7 +566,7 @@ class CarState(CarStateBase):
 
     checks = [
       # sig_address, frequency
-      #("LDW_1", 20)        # From R242 Driver assistance camera
+      #("LDW_Status", 20)        # From R242 Driver assistance camera
       ("mAWV", 50),
       ("ACC_System", 50)
     ]
