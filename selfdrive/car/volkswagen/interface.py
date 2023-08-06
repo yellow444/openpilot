@@ -259,6 +259,7 @@ class CarInterface(CarInterfaceBase):
       events.add(car.CarEvent.EventName.belowSteerSpeed)
 
     ret.events = events.to_msg()
+    print(buttonEvents)
     ret.buttonEvents = buttonEvents
 
     # update previous car states
