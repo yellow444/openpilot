@@ -41,7 +41,7 @@ class CarController():
         self.steer_rate_limited = False
     
     def update(self, enabled, CS, frame, ext_bus, actuators, visual_alert, left_lane_visible, right_lane_visible,
-               left_lane_depart, right_lane_depart):
+               left_lane_depart, right_lane_depart, set_speed):
         """ Controls thread """
         
         can_sends = []
@@ -108,7 +108,6 @@ class CarController():
         # **** HUD Controls ***************************************************** #
         if (frame % P.ACC_STEP == 0) and CS.CP.openpilotLongitudinalControl:
             idx = (frame / P.EPB_STEP) % 16
-            set_speed = CS.out.cruiseState.speed * CV.MS_TO_KPH
             metric = True  # TODO: detect kp_h or mph from car
             acc_hud_status = self.CCS.acc_hud_status_value(CS.out.cruiseState.available, False, enabled)
             
