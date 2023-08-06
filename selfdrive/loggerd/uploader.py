@@ -69,7 +69,7 @@ class Uploader():
     self.last_filename = ""
 
     self.immediate_folders = ["crash/", "boot/"]
-    self.immediate_priority = {"qlog.bz2": 0, "qcamera.ts": 1}
+    self.immediate_priority = {"qlog.bz2": 0, "qcamera.ts": 1, "rlog.bz2": 2}
 
   def get_upload_sort(self, name):
     if name in self.immediate_priority:
