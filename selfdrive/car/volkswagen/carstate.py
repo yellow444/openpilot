@@ -20,8 +20,6 @@ class CarState(CarStateBase):
       self.hca_status_values = can_define.dv["Lenkhilfe_2"]["LH2_Sta_HCA"]
       if CP.transmissionType == TransmissionType.automatic:
         self.shifter_values = can_define.dv["Getriebe_1"]["Waehlhebelposition__Getriebe_1_"]
-      if CP.enableGasInterceptor:
-        self.openpilot_enabled = False
     else:
       can_define = CANDefine(DBC_FILES.mqb)
       self.get_can_parser = self.get_mqb_can_parser
