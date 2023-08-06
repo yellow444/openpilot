@@ -106,6 +106,7 @@ class CarInterface(CarInterfaceBase):
 
       # OP LONG parameters
       ret.openpilotLongitudinalControl = True
+      ret.pcmCruise = not ret.openpilotLongitudinalControl
       ret.stoppingControl = True
       ret.stopAccel = -0.55
       ret.vEgoStarting = 1.0

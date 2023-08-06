@@ -174,8 +174,6 @@ class CarState(CarStateBase):
 
     self.mAWV = cam_cp.vl["mAWV"]
 
-    self.acc_type = ext_cp.vl['ACC_System']['ACS_Typ_ACC']
-
     ret.vEgoRaw = float(np.mean([ret.wheelSpeeds.fl, ret.wheelSpeeds.fr, ret.wheelSpeeds.rl, ret.wheelSpeeds.rr]))
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
 
@@ -250,16 +248,15 @@ class CarState(CarStateBase):
     # TODO: Consume FCW/AEB data from factory radar, if present
 
     # Update ACC radar status.
+    self.acc_type = ext_cp.vl["ACC_System"]["ACS_Typ_ACC"]
     ret.cruiseState.available = bool(pt_cp.vl["Motor_5"]["GRA_Hauptschalter"])
     ret.cruiseState.enabled = pt_cp.vl["Motor_2"]["GRA_Status"] in (1, 2)
 
     # Update ACC setpoint. When the setpoint reads as 255, the driver has not
     # yet established an ACC setpoint, so treat it as zero.
-    # Update ACC setpoint. When the setpoint reads as 255, the driver has not
-    # yet established an ACC setpoint, so treat it as zero.
     ret.cruiseState.speed = ext_cp.vl["ACC_GRA_Anzeige"]["ACA_V_Wunsch"] * CV.KPH_TO_MS
     if ret.cruiseState.speed > 70:  # 255 kph in m/s == no current setpoint
-        ret.cruiseState.speed = 0
+      ret.cruiseState.speed = 0
 
     # Update control button states for turn signals and ACC controls.
     self.buttonStates["accelCruise"] = bool(pt_cp.vl["GRA_Neu"]["GRA_Up_kurz"]) or bool(pt_cp.vl["GRA_Neu"]["GRA_Up_lang"])
@@ -287,9 +284,6 @@ class CarState(CarStateBase):
     # Additional safety checks performed in CarInterface.
     self.parkingBrakeSet = False #bool(pt_cp.vl["Kombi_1"]["Bremsinfo"])  # FIXME: need to include an EPB check as well
     ret.espDisabled = bool(pt_cp.vl["Bremse_1"]["ESP_Passiv_getastet"])
-
-    if self.CP.enableGasInterceptor:
-      self.currentSpeed = ret.vEgo
 
     return ret
 
