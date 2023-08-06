@@ -110,7 +110,7 @@ class CarController():
             idx = (frame / P.EPB_STEP) % 16
             metric = True  # TODO: detect kp_h or mph from car
             acc_hud_status = self.CCS.acc_hud_status_value(CS.out.cruiseState.available, False, enabled)
-            
+            set_speed = set_speed * CV.MS_TO_KPH
             can_sends.append(
                 self.CCS.create_acc_hud_control(self.packer_pt, CANBUS.pt, idx, acc_hud_status, set_speed, metric, 0))
         
