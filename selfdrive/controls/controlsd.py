@@ -400,6 +400,7 @@ class Controls:
     """Compute conditional state transitions and execute actions on state transitions"""
 
     self.v_cruise_kph_last = self.v_cruise_kph
+    print('State Transition')
 
     # if stock cruise is completely disabled, then we can use our own set speed logic
     if not self.CP.pcmCruise:
@@ -415,25 +416,31 @@ class Controls:
 
     # ENABLED, PRE ENABLING, SOFT DISABLING
     if self.state != State.disabled:
+      print('State != State.disabled')
       # user and immediate disable always have priority in a non-disabled state
       if self.events.any(ET.USER_DISABLE):
+        print('State = USER_DISABLE')
         self.state = State.disabled
         self.current_alert_types.append(ET.USER_DISABLE)
 
       elif self.events.any(ET.IMMEDIATE_DISABLE):
+        print('State = IMMEDIATE_DISABLE')
         self.state = State.disabled
         self.current_alert_types.append(ET.IMMEDIATE_DISABLE)
 
       else:
         # ENABLED
         if self.state == State.enabled:
+          print('State = State.enabled')
           if self.events.any(ET.SOFT_DISABLE):
+            print('State = SOFT_DISABLE')
             self.state = State.softDisabling
             self.soft_disable_timer = int(SOFT_DISABLE_TIME / DT_CTRL)
             self.current_alert_types.append(ET.SOFT_DISABLE)
 
         # SOFT DISABLING
         elif self.state == State.softDisabling:
+          print('State = State.softDisabling')
           if not self.events.any(ET.SOFT_DISABLE):
             # no more soft disabling condition, so go back to ENABLED
             self.state = State.enabled
@@ -446,21 +453,28 @@ class Controls:
 
         # PRE ENABLING
         elif self.state == State.preEnabled:
+          print('State = State.PreEnabled')
           if not self.events.any(ET.PRE_ENABLE):
+            print('State = State.PRE_ENABLE')
             self.state = State.enabled
           else:
             self.current_alert_types.append(ET.PRE_ENABLE)
 
     # DISABLED
     elif self.state == State.disabled:
+      print('State = State.Disabled')
       if self.events.any(ET.ENABLE):
+        print('State = ET.ENABLE')
         if self.events.any(ET.NO_ENTRY):
+          print('State = ET.NO_ENTRY')
           self.current_alert_types.append(ET.NO_ENTRY)
 
         else:
           if self.events.any(ET.PRE_ENABLE):
+            print('State = ET.PRE_ENABLE')
             self.state = State.preEnabled
           else:
+            print('State = ENABLED YEAHHH!!!')
             self.state = State.enabled
           self.current_alert_types.append(ET.ENABLE)
           self.v_cruise_kph = initialize_v_cruise(CS.vEgo, CS.buttonEvents, self.v_cruise_kph_last)
