@@ -12,6 +12,7 @@ from selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX
 from selfdrive.controls.lib.events import Events
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 
+ButtonType = car.CarState.ButtonEvent.Type
 GearShifter = car.CarState.GearShifter
 EventName = car.CarEvent.EventName
 
@@ -107,7 +108,9 @@ class CarInterfaceBase(ABC):
   def apply(self, c: car.CarControl) -> Tuple[car.CarControl.Actuators, List[bytes]]:
     pass
 
-  def create_common_events(self, cs_out, extra_gears=None, gas_resume_speed=-1, pcm_enable=True):
+  def create_common_events(self, cs_out, extra_gears=None, gas_resume_speed=-1, pcm_enable=True,
+                           enable_buttons=(ButtonType.accelCruise, ButtonType.decelCruise, ButtonType.setCruise,
+                                           ButtonType.resumeCruise)):
     events = Events()
 
     if cs_out.doorOpen:
@@ -136,6 +139,14 @@ class CarInterfaceBase(ABC):
     if cs_out.brakeHoldActive and self.CP.openpilotLongitudinalControl:
       events.add(EventName.brakeHold)
 
+    # Handle button presses
+    for b in cs_out.buttonEvents:
+      # Enable OP long on falling edge of enable buttons (defaults to accelCruise and decelCruise, overridable per-port)
+      if not self.CP.pcmCruise and (b.type in enable_buttons and not b.pressed):
+        events.add(EventName.buttonEnable)
+      # Disable on rising and falling edge of cancel for both stock and OP long
+      if b.type == ButtonType.cancel:
+        events.add(EventName.buttonCancel)
 
     # Handle permanent and temporary steering faults
     self.steering_unpressed = 0 if cs_out.steeringPressed else self.steering_unpressed + 1
