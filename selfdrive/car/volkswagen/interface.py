@@ -239,8 +239,6 @@ class CarInterface(CarInterfaceBase):
     # the turn stalk switch or ACC steering wheel/control stalk buttons.
     for button in self.CS.buttonStates:
       if self.CS.buttonStates[button] != self.buttonStatesPrev[button]:
-        print(f"Button: {button}")
-        print(f"Button {button}: {self.CS.buttonStates[button]}")
         be = car.CarState.ButtonEvent.new_message()
         be.type = button
         be.pressed = self.CS.buttonStates[button]
