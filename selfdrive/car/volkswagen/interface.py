@@ -243,7 +243,8 @@ class CarInterface(CarInterfaceBase):
         be.type = button
         be.pressed = self.CS.buttonStates[button]
         buttonEvents.append(be)
-
+    
+    ret.buttonEvents = buttonEvents
     events = self.create_common_events(ret, extra_gears=[GearShifter.eco, GearShifter.sport, GearShifter.manumatic], pcm_enable=False)
 
     # Vehicle health and operation safety checks
@@ -257,7 +258,6 @@ class CarInterface(CarInterfaceBase):
       events.add(car.CarEvent.EventName.belowSteerSpeed)
 
     ret.events = events.to_msg()
-    ret.buttonEvents = buttonEvents
 
     # update previous car states
     self.displayMetricUnitsPrev = self.CS.displayMetricUnits
